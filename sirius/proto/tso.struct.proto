@@ -1,0 +1,47 @@
+//
+// Copyright (C) 2024 EA group inc.
+// Author: Jeff.li lijippy@163.com
+// All rights reserved.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+
+syntax="proto2";
+package sirius.proto;
+option cc_generic_services = true;
+import "sirius/proto/optype.proto";
+import "sirius/proto/error_code.proto";
+
+message TsoTimestamp {
+  optional int64    physical = 1;
+  optional int64    logical  = 2;
+}
+
+message TsoRequest {
+  required OpType        op_type           = 1;
+  optional int64         count             = 2;
+  optional TsoTimestamp  current_timestamp = 3;
+  optional int64         save_physical     = 4;
+  optional bool          force             = 5;
+};
+
+message TsoResponse {
+  required OpType          op_type           = 1;
+  optional ErrCode         errcode           = 2;
+  optional TsoTimestamp    start_timestamp   = 3;
+  optional int64           count             = 4;
+  optional string          errmsg            = 5;
+  optional int64           save_physical     = 6;
+  optional int64           system_time       = 7;
+  optional string          leader            = 8;
+};

@@ -1,0 +1,57 @@
+//
+// Copyright (C) 2024 EA group inc.
+// Author: Jeff.li lijippy@163.com
+// All rights reserved.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+
+syntax="proto2";
+package sirius.proto;
+option cc_generic_services = true;
+
+enum RW {
+  READ  = 1;
+  WRITE = 2;
+};
+
+message PrivilegeZone {
+  required string zone   = 1;
+  optional int64 zone_id = 2;
+  optional RW zone_rw    = 3;
+  optional bool force        = 4;
+};
+
+message PrivilegeServlet {
+  required string zone   = 1;
+  optional int64 zone_id = 2;
+  required string servlet_name = 3;
+  optional int64 servlet_id    = 4;
+  optional RW servlet_rw       = 5;
+  optional bool force        = 6;
+};
+
+
+message UserPrivilege {
+  required string             username                      = 1;
+  optional string             password                      = 2;
+  required string             namespace_name                = 3;
+  optional int64              namespace_id                  = 4;
+  repeated PrivilegeZone      privilege_zone                = 7;
+  repeated PrivilegeServlet   privilege_servlet             = 8;
+  repeated string             ip                            = 10;
+  optional int64              version                       = 11;
+  optional bool               need_auth_addr                = 13;
+  optional string             resource_tag                  = 14;
+  optional string             token                         = 20;
+};
