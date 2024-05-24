@@ -39,8 +39,8 @@ service DiscoveryRouterService {
   rpc discovery_query(DiscoveryQueryRequest) returns (DiscoveryQueryResponse);
   rpc tso_service(TsoRequest) returns (TsoResponse);
 
-  rpc registry(ServletInfo) returns (DiscoveryRegisterResponse);
-  rpc update(ServletInfo) returns (DiscoveryRegisterResponse);
-  rpc cancel(ServletInfo) returns (DiscoveryRegisterResponse);
-  rpc naming(ServletNamingRequest) returns (ServletNamingResponse);
+  //rpc registry(ServletInfo) returns (DiscoveryRegisterResponse);
+  //rpc update(ServletInfo) returns (DiscoveryRegisterResponse);
+  //rpc cancel(ServletInfo) returns (DiscoveryRegisterResponse);
+  //rpc naming(ServletNamingRequest) returns (ServletNamingResponse);
 };

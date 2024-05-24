@@ -86,7 +86,7 @@ namespace sirius::discovery {
         color_set.insert(request->color().begin(), request->color().end());
         auto tnow = turbo::Time::time_now().to_time_t();
         auto *servlet_manager = ServletManager::get_instance();
-        int time_out = 5;
+        int time_out = 50;
         for(auto &server_id: server_ids) {
             sirius::proto::ServletInfo servlet_info;
             if (servlet_manager->get_servlet_info(server_id, servlet_info) != 0) {

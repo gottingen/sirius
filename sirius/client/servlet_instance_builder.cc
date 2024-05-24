@@ -23,11 +23,12 @@
 #include <sirius/client/utility.h>
 #include <alkaid/files/sequential_read_file.h>
 #include <melon/utility/endpoint.h>
+#include <turbo/strings/numbers.h>
 #include <sirius/client/loader.h>
 
 namespace sirius::client {
 
-    ServletInstanceBuilder::ServletInstanceBuilder(sirius::proto::ServletInfo *ins) :_instance(ins) {
+    ServletInstanceBuilder::ServletInstanceBuilder(sirius::proto::ServletInfo *ins) : _instance(ins) {
         _instance->Clear();
     }
 
@@ -63,7 +64,7 @@ namespace sirius::client {
         }
 
         mutil::EndPoint peer;
-        if(mutil::str2endpoint(_instance->address().c_str(),&peer) != 0) {
+        if (mutil::str2endpoint(_instance->address().c_str(), &peer) != 0) {
             return collie::Status::invalid_argument("bad address");
         }
 
@@ -114,12 +115,9 @@ namespace sirius::client {
     }
 
     ServletInstanceBuilder &ServletInstanceBuilder::set_status(const std::string &s) {
-        sirius::proto::Status status;
-        if(sirius::proto::Status_Parse(s, &status)) {
-            _instance->set_status(status);
-        } else {
-            _instance->set_status(sirius::proto::NORMAL);
-        }
+        int st;
+        turbo::simple_atoi(s, &st);
+        _instance->set_status(st);
         return *this;
     }
 
@@ -128,8 +126,8 @@ namespace sirius::client {
         return *this;
     }
 
-    ServletInstanceBuilder &ServletInstanceBuilder::set_status(const sirius::proto::Status &s) {
-        _instance->set_status(sirius::proto::NORMAL);
+    ServletInstanceBuilder &ServletInstanceBuilder::set_status(int s) {
+        _instance->set_status(s);
         return *this;
     }
 

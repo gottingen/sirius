@@ -65,9 +65,15 @@ int main(int argc, char **argv) {
 
     auto *discovery_server = sirius::discovery::DiscoveryServer::get_instance();
     auto *router_server = sirius::discovery::RouterServiceImpl::get_instance();
+    auto *sns_server = melon::SnsServiceImpl::get_instance();
     auto rs = router_server->init(sirius::FLAGS_discovery_server_peers);
     if (!rs.ok()) {
         SS_LOG(ERROR) << "Fail init router server " << rs.message();
+        return -1;
+    }
+    rs = sns_server->init(sirius::FLAGS_discovery_server_peers);
+    if (!rs.ok()) {
+        SS_LOG(ERROR) << "Fail init sns server " << rs.message();
         return -1;
     }
     // registry discovery service
@@ -78,6 +84,11 @@ int main(int argc, char **argv) {
     // registry router service
     if (0 != server.AddService(router_server, melon::SERVER_DOESNT_OWN_SERVICE)) {
         SS_LOG(ERROR) << "Fail to Add router Service";
+        return -1;
+    }
+
+    if (0 != server.AddService(sns_server, melon::SERVER_DOESNT_OWN_SERVICE)) {
+        SS_LOG(ERROR) << "Fail to Add sns Service";
         return -1;
     }
     // enable ports

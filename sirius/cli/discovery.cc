@@ -39,6 +39,9 @@
 #include <sirius/cli/servlet_cmd.h>
 #include <sirius/cli/config_cmd.h>
 #include <sirius/cli/user_cmd.h>
+#include <turbo/strings/numbers.h>
+#include <melon/naming/sns_naming_service.h>
+#include <gflags/gflags.h>
 
 
 namespace sirius::cli {
@@ -166,48 +169,31 @@ namespace sirius::cli {
 
     static void* run_mock(bool& stop) {
         auto ctx = DiscoveryOptionContext::get_instance();
-        sirius::proto::ServletInfo instance;
+        std::string sns_server = "list://" + OptionContext::get_instance()->router_server;
+        google::SetCommandLineOption("sns_server", sns_server.c_str());
+        melon::SnsPeer instance;
         instance.set_app_name(ctx->app_name);
         instance.set_zone(ctx->zone_name);
         auto i = seq_id();
         instance.set_servlet_name(ctx->servlet_name + collie::to_str(i));
         instance.set_env(ctx->env);
         instance.set_color(ctx->color);
-        instance.set_status(sirius::proto::NORMAL);
+        instance.set_status(melon::PeerStatus::NORMAL);
         instance.set_address(ctx->address);
-        sirius::client::Naming naming;
-        auto rs = naming.initialize(OptionContext::get_instance()->router_server);
-        if (!rs.ok()) {
-            collie::println("initialize naming error:{}", rs.message());
+        melon::naming::SnsNamingClient sns_naming;
+        auto rs = sns_naming.register_peer(instance);
+        if (rs != 0) {
+            collie::println("register server error");
             return nullptr;
         }
-        rs = naming.register_server(instance);
-        if (!rs.ok()) {
-            collie::println("register server error:{}", rs.message());
-            return nullptr;
-        }
+
         collie::println("register server:{}.{}.{}#{} {} {} {} {}",
                         instance.app_name(), instance.zone(),
                         instance.servlet_name(), instance.address(),
                         instance.env(), instance.color(),
-                        instance.mtime(), sirius::proto::Status_Name(instance.status()));
+                        instance.mtime(), static_cast<int>(instance.status()));
         while (!stop) {
             fiber_usleep(3 *1000 * 1000);
-            rs = naming.update(instance);
-            if (!rs.ok()) {
-                collie::println("cancel server error:{}", rs.message());
-                return nullptr;
-            }
-            collie::println("update server:{}.{}.{}#{} {} {} {} {}",
-                            instance.app_name(), instance.zone(),
-                            instance.servlet_name(), instance.address(),
-                            instance.env(), instance.color(),
-                            instance.mtime(), sirius::proto::Status_Name(instance.status()));
-        }
-        rs = naming.cancel(instance);
-        if (!rs.ok()) {
-            collie::println("cancel server error:{}", rs.message());
-            return nullptr;
         }
         return nullptr;
     };
@@ -279,23 +265,27 @@ namespace sirius::cli {
     }
 
     void DiscoveryCmd::run_discovery_info_instance_cmd() {
-        sirius::proto::ServletNamingRequest request;
-        sirius::proto::ServletNamingResponse response;
+        melon::ChannelOptions channel_opt;
+        channel_opt.timeout_ms =  OptionContext::get_instance()->timeout_ms;
+        channel_opt.connect_timeout_ms = OptionContext::get_instance()->connect_timeout_ms;
+        melon::Channel short_channel;
+        if (short_channel.Init(OptionContext::get_instance()->router_server.c_str(), &channel_opt) != 0) {
+            collie::println("connect with router server fail. channel Init fail, leader_addr:{}",
+                            OptionContext::get_instance()->router_server);
+            return;
+        }
+        melon::Controller cntl;
+        melon::SnsService_Stub stub(&short_channel);
+        melon::SnsResponse response;
+        melon::SnsRequest request;
 
         ScopeShower ss;
         auto rs = make_discovery_info_instance(&request);
-        sirius::client::Naming naming;
-        rs = naming.initialize(OptionContext::get_instance()->router_server);
-        if (!rs.ok()) {
-            collie::println("initialize naming error:{}", rs.message());
+        stub.naming(&cntl, &request, &response, nullptr);
+        if (cntl.Failed()) {
+            collie::println("rpc to discovery server:discovery_manager error:{}", cntl.ErrorText());
             return;
         }
-        rs = naming.get_servers(request, response);
-        if (!rs.ok()) {
-            collie::println("get servers error:{}", rs.message());
-            return;
-        }
-
         auto &ins = response.servlets();
         collie::println("instance num:{}", ins.size());
         collie::println("message:{}", response.errmsg());
@@ -304,7 +294,7 @@ namespace sirius::cli {
                             instance.app_name(), instance.zone(),
                             instance.servlet_name(), instance.address(),
                             instance.env(), instance.color(),
-                            instance.mtime(), sirius::proto::Status_Name(instance.status()));
+                            instance.mtime(), static_cast<int>(instance.status()));
 
         }
         /*
@@ -469,7 +459,7 @@ namespace sirius::cli {
     }
 
     [[nodiscard]] collie::Status
-    DiscoveryCmd::make_discovery_info_instance(sirius::proto::ServletNamingRequest *req) {
+    DiscoveryCmd::make_discovery_info_instance(melon::SnsRequest *req) {
         auto opt = DiscoveryOptionContext::get_instance();
         req->set_app_name(opt->app_name);
         for(auto &zone: opt->zones) {
@@ -484,12 +474,12 @@ namespace sirius::cli {
         return collie::Status::ok_status();
     }
 
-    [[nodiscard]] collie::Result<sirius::proto::Status> DiscoveryCmd::string_to_status(const std::string &status) {
-        sirius::proto::Status ret;
-        if (sirius::proto::Status_Parse(status, &ret)) {
-            return ret;
+    [[nodiscard]] collie::Result<int> DiscoveryCmd::string_to_status(const std::string &status) {
+        int s;
+        if(!turbo::simple_atoi(status, &s) ){
+            return collie::Status::invalid_argument("unknown status");
         }
-        return collie::Status::invalid_argument("unknown status");
+        return s;
     }
 
     collie::table::Table DiscoveryCmd::show_query_instance_list_response(const sirius::proto::DiscoveryQueryResponse &res) {
@@ -533,7 +523,7 @@ namespace sirius::cli {
                         instance.env(),
                         instance.color(),
                         collie::to_str(instance.mtime()),
-                        sirius::proto::Status_Name(instance.status())
+                        instance.status() == 1 ? "NORMAL" : "DELETED"
                 }
         );
 

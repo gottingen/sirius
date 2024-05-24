@@ -26,15 +26,6 @@ import "sirius/proto/user.struct.proto";
 import "sirius/proto/unique_id.proto";
 import "sirius/proto/config.struct.proto";
 
-enum Status {
-  NORMAL = 1;
-  FAULTY = 2;
-  DEAD   = 3;
-  MIGRATE= 4;
-  FULL   = 5;
-  SLOW   = 6;
-  BUSY   = 7;
-};
 
 message AppInfo {
   required string app_name         = 1;
@@ -62,7 +53,7 @@ message ServletInfo {
     required string      app_name                = 5;
     optional int64       app_id                  = 6;
     optional string      color                   = 7;
-    optional Status      status                  = 8;
+    optional int32       status                  = 8;
     optional bool        deleted                 = 9;
     optional uint32      ctime                   = 10;
     optional uint32      mtime                   = 11;
@@ -122,7 +113,7 @@ message DiscoveryQueryRequest {
   optional string        zone                          = 7;
   optional string        servlet                       = 8;
   optional string        color                         = 9;
-  optional Status        status                        = 10;
+  optional int32        status                        = 10;
   optional string        env                           = 11;
 };
 
@@ -156,5 +147,5 @@ message QueryInstance {
   optional string        env                          = 5;
   optional string        color                        = 6;
   optional int64         version                      = 7;
-  optional Status        status                       = 8;
+  optional int32        status                       = 8;
 };

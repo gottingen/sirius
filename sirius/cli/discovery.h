@@ -28,6 +28,7 @@
 #include <collie/table/table.h>
 #include <string>
 #include <sirius/client/config_client.h>
+#include <melon/naming/sns_naming_service.h>
 
 namespace sirius::cli {
 
@@ -87,9 +88,9 @@ namespace sirius::cli {
         make_discovery_list_instance(sirius::proto::DiscoveryQueryRequest *req);
 
         [[nodiscard]] static collie::Status
-        make_discovery_info_instance(sirius::proto::ServletNamingRequest *req);
+        make_discovery_info_instance(melon::SnsRequest *req);
 
-        [[nodiscard]] static collie::Result<sirius::proto::Status> string_to_status(const std::string &status);
+        [[nodiscard]] static collie::Result<int> string_to_status(const std::string &status);
 
         static collie::table::Table show_query_instance_list_response(const sirius::proto::DiscoveryQueryResponse &res);
         static collie::table::Table show_query_instance_info_response(const sirius::proto::DiscoveryQueryResponse &res);

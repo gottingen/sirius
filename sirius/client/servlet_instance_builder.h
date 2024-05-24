@@ -139,7 +139,7 @@ namespace sirius::client {
          * @param status [input] the status to set.
          * @return the ServletInstanceBuilder.
          */        
-        ServletInstanceBuilder &set_status(const sirius::proto::Status &status);
+        ServletInstanceBuilder &set_status(int status);
 
 
     private:
