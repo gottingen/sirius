@@ -45,7 +45,7 @@ namespace sirius::discovery {
         ///
         /// \brief create servlet call by schema manager,
         ///        fail on db exists and namespace not spec
-        ///        servlet name  = namespace_name + "\001" + servlet_info.zone()+ "\001" + servlet_info.servlet_name();
+        ///        servlet name  = app_name + "\001" + servlet_info.zone()+ "\001" + servlet_info.servlet_name();
         /// \param request
         /// \param done
         void create_servlet(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done);
@@ -53,7 +53,7 @@ namespace sirius::discovery {
         ///
         /// \brief remove servlet call by schema manager,
         ///        fail on db not exists and namespace not spec
-        ///        servlet name  = namespace_name + "\001" + servlet_info.zone()+ "\001" + servlet_info.servlet_name();
+        ///        servlet name  = app_name + "\001" + servlet_info.zone()+ "\001" + servlet_info.servlet_name();
         ///
         /// \param request
         /// \param done
@@ -62,7 +62,7 @@ namespace sirius::discovery {
         ///
         /// \brief modify servlet call by schema manager,
         ///        fail on db not exists and namespace not spec
-        ///        servlet name  = namespace_name + "\001" + servlet_info.zone()+ "\001" + servlet_info.servlet_name();
+        ///        servlet name  = app_name + "\001" + servlet_info.zone()+ "\001" + servlet_info.servlet_name();
         ///
         /// \param request
         /// \param done
@@ -105,11 +105,11 @@ namespace sirius::discovery {
         int get_servlet_info(const int64_t &servlet_id, sirius::proto::ServletInfo &servlet_info);
 
         ///
-        /// \param namespace_name
+        /// \param app_name
         /// \param zone_name
         /// \param servlet_name
         /// \return
-        static std::string make_servlet_key(const std::string &namespace_name, const std::string & zone_name, const std::string &servlet_name);
+        static std::string make_servlet_key(const std::string &app_name, const std::string & zone_name, const std::string &servlet_name);
         ///
         /// \param zone_key
         /// \param servlet_name
@@ -140,7 +140,7 @@ namespace sirius::discovery {
         //! std::mutex                                          _servlet_mutex;
         fiber_mutex_t _servlet_mutex;
         int64_t _max_servlet_id{0};
-        //! servlet name --> servlet id，name: namespace\001zone\001servlet
+        //! servlet name --> servlet id，name: app\001zone\001servlet
         std::unordered_map<std::string, int64_t> _servlet_id_map;
         std::unordered_map<int64_t, sirius::proto::ServletInfo> _servlet_info_map;
     };
@@ -161,7 +161,7 @@ namespace sirius::discovery {
 
     inline void ServletManager::set_servlet_info(const sirius::proto::ServletInfo &servlet_info) {
         MELON_SCOPED_LOCK(_servlet_mutex);
-        std::string servlet_name = make_servlet_key(servlet_info.namespace_name(), servlet_info.zone(), servlet_info.servlet_name());
+        std::string servlet_name = make_servlet_key(servlet_info.app_name(), servlet_info.zone(), servlet_info.servlet_name());
         _servlet_id_map[servlet_name] = servlet_info.servlet_id();
         _servlet_info_map[servlet_info.servlet_id()] = servlet_info;
     }
@@ -212,8 +212,8 @@ namespace sirius::discovery {
         return max_servlet_id_key;
     }
 
-    inline std::string ServletManager::make_servlet_key(const std::string &namespace_name, const std::string & zone_name, const std::string &servlet_name) {
-        return namespace_name + "\001" + zone_name + "\001" + servlet_name;
+    inline std::string ServletManager::make_servlet_key(const std::string &app_name, const std::string & zone_name, const std::string &servlet_name) {
+        return app_name + "\001" + zone_name + "\001" + servlet_name;
     }
 
     inline std::string ServletManager::make_servlet_key(const std::string &zone_key,const std::string &servlet_name) {

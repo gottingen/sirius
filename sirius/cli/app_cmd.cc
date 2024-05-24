@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-#include <sirius/cli/namespace_cmd.h>
+#include <sirius/cli/app_cmd.h>
 #include <sirius/cli/option_context.h>
 #include <sirius/base/log.h>
 #include <sirius/cli/router_interact.h>
@@ -24,34 +24,34 @@ namespace sirius::cli {
     /// The variables of the struct are bound to the CLI options.
     /// We use a shared ptr so that the addresses of the variables remain for binding,
     /// You could return the shared pointer if you wanted to access the values in main.
-    void setup_namespace_cmd(collie::App &app) {
+    void setup_app_cmd(collie::App &app) {
         // Create the option and subcommand objects.
-        auto opt = NameSpaceOptionContext::get_instance();
-        auto *ns = app.add_subcommand("namespace", "namespace operations");
+        auto opt = AppOptionContext::get_instance();
+        auto *ns = app.add_subcommand("app", "app operations");
         ns->callback([ns]() { run_namespace_cmd(ns); });
         // Add options to sub, binding them to opt.
         //ns->require_subcommand();
         // add sub cmd
-        auto cns = ns->add_subcommand("create", " create namespace");
-        cns->add_option("-n,--name", opt->namespace_name, "namespace name")->required();
-        cns->add_option("-q, --quota", opt->namespace_quota, "new namespace quota");
+        auto cns = ns->add_subcommand("create", " create app");
+        cns->add_option("-n,--name", opt->app_name, "app name")->required();
+        cns->add_option("-q, --quota", opt->app_quota, "new app quota");
         cns->callback([]() { run_ns_create_cmd(); });
 
-        auto rns = ns->add_subcommand("remove", " remove namespace");
-        rns->add_option("-n,--name", opt->namespace_name, "namespace name")->required();
-        rns->add_option("-q, --quota", opt->namespace_quota, "new namespace quota");
+        auto rns = ns->add_subcommand("remove", " remove app");
+        rns->add_option("-n,--name", opt->app_name, "app name")->required();
+        rns->add_option("-q, --quota", opt->app_quota, "new app quota");
         rns->callback([]() { run_ns_remove_cmd(); });
 
-        auto mns = ns->add_subcommand("modify", " modify namespace");
-        mns->add_option("-n,--name", opt->namespace_name, "namespace name")->required();
-        mns->add_option("-q, --quota", opt->namespace_quota, "new namespace quota");
+        auto mns = ns->add_subcommand("modify", " modify app");
+        mns->add_option("-n,--name", opt->app_name, "app name")->required();
+        mns->add_option("-q, --quota", opt->app_quota, "new app quota");
         mns->callback([]() { run_ns_modify_cmd(); });
 
         auto lns = ns->add_subcommand("list", " list namespaces");
         lns->callback([]() { run_ns_list_cmd(); });
 
-        auto ins = ns->add_subcommand("info", " get namespace info");
-        ins->add_option("-n,--name", opt->namespace_name, "namespace name")->required();
+        auto ins = ns->add_subcommand("info", " get app info");
+        ins->add_option("-n,--name", opt->app_name, "app name")->required();
         ins->callback([]() { run_ns_info_cmd(); });
 
     }
@@ -67,8 +67,8 @@ namespace sirius::cli {
     }
 
     void run_ns_create_cmd() {
-        collie::println(collie::Color::green, "start to create namespace: {}",
-                       NameSpaceOptionContext::get_instance()->namespace_name);
+        collie::println(collie::Color::green, "start to create app: {}",
+                       AppOptionContext::get_instance()->app_name);
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         auto rs = make_namespace_create(&request);
@@ -82,8 +82,8 @@ namespace sirius::cli {
     }
 
     void run_ns_remove_cmd() {
-        collie::println(collie::Color::green, "start to remove namespace: {}",
-                       NameSpaceOptionContext::get_instance()->namespace_name);
+        collie::println(collie::Color::green, "start to remove app: {}",
+                       AppOptionContext::get_instance()->app_name);
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         ScopeShower ss;
@@ -97,8 +97,8 @@ namespace sirius::cli {
     }
 
     void run_ns_modify_cmd() {
-        collie::println(collie::Color::green, "start to modify namespace: {}",
-                       NameSpaceOptionContext::get_instance()->namespace_name);
+        collie::println(collie::Color::green, "start to modify app: {}",
+                       AppOptionContext::get_instance()->app_name);
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         ScopeShower ss;
@@ -112,7 +112,7 @@ namespace sirius::cli {
     }
 
     void run_ns_list_cmd() {
-        collie::println(collie::Color::green, "start to get namespace list");
+        collie::println(collie::Color::green, "start to get app list");
         sirius::proto::DiscoveryQueryRequest request;
         sirius::proto::DiscoveryQueryResponse response;
         ScopeShower ss;
@@ -132,7 +132,7 @@ namespace sirius::cli {
     }
 
     void run_ns_info_cmd() {
-        collie::println(collie::Color::green, "start to get namespace info");
+        collie::println(collie::Color::green, "start to get app info");
         sirius::proto::DiscoveryQueryRequest request;
         sirius::proto::DiscoveryQueryResponse response;
         ScopeShower ss;
@@ -152,22 +152,19 @@ namespace sirius::cli {
 
     collie::table::Table show_discovery_query_ns_response(const sirius::proto::DiscoveryQueryResponse &res) {
         collie::table::Table result;
-        auto &nss = res.namespace_infos();
+        auto &nss = res.app_infos();
         result.add_row(
-                collie::table::Table::Row_t{"namespace", "id", "version", "quota", "replica number", "resource tag", "region split lines"});
+                collie::table::Table::Row_t{"app", "id", "version", "quota"});
         auto last = result.size() - 1;
         result[last].format().font_color(collie::Color::green);
 
 
         for (auto &ns: nss) {
             result.add_row(
-                    collie::table::Table::Row_t{ns.namespace_name(),
-                          collie::to_str(ns.namespace_id()),
+                    collie::table::Table::Row_t{ns.app_name(),
+                          collie::to_str(ns.app_id()),
                           collie::to_str(ns.version()),
-                          collie::to_str(ns.quota()),
-                          collie::to_str(ns.replica_num()),
-                          ns.resource_tag(),
-                          collie::to_str(ns.region_split_lines())});
+                          collie::to_str(ns.quota())});
             last = result.size() - 1;
             result[last].format().font_color(collie::Color::green);
         }
@@ -176,47 +173,47 @@ namespace sirius::cli {
 
     collie::Status
     make_namespace_create(sirius::proto::DiscoveryManagerRequest *req) {
-        sirius::proto::NameSpaceInfo *ns_req = req->mutable_namespace_info();
-        auto rs = check_valid_name_type(NameSpaceOptionContext::get_instance()->namespace_name);
+        sirius::proto::AppInfo *ns_req = req->mutable_app_info();
+        auto rs = check_valid_name_type(AppOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
-        ns_req->set_namespace_name(NameSpaceOptionContext::get_instance()->namespace_name);
-        ns_req->set_quota(NameSpaceOptionContext::get_instance()->namespace_quota);
+        ns_req->set_app_name(AppOptionContext::get_instance()->app_name);
+        ns_req->set_quota(AppOptionContext::get_instance()->app_quota);
         req->set_op_type(sirius::proto::OP_CREATE_NAMESPACE);
         return collie::Status::ok_status();
     }
 
     collie::Status
     make_namespace_remove(sirius::proto::DiscoveryManagerRequest *req) {
-        sirius::proto::NameSpaceInfo *ns_req = req->mutable_namespace_info();
-        auto rs = check_valid_name_type(NameSpaceOptionContext::get_instance()->namespace_name);
+        sirius::proto::AppInfo *ns_req = req->mutable_app_info();
+        auto rs = check_valid_name_type(AppOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
-        ns_req->set_namespace_name(NameSpaceOptionContext::get_instance()->namespace_name);
+        ns_req->set_app_name(AppOptionContext::get_instance()->app_name);
         req->set_op_type(sirius::proto::OP_DROP_NAMESPACE);
         return collie::Status::ok_status();
     }
 
     collie::Status
     make_namespace_modify(sirius::proto::DiscoveryManagerRequest *req) {
-        sirius::proto::NameSpaceInfo *ns_req = req->mutable_namespace_info();
-        auto rs = check_valid_name_type(NameSpaceOptionContext::get_instance()->namespace_name);
+        sirius::proto::AppInfo *ns_req = req->mutable_app_info();
+        auto rs = check_valid_name_type(AppOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
-        ns_req->set_namespace_name(NameSpaceOptionContext::get_instance()->namespace_name);
-        ns_req->set_quota(NameSpaceOptionContext::get_instance()->namespace_quota);
+        ns_req->set_app_name(AppOptionContext::get_instance()->app_name);
+        ns_req->set_quota(AppOptionContext::get_instance()->app_quota);
         req->set_op_type(sirius::proto::OP_MODIFY_NAMESPACE);
         return collie::Status::ok_status();
     }
 
     collie::Status make_namespace_query(sirius::proto::DiscoveryQueryRequest *req) {
-        req->set_op_type(sirius::proto::QUERY_NAMESPACE);
-        if (!NameSpaceOptionContext::get_instance()->namespace_name.empty()) {
-            req->set_namespace_name(NameSpaceOptionContext::get_instance()->namespace_name);
-            auto rs = check_valid_name_type(NameSpaceOptionContext::get_instance()->namespace_name);
+        req->set_op_type(sirius::proto::QUERY_APP);
+        if (!AppOptionContext::get_instance()->app_name.empty()) {
+            req->set_app_name(AppOptionContext::get_instance()->app_name);
+            auto rs = check_valid_name_type(AppOptionContext::get_instance()->app_name);
             if (!rs.ok()) {
                 return rs;
             }

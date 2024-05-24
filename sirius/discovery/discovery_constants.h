@@ -28,7 +28,7 @@ namespace sirius::discovery {
 
         static const std::string SCHEMA_IDENTIFY;
         static const std::string MAX_ID_SCHEMA_IDENTIFY;
-        static const std::string NAMESPACE_SCHEMA_IDENTIFY;
+        static const std::string APP_SCHEMA_IDENTIFY;
         static const std::string ZONE_SCHEMA_IDENTIFY;
         static const std::string SERVLET_SCHEMA_IDENTIFY;
 
@@ -44,7 +44,7 @@ namespace sirius::discovery {
         static const std::string MAX_IDENTIFY;
 
         /// for schema
-        static const std::string MAX_NAMESPACE_ID_KEY;
+        static const std::string MAX_APP_ID_KEY;
         static const std::string MAX_ZONE_ID_KEY;
         static const std::string MAX_SERVLET_ID_KEY;
         static const std::string MAX_INSTANCE_ID_KEY;

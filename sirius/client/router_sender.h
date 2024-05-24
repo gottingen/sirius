@@ -169,6 +169,21 @@ namespace sirius::client {
         collie::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                  sirius::proto::DiscoveryQueryResponse &response) override;
 
+        collie::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                        sirius::proto::ServletNamingResponse &response, int retry_time) override;
+
+        collie::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                        sirius::proto::ServletNamingResponse &response) override;
+
+        collie::Status discovery_register(const sirius::proto::ServletInfo &info,
+                                          sirius::proto::DiscoveryRegisterResponse &response, int retry_time = kRetryTimes);
+
+        collie::Status discovery_update(const sirius::proto::ServletInfo &info,
+                                          sirius::proto::DiscoveryRegisterResponse &response, int retry_time = kRetryTimes);
+
+        collie::Status discovery_cancel(const sirius::proto::ServletInfo &info,
+                                        sirius::proto::DiscoveryRegisterResponse &response, int retry_time = kRetryTimes);
+
     private:
         std::mutex _server_mutex;
         bool _verbose{false};

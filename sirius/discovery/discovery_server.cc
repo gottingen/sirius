@@ -26,8 +26,7 @@
 #include <sirius/discovery/config_manager.h>
 #include <sirius/discovery/query_config_manager.h>
 #include <sirius/discovery/query_privilege_manager.h>
-#include <sirius/discovery/query_namespace_manager.h>
-#include <sirius/discovery/query_instance_manager.h>
+#include <sirius/discovery/query_app_manager.h>
 #include <sirius/discovery/query_zone_manager.h>
 #include <sirius/discovery/query_servlet_manager.h>
 #include <sirius/discovery/discovery_rocksdb.h>
@@ -143,9 +142,6 @@ namespace sirius::discovery {
             || request->op_type() == sirius::proto::OP_CREATE_SERVLET
             || request->op_type() == sirius::proto::OP_DROP_SERVLET
             || request->op_type() == sirius::proto::OP_MODIFY_SERVLET
-            || request->op_type() == sirius::proto::OP_ADD_INSTANCE
-            || request->op_type() == sirius::proto::OP_DROP_INSTANCE
-            || request->op_type() == sirius::proto::OP_UPDATE_INSTANCE
             || request->op_type() == sirius::proto::OP_MODIFY_RESOURCE_TAG
             || request->op_type() == sirius::proto::OP_UPDATE_MAIN_LOGICAL_ROOM) {
             SchemaManager::get_instance()->process_schema_info(controller,
@@ -202,8 +198,8 @@ namespace sirius::discovery {
                 QueryPrivilegeManager::get_instance()->get_user_info(request, response);
                 break;
             }
-            case sirius::proto::QUERY_NAMESPACE: {
-                QueryNamespaceManager::get_instance()->get_namespace_info(request, response);
+            case sirius::proto::QUERY_APP: {
+                QueryAppManager::get_instance()->get_app_info(request, response);
                 break;
             }
             case sirius::proto::QUERY_ZONE: {
@@ -231,14 +227,6 @@ namespace sirius::discovery {
                 QueryPrivilegeManager::get_instance()->get_flatten_servlet_privilege(request, response);
                 break;
             }
-            case sirius::proto::QUERY_INSTANCE: {
-                QueryInstanceManager::get_instance()->query_instance(request, response);
-                break;
-            }
-            case sirius::proto::QUERY_INSTANCE_FLATTEN: {
-                QueryInstanceManager::get_instance()->query_instance_flatten(request, response);
-                break;
-            }
 
             default: {
                 SS_LOG(WARN) << "invalid op_type, request: " << request->ShortDebugString() << ", log_id: " << log_id;
@@ -249,6 +237,24 @@ namespace sirius::discovery {
         SS_LOG(INFO) << "query op_type_name:" << sirius::proto::QueryOpType_Name(request->op_type())
                      << ", time_cost:" << time_cost.get_time() << ", log_id:" << log_id
                      << ", ip:" << remote_side << ", request: " << request->ShortDebugString();
+    }
+
+    void DiscoveryServer::naming(google::protobuf::RpcController *controller,
+                const sirius::proto::ServletNamingRequest *request,
+                sirius::proto::ServletNamingResponse *response,
+                google::protobuf::Closure *done) {
+        melon::ClosureGuard done_guard(done);
+        melon::Controller *cntl =
+                static_cast<melon::Controller *>(controller);
+        const auto &remote_side_tmp = mutil::endpoint2str(cntl->remote_side());
+        //const char *remote_side = remote_side_tmp.c_str();
+        uint64_t log_id = 0;
+        if (cntl->has_log_id()) {
+            log_id = cntl->log_id();
+        }
+        RETURN_IF_NOT_INIT(_init_success, response, log_id);
+        auto * query_app_manager = QueryAppManager::get_instance();
+        query_app_manager->naming(request, response);
     }
 
     void DiscoveryServer::raft_control(google::protobuf::RpcController *controller,

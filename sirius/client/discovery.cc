@@ -454,12 +454,12 @@ namespace sirius::client {
         return collie::Status::ok_status();
     }
 
-    collie::Status DiscoveryClient::create_namespace(sirius::proto::NameSpaceInfo &info, int *retry_time) {
+    collie::Status DiscoveryClient::create_app(sirius::proto::AppInfo &info, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_NAMESPACE);
 
-        sirius::proto::NameSpaceInfo *ns_req = request.mutable_namespace_info();
+        sirius::proto::AppInfo *ns_req = request.mutable_app_info();
         *ns_req = info;
         auto rs = discovery_manager(request, response, retry_time);
         if (!rs.ok()) {
@@ -468,17 +468,17 @@ namespace sirius::client {
         return collie::Status::ok_status();
     }
 
-    collie::Status DiscoveryClient::create_namespace(const std::string &ns, int64_t quota, int *retry_time) {
+    collie::Status DiscoveryClient::create_app(const std::string &ns, int64_t quota, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_NAMESPACE);
 
-        sirius::proto::NameSpaceInfo *ns_req = request.mutable_namespace_info();
+        sirius::proto::AppInfo *ns_req = request.mutable_app_info();
         auto rs = check_valid_name_type(ns);
         if (!rs.ok()) {
             return rs;
         }
-        ns_req->set_namespace_name(ns);
+        ns_req->set_app_name(ns);
         if (quota != 0) {
             ns_req->set_quota(quota);
         }
@@ -493,7 +493,7 @@ namespace sirius::client {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_NAMESPACE);
-        auto rs = Loader::load_proto(json_str, *request.mutable_namespace_info());
+        auto rs = Loader::load_proto(json_str, *request.mutable_app_info());
         if (!rs.ok()) {
             return rs;
         }
@@ -508,7 +508,7 @@ namespace sirius::client {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_NAMESPACE);
-        auto rs = Loader::load_proto_from_file(path, *request.mutable_namespace_info());
+        auto rs = Loader::load_proto_from_file(path, *request.mutable_app_info());
         if (!rs.ok()) {
             return rs;
         }
@@ -524,12 +524,12 @@ namespace sirius::client {
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_DROP_NAMESPACE);
 
-        sirius::proto::NameSpaceInfo *ns_req = request.mutable_namespace_info();
+        sirius::proto::AppInfo *ns_req = request.mutable_app_info();
         auto rs = check_valid_name_type(ns);
         if (!rs.ok()) {
             return rs;
         }
-        ns_req->set_namespace_name(ns);
+        ns_req->set_app_name(ns);
         rs = discovery_manager(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
@@ -537,11 +537,11 @@ namespace sirius::client {
         return collie::Status::ok_status();
     }
 
-    collie::Status DiscoveryClient::modify_namespace(sirius::proto::NameSpaceInfo &ns_info, int *retry_time) {
+    collie::Status DiscoveryClient::modify_app(sirius::proto::AppInfo &ns_info, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_MODIFY_NAMESPACE);
-        *request.mutable_namespace_info() = ns_info;
+        *request.mutable_app_info() = ns_info;
         auto rs = discovery_manager(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
@@ -553,7 +553,7 @@ namespace sirius::client {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_MODIFY_NAMESPACE);
-        auto rs = Loader::load_proto(json_str, *request.mutable_namespace_info());
+        auto rs = Loader::load_proto(json_str, *request.mutable_app_info());
         if (!rs.ok()) {
             return rs;
         }
@@ -568,7 +568,7 @@ namespace sirius::client {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_MODIFY_NAMESPACE);
-        auto rs = Loader::load_proto_from_file(path, *request.mutable_namespace_info());
+        auto rs = Loader::load_proto_from_file(path, *request.mutable_app_info());
         if (!rs.ok()) {
             return rs;
         }
@@ -580,21 +580,21 @@ namespace sirius::client {
     }
 
     collie::Status DiscoveryClient::list_namespace(std::vector<std::string> &ns_list, int *retry_time) {
-        std::vector<sirius::proto::NameSpaceInfo> ns_proto_list;
+        std::vector<sirius::proto::AppInfo> ns_proto_list;
         auto rs = list_namespace(ns_proto_list, retry_time);
         if (!rs.ok()) {
             return rs;
         }
         for (auto &ns: ns_proto_list) {
-            ns_list.push_back(ns.namespace_name());
+            ns_list.push_back(ns.app_name());
         }
         return collie::Status::ok_status();
     }
 
-    collie::Status DiscoveryClient::list_namespace(std::vector<sirius::proto::NameSpaceInfo> &ns_list, int *retry_time) {
+    collie::Status DiscoveryClient::list_namespace(std::vector<sirius::proto::AppInfo> &ns_list, int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
         sirius::proto::DiscoveryQueryResponse response;
-        request.set_op_type(sirius::proto::QUERY_NAMESPACE);
+        request.set_op_type(sirius::proto::QUERY_APP);
         auto rs = discovery_query(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
@@ -602,14 +602,14 @@ namespace sirius::client {
         if (response.errcode() != sirius::proto::SUCCESS) {
             return collie::Status::unavailable(response.errmsg());
         }
-        for (auto &ns: response.namespace_infos()) {
+        for (auto &ns: response.app_infos()) {
             ns_list.push_back(ns);
         }
         return collie::Status::ok_status();
     }
 
     collie::Status DiscoveryClient::list_namespace_to_json(std::vector<std::string> &ns_list, int *retry_time) {
-        std::vector<sirius::proto::NameSpaceInfo> ns_proto_list;
+        std::vector<sirius::proto::AppInfo> ns_proto_list;
         auto rs = list_namespace(ns_proto_list, retry_time);
         if (!rs.ok()) {
             return rs;
@@ -648,14 +648,14 @@ namespace sirius::client {
     }
 
     collie::Status
-    DiscoveryClient::get_namespace(const std::string &ns_name, sirius::proto::NameSpaceInfo &ns_pb, int *retry_time) {
+    DiscoveryClient::get_namespace(const std::string &ns_name, sirius::proto::AppInfo &ns_pb, int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
         sirius::proto::DiscoveryQueryResponse response;
-        request.set_op_type(sirius::proto::QUERY_NAMESPACE);
+        request.set_op_type(sirius::proto::QUERY_APP);
         if (ns_name.empty()) {
-            return collie::Status::invalid_argument("namespace name empty");
+            return collie::Status::invalid_argument("app name empty");
         }
-        request.set_namespace_name(ns_name);
+        request.set_app_name(ns_name);
         auto rs = discovery_query(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
@@ -663,15 +663,15 @@ namespace sirius::client {
         if (response.errcode() != sirius::proto::SUCCESS) {
             return collie::Status::unavailable(response.errmsg());
         }
-        if (response.namespace_infos_size() != 1) {
-            return collie::Status::unavailable("bad proto format for namespace info size {}", response.namespace_infos_size());
+        if (response.app_infos_size() != 1) {
+            return collie::Status::unavailable("bad proto format for app info size {}", response.app_infos_size());
         }
-        ns_pb = response.namespace_infos(0);
+        ns_pb = response.app_infos(0);
         return collie::Status::ok_status();
     }
 
     collie::Status DiscoveryClient::get_namespace_json(const std::string &ns_name, std::string &json_str, int *retry_time) {
-        sirius::proto::NameSpaceInfo ns_pb;
+        sirius::proto::AppInfo ns_pb;
         auto rs = get_namespace(ns_name, ns_pb, retry_time);
         if (!rs.ok()) {
             return rs;
@@ -681,7 +681,7 @@ namespace sirius::client {
 
     collie::Status
     DiscoveryClient::save_namespace_json(const std::string &ns_name, const std::string &json_path, int *retry_time) {
-        sirius::proto::NameSpaceInfo ns_pb;
+        sirius::proto::AppInfo ns_pb;
         auto rs = get_namespace(ns_name, ns_pb, retry_time);
         if (!rs.ok()) {
             return rs;
@@ -707,7 +707,7 @@ namespace sirius::client {
     collie::Status
     DiscoveryClient::create_zone(const std::string &ns, const std::string &zone, int64_t quota, int *retry_time) {
         sirius::proto::ZoneInfo zone_pb;
-        zone_pb.set_namespace_name(ns);
+        zone_pb.set_app_name(ns);
         zone_pb.set_zone(zone);
         if (quota != 0) {
             zone_pb.set_quota(quota);
@@ -751,7 +751,7 @@ namespace sirius::client {
         request.set_op_type(sirius::proto::OP_DROP_ZONE);
 
         auto *zone_req = request.mutable_zone_info();
-        zone_req->set_namespace_name(ns);
+        zone_req->set_app_name(ns);
         zone_req->set_zone(zone);
         auto rs = discovery_manager(request, response, retry_time);
         if (!rs.ok()) {
@@ -829,7 +829,7 @@ namespace sirius::client {
             return rs;
         }
         for (auto &zone: all_zone_list) {
-            if (zone.namespace_name() == ns) {
+            if (zone.app_name() == ns) {
                 zone_list.push_back(zone);
             }
         }
@@ -843,7 +843,7 @@ namespace sirius::client {
             return rs;
         }
         for (auto &zone: zone_proto_list) {
-            zone_list.push_back(collie::format("{},{}", zone.namespace_name(), zone.zone()));
+            zone_list.push_back(collie::format("{},{}", zone.app_name(), zone.zone()));
         }
         return collie::Status::ok_status();
     }
@@ -855,7 +855,7 @@ namespace sirius::client {
             return rs;
         }
         for (auto &zone: zone_proto_list) {
-            zone_list.push_back(collie::format("{},{}", zone.namespace_name(), zone.zone()));
+            zone_list.push_back(collie::format("{},{}", zone.app_name(), zone.zone()));
         }
         return collie::Status::ok_status();
     }
@@ -947,9 +947,9 @@ namespace sirius::client {
         sirius::proto::DiscoveryQueryResponse response;
         request.set_op_type(sirius::proto::QUERY_ZONE);
         if (ns_name.empty()) {
-            return collie::Status::invalid_argument("namespace name empty");
+            return collie::Status::invalid_argument("app name empty");
         }
-        request.set_namespace_name(ns_name);
+        request.set_app_name(ns_name);
         request.set_zone(zone_name);
         auto rs = discovery_query(request, response, retry_time);
         if (!rs.ok()) {
@@ -1005,7 +1005,7 @@ namespace sirius::client {
     DiscoveryClient::create_servlet(const std::string &ns, const std::string &zone, const std::string &servlet,
                                int *retry_time) {
         sirius::proto::ServletInfo servlet_pb;
-        servlet_pb.set_namespace_name(ns);
+        servlet_pb.set_app_name(ns);
         servlet_pb.set_zone(zone);
         servlet_pb.set_servlet_name(servlet);
         return create_servlet(servlet_pb, retry_time);
@@ -1036,7 +1036,7 @@ namespace sirius::client {
         request.set_op_type(sirius::proto::OP_DROP_SERVLET);
 
         auto *servlet_req = request.mutable_servlet_info();
-        servlet_req->set_namespace_name(ns);
+        servlet_req->set_app_name(ns);
         servlet_req->set_zone(zone);
         servlet_req->set_servlet_name(servlet);
         auto rs = discovery_manager(request, response, retry_time);
@@ -1104,7 +1104,7 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: all_servlet_list) {
-            if (servlet.namespace_name() == ns) {
+            if (servlet.app_name() == ns) {
                 servlet_list.push_back(servlet);
             }
         }
@@ -1120,7 +1120,7 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: all_servlet_list) {
-            if (servlet.namespace_name() == ns && servlet.zone() == zone) {
+            if (servlet.app_name() == ns && servlet.zone() == zone) {
                 servlet_list.push_back(servlet);
             }
         }
@@ -1147,7 +1147,7 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: all_servlet_list) {
-            if (servlet.namespace_name() == ns) {
+            if (servlet.app_name() == ns) {
                 servlet_list.push_back(servlet.servlet_name());
             }
         }
@@ -1163,7 +1163,7 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: all_servlet_list) {
-            if (servlet.namespace_name() == ns && servlet.zone() == zone) {
+            if (servlet.app_name() == ns && servlet.zone() == zone) {
                 servlet_list.push_back(servlet.servlet_name());
             }
         }
@@ -1195,7 +1195,7 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: servlet_proto_list) {
-            if (servlet.namespace_name() == ns) {
+            if (servlet.app_name() == ns) {
                 std::string json_content;
                 auto r = Dumper::dump_proto(servlet, json_content);
                 if (!r.ok()) {
@@ -1215,7 +1215,7 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: servlet_proto_list) {
-            if (servlet.namespace_name() == ns && servlet.zone() == zone) {
+            if (servlet.app_name() == ns && servlet.zone() == zone) {
                 std::string json_content;
                 auto r = Dumper::dump_proto(servlet, json_content);
                 if (!r.ok()) {

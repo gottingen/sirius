@@ -78,6 +78,31 @@ namespace sirius::client {
         return send_request("discovery_query", request, response, _retry_times);
     }
 
+    collie::Status RouterSender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                    sirius::proto::ServletNamingResponse &response, int retry_time) {
+        return send_request("naming", request, response, retry_time);
+    }
+
+    collie::Status RouterSender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                    sirius::proto::ServletNamingResponse &response) {
+        return send_request("naming", request, response, _retry_times);
+    }
+
+    collie::Status RouterSender::discovery_register(const sirius::proto::ServletInfo &info,
+                                      sirius::proto::DiscoveryRegisterResponse &response, int retry_time) {
+        return send_request("registry", info, response, retry_time);
+    }
+
+    collie::Status RouterSender::discovery_update(const sirius::proto::ServletInfo &info,
+                                    sirius::proto::DiscoveryRegisterResponse &response, int retry_time) {
+        return send_request("update", info, response, retry_time);
+    }
+
+    collie::Status RouterSender::discovery_cancel(const sirius::proto::ServletInfo &info,
+                                    sirius::proto::DiscoveryRegisterResponse &response, int retry_time) {
+        return send_request("cancel", info, response, retry_time);
+    }
+
 
 }  // sirius::client
 

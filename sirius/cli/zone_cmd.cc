@@ -36,27 +36,27 @@ namespace sirius::cli {
         //ns->require_subcommand();
         // add sub cmd
         auto cdb = ns->add_subcommand("create", " create zone");
-        cdb->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
+        cdb->add_option("-n,--app", opt->app_name, "app name")->required();
         cdb->add_option("-z,--zone", opt->zone_name, "zone name")->required();
-        cdb->add_option("-q, --quota", opt->namespace_quota, "new namespace quota");
+        cdb->add_option("-q, --quota", opt->namespace_quota, "new app quota");
         cdb->callback([]() { run_zone_create_cmd(); });
 
         auto rdb = ns->add_subcommand("remove", " remove zone");
-        rdb->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
+        rdb->add_option("-n,--app", opt->app_name, "app name")->required();
         rdb->add_option("-z,--zone", opt->zone_name, "zone name")->required();
         rdb->callback([]() { run_zone_remove_cmd(); });
 
         auto mdb = ns->add_subcommand("modify", " modify zone");
-        mdb->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
+        mdb->add_option("-n,--app", opt->app_name, "app name")->required();
         mdb->add_option("-z,--zone", opt->zone_name, "zone name")->required();
-        mdb->add_option("-q, --quota", opt->namespace_quota, "new namespace quota");
+        mdb->add_option("-q, --quota", opt->namespace_quota, "new app quota");
         mdb->callback([]() { run_zone_modify_cmd(); });
 
         auto lns = ns->add_subcommand("list", " list namespaces");
         lns->callback([]() { run_zone_list_cmd(); });
 
         auto idb = ns->add_subcommand("info", " get zone info");
-        idb->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
+        idb->add_option("-n,--app", opt->app_name, "app name")->required();
         idb->add_option("-z,--zone", opt->zone_name, "zone name")->required();
         idb->callback([]() { run_zone_info_cmd(); });
 
@@ -73,7 +73,7 @@ namespace sirius::cli {
     }
 
     void run_zone_create_cmd() {
-        collie::println(collie::Color::green, "start to create namespace: {}", ZoneOptionContext::get_instance()->namespace_name);
+        collie::println(collie::Color::green, "start to create zone: {}", ZoneOptionContext::get_instance()->app_name);
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         ScopeShower ss;
@@ -86,7 +86,7 @@ namespace sirius::cli {
         ss.add_table("result", std::move(table));
     }
     void run_zone_remove_cmd() {
-        collie::println(collie::Color::green, "start to remove namespace: {}", ZoneOptionContext::get_instance()->namespace_name);
+        collie::println(collie::Color::green, "start to remove zone: {}", ZoneOptionContext::get_instance()->app_name);
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         ScopeShower ss;
@@ -99,7 +99,7 @@ namespace sirius::cli {
         ss.add_table("result", std::move(table));
     }
     void run_zone_modify_cmd() {
-        collie::println(collie::Color::green, "start to modify namespace: {}", ZoneOptionContext::get_instance()->namespace_name);
+        collie::println(collie::Color::green, "start to modify zone: {}", ZoneOptionContext::get_instance()->app_name);
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         ScopeShower ss;
@@ -153,14 +153,12 @@ namespace sirius::cli {
     collie::table::Table show_discovery_query_zone_response(const sirius::proto::DiscoveryQueryResponse &res) {
         auto &zones = res.zone_infos();
         collie::table::Table summary;
-        summary.add_row({"namespace", "zone", "id", "version", "quota", "replica number", "resource tag",
-                                "region split lines"});
+        summary.add_row({"app", "zone", "id", "version", "quota"});
         for (auto &zone: zones) {
             summary.add_row(
-                    collie::table::Table::Row_t{zone.namespace_name(), zone.zone(), collie::format("{}", zone.zone_id()),
+                    collie::table::Table::Row_t{zone.app_name(), zone.zone(), collie::format("{}", zone.zone_id()),
                                         collie::format("{}", zone.version()),
-                                        collie::format("{}", zone.quota()), collie::format("{}", zone.replica_num()), zone.resource_tag(),
-                                        collie::format("{}", zone.region_split_lines())});
+                                        collie::format("{}", zone.quota())});
             auto last = summary.size() - 1;
             summary[last].format().font_color(collie::Color::green);
         }
@@ -170,7 +168,7 @@ namespace sirius::cli {
     collie::Status make_zone_create(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::ZoneInfo *zone_req = req->mutable_zone_info();
         req->set_op_type(sirius::proto::OP_CREATE_ZONE);
-        auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->namespace_name);
+        auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
@@ -178,7 +176,7 @@ namespace sirius::cli {
         if (!rs.ok()) {
             return rs;
         }
-        zone_req->set_namespace_name(ZoneOptionContext::get_instance()->namespace_name);
+        zone_req->set_app_name(ZoneOptionContext::get_instance()->app_name);
         zone_req->set_zone(ZoneOptionContext::get_instance()->zone_name);
         return collie::Status::ok_status();
     }
@@ -186,7 +184,7 @@ namespace sirius::cli {
     collie::Status make_zone_remove(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::ZoneInfo *zone_req = req->mutable_zone_info();
         req->set_op_type(sirius::proto::OP_DROP_ZONE);
-        auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->namespace_name);
+        auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
@@ -194,7 +192,7 @@ namespace sirius::cli {
         if (!rs.ok()) {
             return rs;
         }
-        zone_req->set_namespace_name(ZoneOptionContext::get_instance()->namespace_name);
+        zone_req->set_app_name(ZoneOptionContext::get_instance()->app_name);
         zone_req->set_zone(ZoneOptionContext::get_instance()->zone_name);
         return collie::Status::ok_status();
     }
@@ -202,7 +200,7 @@ namespace sirius::cli {
     collie::Status make_zone_modify(sirius::proto::DiscoveryManagerRequest *req) {
         req->set_op_type(sirius::proto::OP_MODIFY_ZONE);
         sirius::proto::ZoneInfo *zone_req = req->mutable_zone_info();
-        auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->namespace_name);
+        auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
@@ -210,7 +208,7 @@ namespace sirius::cli {
         if (!rs.ok()) {
             return rs;
         }
-        zone_req->set_namespace_name(ZoneOptionContext::get_instance()->namespace_name);
+        zone_req->set_app_name(ZoneOptionContext::get_instance()->app_name);
         zone_req->set_zone(ZoneOptionContext::get_instance()->zone_name);
         return collie::Status::ok_status();
     }
@@ -222,7 +220,7 @@ namespace sirius::cli {
 
     collie::Status make_zone_info(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_ZONE);
-        auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->namespace_name);
+        auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
@@ -230,7 +228,7 @@ namespace sirius::cli {
         if (!rs.ok()) {
             return rs;
         }
-        req->set_namespace_name(ZoneOptionContext::get_instance()->namespace_name);
+        req->set_app_name(ZoneOptionContext::get_instance()->app_name);
         req->set_zone(ZoneOptionContext::get_instance()->zone_name);
         return collie::Status::ok_status();
     }

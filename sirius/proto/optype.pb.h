@@ -50,9 +50,6 @@ namespace proto {
 
 enum OpType : int {
   OP_NONE = 0,
-  OP_ADD_INSTANCE = 3,
-  OP_DROP_INSTANCE = 6,
-  OP_UPDATE_INSTANCE = 7,
   OP_CREATE_USER = 9,
   OP_ADD_PRIVILEGE = 10,
   OP_DROP_USER = 11,
@@ -79,9 +76,6 @@ enum OpType : int {
   OP_CREATE_SERVLET = 32,
   OP_DROP_SERVLET = 33,
   OP_MODIFY_SERVLET = 34,
-  OP_ADD_SERVLET_INSTANCE = 35,
-  OP_RENEW_SERVLET_INSTANCE = 36,
-  OP_DROP_SERVLET_INSTANCE = 37,
   OP_CREATE_CONFIG = 38,
   OP_REMOVE_CONFIG = 39
 };
@@ -105,22 +99,18 @@ inline bool OpType_Parse(
     OpType_descriptor(), name, value);
 }
 enum QueryOpType : int {
-  QUERY_INSTANCE = 3,
   QUERY_USER_PRIVILEGE = 4,
-  QUERY_NAMESPACE = 5,
-  QUERY_INSTANCE_FLATTEN = 6,
+  QUERY_APP = 5,
   QUERY_PRIVILEGE_FLATTEN = 7,
   QUERY_INSTANCE_PARAM = 11,
   QUERY_ZONE = 12,
   QUERY_SERVLET = 13,
-  QUERY_SERVLET_INSTANCE = 15,
-  QUERY_SERVLET_INSTANCE_FETCH = 16,
   QUERY_GET_CONFIG = 17,
   QUERY_LIST_CONFIG_VERSION = 18,
   QUERY_LIST_CONFIG = 19
 };
 bool QueryOpType_IsValid(int value);
-constexpr QueryOpType QueryOpType_MIN = QUERY_INSTANCE;
+constexpr QueryOpType QueryOpType_MIN = QUERY_USER_PRIVILEGE;
 constexpr QueryOpType QueryOpType_MAX = QUERY_LIST_CONFIG;
 constexpr int QueryOpType_ARRAYSIZE = QueryOpType_MAX + 1;
 

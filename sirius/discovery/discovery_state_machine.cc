@@ -24,9 +24,8 @@
 #include <sirius/discovery/privilege_manager.h>
 #include <sirius/discovery/schema_manager.h>
 #include <sirius/discovery/config_manager.h>
-#include <sirius/discovery/namespace_manager.h>
+#include <sirius/discovery/app_manager.h>
 #include <sirius/discovery/zone_manager.h>
-#include <sirius/discovery/instance_manager.h>
 #include <sirius/discovery/servlet_manager.h>
 #include <sirius/storage/rocks_storage.h>
 #include <sirius/discovery/query_privilege_manager.h>
@@ -79,15 +78,15 @@ namespace sirius::discovery {
                     break;
                 }
                 case sirius::proto::OP_CREATE_NAMESPACE: {
-                    NamespaceManager::get_instance()->create_namespace(request, done);
+                    AppManager::get_instance()->create_app(request, done);
                     break;
                 }
                 case sirius::proto::OP_DROP_NAMESPACE: {
-                    NamespaceManager::get_instance()->drop_namespace(request, done);
+                    AppManager::get_instance()->drop_app(request, done);
                     break;
                 }
                 case sirius::proto::OP_MODIFY_NAMESPACE: {
-                    NamespaceManager::get_instance()->modify_namespace(request, done);
+                    AppManager::get_instance()->modify_app(request, done);
                     break;
                 }
                 case sirius::proto::OP_CREATE_ZONE: {
@@ -122,18 +121,6 @@ namespace sirius::discovery {
                     ConfigManager::get_instance()->remove_config(request, done);
                     break;
                 }
-                case sirius::proto::OP_ADD_INSTANCE: {
-                    InstanceManager::get_instance()->add_instance(request, done);
-                    break;
-                }
-                case sirius::proto::OP_DROP_INSTANCE: {
-                    InstanceManager::get_instance()->drop_instance(request, done);
-                    break;
-                }
-                case sirius::proto::OP_UPDATE_INSTANCE: {
-                    InstanceManager::get_instance()->update_instance(request, done);
-                    break;
-                }
                 default: {
                     SS_LOG(ERROR) << "unknown request type, type:" << request.op_type();
                     IF_DONE_SET_RESPONSE(done, sirius::proto::UNKNOWN_REQ_TYPE, "unknown request type");
@@ -148,7 +135,7 @@ namespace sirius::discovery {
 
     void DiscoveryStateMachine::on_snapshot_save(melon::raft::SnapshotWriter *writer, melon::raft::Closure *done) {
         SS_LOG(WARN) << "start on snapshot save";
-        SS_LOG(WARN) << "max_namespace_id:" << NamespaceManager::get_instance()->get_max_namespace_id()
+        SS_LOG(WARN) << "max_app_id:" << AppManager::get_instance()->get_max_app_id()
                      << ", max_zone_id:" << ZoneManager::get_instance()->get_max_zone_id()<< " when on snapshot save";
         //创建snapshot
         rocksdb::ReadOptions read_options;
@@ -264,11 +251,6 @@ namespace sirius::discovery {
                 ret = ConfigManager::get_instance()->load_snapshot();
                 if (ret != 0) {
                     SS_LOG(ERROR) << "ConfigManager load snapshot fail";
-                    return -1;
-                }
-                ret = InstanceManager::get_instance()->load_snapshot();
-                if (ret != 0) {
-                    SS_LOG(ERROR)<< "Instance load snapshot fail";
                     return -1;
                 }
             }

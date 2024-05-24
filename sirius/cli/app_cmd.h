@@ -26,18 +26,18 @@ namespace sirius::cli {
     // We could manually make a few variables and use shared pointers for each; this
     // is just done this way to be nicely organized
 
-    struct NameSpaceOptionContext {
-        static NameSpaceOptionContext *get_instance() {
-            static NameSpaceOptionContext ins;
+    struct AppOptionContext {
+        static AppOptionContext *get_instance() {
+            static AppOptionContext ins;
             return &ins;
         }
         // for namespace
-        std::string namespace_name;
-        int64_t     namespace_quota;
+        std::string app_name;
+        int64_t     app_quota;
     };
 
     // Function declarations.
-    void setup_namespace_cmd(collie::App &app);
+    void setup_app_cmd(collie::App &app);
 
     void run_namespace_cmd(collie::App *app);
 

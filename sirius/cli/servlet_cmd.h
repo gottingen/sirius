@@ -29,8 +29,8 @@ namespace sirius::cli {
             return &ins;
         }
         // for namespace
-        std::string namespace_name;
-        int64_t     namespace_quota;
+        std::string app_name;
+        int64_t     app_quota;
         std::string servlet_name;
         std::string zone_name;
     };

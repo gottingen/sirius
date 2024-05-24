@@ -16,27 +16,29 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-
 #pragma once
 
-#include <sirius/discovery/namespace_manager.h>
+#include <collie/utility/status.h>
+#include <sirius/proto/discovery.interface.pb.h>
+#include <sirius/client/router_sender.h>
 
-namespace sirius::discovery {
-    class QueryNamespaceManager {
+namespace sirius::client {
+
+    class Naming {
     public:
-        ~QueryNamespaceManager() = default;
+        Naming() = default;
+        ~Naming() = default;
 
-        static QueryNamespaceManager *get_instance() {
-            static QueryNamespaceManager instance;
-            return &instance;
-        }
+        collie::Status initialize(const std::string &servers);
 
-        ///
-        /// \param request
-        /// \param response
-        void get_namespace_info(const sirius::proto::DiscoveryQueryRequest *request, sirius::proto::DiscoveryQueryResponse *response);
+        collie::Status register_server(const sirius::proto::ServletInfo &info);
 
+        collie::Status update(const sirius::proto::ServletInfo &info);
+
+        collie::Status get_servers(const sirius::proto::ServletNamingRequest &request, sirius::proto::ServletNamingResponse &response);
+
+        collie::Status cancel(const sirius::proto::ServletInfo &info);
     private:
-        QueryNamespaceManager() {}
+        std::unique_ptr<RouterSender> _router_sender;
     };
-} // namespace sirius::discovery
+}  // namespace sirius::client

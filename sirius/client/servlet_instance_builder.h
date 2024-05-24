@@ -49,7 +49,7 @@ namespace sirius::client {
     public:
         ServletInstanceBuilder() = default;
 
-        explicit ServletInstanceBuilder(sirius::proto::ServletInstance *ins);
+        explicit ServletInstanceBuilder(sirius::proto::ServletInfo *ins);
 
         ~ServletInstanceBuilder() = default;
 
@@ -59,7 +59,7 @@ namespace sirius::client {
          *
          * @param ins the ConfigInfo object to build
          */
-        void set(sirius::proto::ServletInstance *ins);
+        void set(sirius::proto::ServletInfo *ins);
 
         /**
          *
@@ -111,12 +111,6 @@ namespace sirius::client {
          */
         ServletInstanceBuilder &set_env(const std::string &env);
 
-        /**
-         *
-         * @param user [input] the user to set.
-         * @return the ServletInstanceBuilder.
-         */
-        ServletInstanceBuilder &set_user(const std::string &user);
 
         /**
          *
@@ -147,22 +141,9 @@ namespace sirius::client {
          */        
         ServletInstanceBuilder &set_status(const sirius::proto::Status &status);
 
-        /**
-         *
-         * @param weight [input] the weight to set.
-         * @return the ServletInstanceBuilder.
-         */
-        ServletInstanceBuilder &set_weight(int weight);
-
-        /**
-         *
-         * @param time [input] the time to set.
-         * @return the ServletInstanceBuilder.
-         */
-        ServletInstanceBuilder &set_time(int time);
 
     private:
-        sirius::proto::ServletInstance *_instance;
+        sirius::proto::ServletInfo *_instance;
     };
 }  // namespace sirius::client
 

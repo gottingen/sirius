@@ -65,5 +65,87 @@ namespace sirius::discovery {
         bth.run(rpc_discovery_func);
         bth.join();
     }
+    void RouterServiceImpl::registry(::google::protobuf::RpcController *controller,
+                  const ::sirius::proto::ServletInfo *request,
+                  ::sirius::proto::DiscoveryRegisterResponse *response,
+                  ::google::protobuf::Closure *done) {
+        auto rpc_discovery_func = [controller, request,response, done,this](){
+            melon::ClosureGuard done_guard(done);
+            ::sirius::proto::DiscoveryManagerRequest req;
+            ::sirius::proto::DiscoveryManagerResponse res;
+            req.mutable_servlet_info()->CopyFrom(*request);
+            req.set_op_type(sirius::proto::OP_CREATE_SERVLET);
+            auto ret = _manager_sender.discovery_manager(req, res, 2);
+            response->set_errcode(res.errcode());
+            response->set_errmsg(res.errmsg());
+            if(!ret.ok()) {
+                SS_LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
+            }
+        };
+        Fiber bth;
+        bth.run(rpc_discovery_func);
+        bth.join();
+    }
+
+    void RouterServiceImpl::update(::google::protobuf::RpcController *controller,
+                const ::sirius::proto::ServletInfo *request,
+                ::sirius::proto::DiscoveryRegisterResponse *response,
+                ::google::protobuf::Closure *done)  {
+        auto rpc_discovery_func = [controller, request,response, done,this](){
+            melon::ClosureGuard done_guard(done);
+            ::sirius::proto::DiscoveryManagerRequest req;
+            ::sirius::proto::DiscoveryManagerResponse res;
+            req.mutable_servlet_info()->CopyFrom(*request);
+            req.set_op_type(sirius::proto::OP_MODIFY_SERVLET);
+            auto ret = _manager_sender.discovery_manager(req, res, 2);
+            response->set_errcode(res.errcode());
+            response->set_errmsg(res.errmsg());
+            if(!ret.ok()) {
+                SS_LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
+            }
+        };
+        Fiber bth;
+        bth.run(rpc_discovery_func);
+        bth.join();
+    }
+
+    void RouterServiceImpl::cancel(::google::protobuf::RpcController *controller,
+                const ::sirius::proto::ServletInfo *request,
+                ::sirius::proto::DiscoveryRegisterResponse *response,
+                ::google::protobuf::Closure *done) {
+        auto rpc_discovery_func = [controller, request,response, done,this](){
+            melon::ClosureGuard done_guard(done);
+            ::sirius::proto::DiscoveryManagerRequest req;
+            ::sirius::proto::DiscoveryManagerResponse res;
+            req.mutable_servlet_info()->CopyFrom(*request);
+            req.set_op_type(sirius::proto::OP_DROP_SERVLET);
+            auto ret = _manager_sender.discovery_manager(req, res, 2);
+            response->set_errcode(res.errcode());
+            response->set_errmsg(res.errmsg());
+            if(!ret.ok()) {
+                SS_LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
+            }
+        };
+        Fiber bth;
+        bth.run(rpc_discovery_func);
+        bth.join();
+
+    }
+
+    void RouterServiceImpl::naming(google::protobuf::RpcController *controller,
+                const sirius::proto::ServletNamingRequest *request,
+                sirius::proto::ServletNamingResponse *response,
+                google::protobuf::Closure *done) {
+        auto rpc_discovery_func = [controller, request,response, done, this](){
+            melon::ClosureGuard done_guard(done);
+            auto ret = _query_sender.discovery_naming(*request, *response, 2);
+            if(!ret.ok()) {
+                SS_LOG(ERROR) << "rpc to discovery server:naming error:" << controller->ErrorText();
+            }
+        };
+        Fiber bth;
+        bth.run(rpc_discovery_func);
+        bth.join();
+    }
 
 }  // namespace sirius::discovery

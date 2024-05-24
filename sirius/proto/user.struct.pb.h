@@ -786,21 +786,21 @@ class UserPrivilege final :
   public:
 
   // required string namespace_name = 3;
-  bool has_namespace_name() const;
+  bool has_app_name() const;
   private:
-  bool _internal_has_namespace_name() const;
+  bool _internal_has_app_name() const;
   public:
-  void clear_namespace_name();
-  const std::string& namespace_name() const;
+  void clear_app_name();
+  const std::string& app_name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_namespace_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_namespace_name();
-  PROTOBUF_NODISCARD std::string* release_namespace_name();
+  void set_app_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_app_name();
+  PROTOBUF_NODISCARD std::string* release_app_name();
   void set_allocated_namespace_name(std::string* namespace_name);
   private:
-  const std::string& _internal_namespace_name() const;
+  const std::string& _internal_app_name() const;
   inline PROTOBUF_ALWAYS_INLINE void _internal_set_namespace_name(const std::string& value);
-  std::string* _internal_mutable_namespace_name();
+  std::string* _internal_mutable_app_name();
   public:
 
   // optional string resource_tag = 14;
@@ -845,11 +845,11 @@ class UserPrivilege final :
   bool _internal_has_namespace_id() const;
   public:
   void clear_namespace_id();
-  int64_t namespace_id() const;
-  void set_namespace_id(int64_t value);
+  int64_t app_id() const;
+  void set_app_id(int64_t value);
   private:
   int64_t _internal_namespace_id() const;
-  void _internal_set_namespace_id(int64_t value);
+  void _internal_set_app_id(int64_t value);
   public:
 
   // optional int64 version = 11;
@@ -1464,47 +1464,47 @@ inline void UserPrivilege::set_allocated_password(std::string* password) {
 }
 
 // required string namespace_name = 3;
-inline bool UserPrivilege::_internal_has_namespace_name() const {
+inline bool UserPrivilege::_internal_has_app_name() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
-inline bool UserPrivilege::has_namespace_name() const {
-  return _internal_has_namespace_name();
+inline bool UserPrivilege::has_app_name() const {
+  return _internal_has_app_name();
 }
-inline void UserPrivilege::clear_namespace_name() {
+inline void UserPrivilege::clear_app_name() {
   _impl_.namespace_name_.ClearToEmpty();
   _impl_._has_bits_[0] &= ~0x00000004u;
 }
-inline const std::string& UserPrivilege::namespace_name() const {
+inline const std::string& UserPrivilege::app_name() const {
   // @@protoc_insertion_point(field_get:sirius.proto.UserPrivilege.namespace_name)
-  return _internal_namespace_name();
+  return _internal_app_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void UserPrivilege::set_namespace_name(ArgT0&& arg0, ArgT... args) {
+void UserPrivilege::set_app_name(ArgT0&& arg0, ArgT... args) {
  _impl_._has_bits_[0] |= 0x00000004u;
  _impl_.namespace_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:sirius.proto.UserPrivilege.namespace_name)
 }
-inline std::string* UserPrivilege::mutable_namespace_name() {
-  std::string* _s = _internal_mutable_namespace_name();
+inline std::string* UserPrivilege::mutable_app_name() {
+  std::string* _s = _internal_mutable_app_name();
   // @@protoc_insertion_point(field_mutable:sirius.proto.UserPrivilege.namespace_name)
   return _s;
 }
-inline const std::string& UserPrivilege::_internal_namespace_name() const {
+inline const std::string& UserPrivilege::_internal_app_name() const {
   return _impl_.namespace_name_.Get();
 }
 inline void UserPrivilege::_internal_set_namespace_name(const std::string& value) {
   _impl_._has_bits_[0] |= 0x00000004u;
   _impl_.namespace_name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* UserPrivilege::_internal_mutable_namespace_name() {
+inline std::string* UserPrivilege::_internal_mutable_app_name() {
   _impl_._has_bits_[0] |= 0x00000004u;
   return _impl_.namespace_name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* UserPrivilege::release_namespace_name() {
+inline std::string* UserPrivilege::release_app_name() {
   // @@protoc_insertion_point(field_release:sirius.proto.UserPrivilege.namespace_name)
-  if (!_internal_has_namespace_name()) {
+  if (!_internal_has_app_name()) {
     return nullptr;
   }
   _impl_._has_bits_[0] &= ~0x00000004u;
@@ -1546,16 +1546,16 @@ inline void UserPrivilege::clear_namespace_id() {
 inline int64_t UserPrivilege::_internal_namespace_id() const {
   return _impl_.namespace_id_;
 }
-inline int64_t UserPrivilege::namespace_id() const {
+inline int64_t UserPrivilege::app_id() const {
   // @@protoc_insertion_point(field_get:sirius.proto.UserPrivilege.namespace_id)
   return _internal_namespace_id();
 }
-inline void UserPrivilege::_internal_set_namespace_id(int64_t value) {
+inline void UserPrivilege::_internal_set_app_id(int64_t value) {
   _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.namespace_id_ = value;
 }
-inline void UserPrivilege::set_namespace_id(int64_t value) {
-  _internal_set_namespace_id(value);
+inline void UserPrivilege::set_app_id(int64_t value) {
+  _internal_set_app_id(value);
   // @@protoc_insertion_point(field_set:sirius.proto.UserPrivilege.namespace_id)
 }
 

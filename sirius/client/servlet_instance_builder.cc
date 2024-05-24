@@ -27,11 +27,11 @@
 
 namespace sirius::client {
 
-    ServletInstanceBuilder::ServletInstanceBuilder(sirius::proto::ServletInstance *ins) :_instance(ins) {
+    ServletInstanceBuilder::ServletInstanceBuilder(sirius::proto::ServletInfo *ins) :_instance(ins) {
         _instance->Clear();
     }
 
-    void ServletInstanceBuilder::set(sirius::proto::ServletInstance *ins) {
+    void ServletInstanceBuilder::set(sirius::proto::ServletInfo *ins) {
         _instance = ins;
         _instance->Clear();
     }
@@ -42,11 +42,11 @@ namespace sirius::client {
             return rs;
         }
         /// check field
-        if (!_instance->has_namespace_name() || _instance->namespace_name().empty()) {
-            return collie::Status::data_loss("miss required field namespace_name");
+        if (!_instance->has_app_name() || _instance->app_name().empty()) {
+            return collie::Status::data_loss("miss required field app_name");
         }
 
-        if (!_instance->has_zone_name() || _instance->zone_name().empty()) {
+        if (!_instance->has_zone() || _instance->zone().empty()) {
             return collie::Status::data_loss("miss required field zone_name");
         }
 
@@ -84,13 +84,13 @@ namespace sirius::client {
         return build_from_json(content);
     }
 
-    ServletInstanceBuilder &ServletInstanceBuilder::set_namespace(const std::string &namespace_name) {
-        _instance->set_namespace_name(namespace_name);
+    ServletInstanceBuilder &ServletInstanceBuilder::set_namespace(const std::string &app_name) {
+        _instance->set_app_name(app_name);
         return *this;
     }
 
     ServletInstanceBuilder &ServletInstanceBuilder::set_zone(const std::string &zone) {
-        _instance->set_zone_name(zone);
+        _instance->set_zone(zone);
         return *this;
     }
 
@@ -106,11 +106,6 @@ namespace sirius::client {
 
     ServletInstanceBuilder &ServletInstanceBuilder::set_env(const std::string &env) {
         _instance->set_env(env);
-        return *this;
-    }
-
-    ServletInstanceBuilder &ServletInstanceBuilder::set_user(const std::string &user) {
-        _instance->set_user(user);
         return *this;
     }
 
@@ -138,14 +133,5 @@ namespace sirius::client {
         return *this;
     }
 
-    ServletInstanceBuilder &ServletInstanceBuilder::set_weight(int weight) {
-        _instance->set_weight(weight);
-        return *this;
-    }
-
-    ServletInstanceBuilder &ServletInstanceBuilder::set_time(int time) {
-        _instance->set_timestamp(time);
-        return *this;
-    }
 
 }  // namespace sirius::client

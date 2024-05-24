@@ -70,6 +70,12 @@ namespace sirius::client {
          */
         virtual collie::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                          sirius::proto::DiscoveryQueryResponse &response) = 0;
+
+        virtual collie::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                        sirius::proto::ServletNamingResponse &response, int retry_time)  = 0;
+
+        virtual collie::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                                sirius::proto::ServletNamingResponse &response)  = 0;
     };
 }  // namespace sirius::client
 

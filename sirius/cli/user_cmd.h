@@ -29,7 +29,7 @@ namespace sirius::cli {
             return &ins;
         }
         // for namespace
-        std::string namespace_name;
+        std::string app_name;
         std::string user_name;
         std::string user_passwd;
         std::vector<std::string> user_ips;

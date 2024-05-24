@@ -16,37 +16,29 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-//
-// Created by jeff on 23-11-29.
-//
 
 #pragma once
 
-#include <sirius/discovery/instance_manager.h>
+#include <sirius/discovery/app_manager.h>
 
 namespace sirius::discovery {
-
-    class QueryInstanceManager {
+    class QueryAppManager {
     public:
-        static QueryInstanceManager *get_instance() {
-            static QueryInstanceManager ins;
-            return &ins;
+        ~QueryAppManager() = default;
+
+        static QueryAppManager *get_instance() {
+            static QueryAppManager instance;
+            return &instance;
         }
 
-        ~QueryInstanceManager() = default;
-
+        void naming(const sirius::proto::ServletNamingRequest *request,
+                    sirius::proto::ServletNamingResponse *response);
         ///
         /// \param request
         /// \param response
-        void query_instance(const sirius::proto::DiscoveryQueryRequest *request, sirius::proto::DiscoveryQueryResponse *response);
+        void get_app_info(const sirius::proto::DiscoveryQueryRequest *request, sirius::proto::DiscoveryQueryResponse *response);
 
-        ///
-        /// \param request
-        /// \param response
-        void query_instance_flatten(const sirius::proto::DiscoveryQueryRequest *request, sirius::proto::DiscoveryQueryResponse *response);
-
-    public:
-        static void instance_info_to_query(const sirius::proto::ServletInstance &sinstance, sirius::proto::QueryInstance &ins);
+    private:
+        QueryAppManager() {}
     };
-}  // namespace sirius::discovery
-
+} // namespace sirius::discovery

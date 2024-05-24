@@ -30,15 +30,15 @@ namespace sirius::discovery {
                 *(response->add_zone_infos()) = zone_info.second;
             }
         } else {
-            std::string namespace_name = request->namespace_name();
-            std::string zone = namespace_name + "\001" + request->zone();
+            std::string app_name = request->app_name();
+            std::string zone = app_name + "\001" + request->zone();
             if (manager->_zone_id_map.find(zone) != manager->_zone_id_map.end()) {
                 int64_t id = manager->_zone_id_map[zone];
                 *(response->add_zone_infos()) = manager->_zone_info_map[id];
             } else {
                 response->set_errmsg("zone not exist");
                 response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
-                SS_LOG(ERROR) << "namespace: " << namespace_name << " zone: " << zone << " not exist";
+                SS_LOG(ERROR) << "namespace: " << app_name << " zone: " << zone << " not exist";
             }
         }
     }

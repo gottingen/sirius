@@ -175,6 +175,12 @@ namespace sirius::client {
         collie::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                  sirius::proto::DiscoveryQueryResponse &response) override;
 
+        collie::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                  sirius::proto::ServletNamingResponse &response, int retry_time) override;
+
+        collie::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                        sirius::proto::ServletNamingResponse &response) override;
+
         /**
          * @brief send_request is used to send a request to the meta server.
          * @param service_name [input] is the name of the service to send the request to.

@@ -48,6 +48,26 @@ namespace sirius::discovery {
                         ::sirius::proto::DiscoveryQueryResponse *response,
                         ::google::protobuf::Closure *done) override;
 
+        void registry(::google::protobuf::RpcController *controller,
+                   const ::sirius::proto::ServletInfo *request,
+                     ::sirius::proto::DiscoveryRegisterResponse *response,
+                        ::google::protobuf::Closure *done) override;
+
+        void update(::google::protobuf::RpcController *controller,
+                      const ::sirius::proto::ServletInfo *request,
+                      ::sirius::proto::DiscoveryRegisterResponse *response,
+                      ::google::protobuf::Closure *done) override;
+
+        void cancel(::google::protobuf::RpcController *controller,
+                    const ::sirius::proto::ServletInfo *request,
+                    ::sirius::proto::DiscoveryRegisterResponse *response,
+                    ::google::protobuf::Closure *done) override;
+
+        void naming(google::protobuf::RpcController *controller,
+                    const sirius::proto::ServletNamingRequest *request,
+                    sirius::proto::ServletNamingResponse *response,
+                    google::protobuf::Closure *done) override;
+
     private:
         bool _is_init;
         client::DiscoverySender _manager_sender;

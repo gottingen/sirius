@@ -81,6 +81,10 @@ class DiscoveryService : public ::PROTOBUF_NAMESPACE_ID::Service {
                        const ::sirius::proto::DiscoveryQueryRequest* request,
                        ::sirius::proto::DiscoveryQueryResponse* response,
                        ::google::protobuf::Closure* done);
+  virtual void naming(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sirius::proto::ServletNamingRequest* request,
+                       ::sirius::proto::ServletNamingResponse* response,
+                       ::google::protobuf::Closure* done);
   virtual void tso_service(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                        const ::sirius::proto::TsoRequest* request,
                        ::sirius::proto::TsoResponse* response,
@@ -126,6 +130,10 @@ class DiscoveryService_Stub : public DiscoveryService {
                        const ::sirius::proto::DiscoveryQueryRequest* request,
                        ::sirius::proto::DiscoveryQueryResponse* response,
                        ::google::protobuf::Closure* done);
+  void naming(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sirius::proto::ServletNamingRequest* request,
+                       ::sirius::proto::ServletNamingResponse* response,
+                       ::google::protobuf::Closure* done);
   void tso_service(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                        const ::sirius::proto::TsoRequest* request,
                        ::sirius::proto::TsoResponse* response,
@@ -167,6 +175,22 @@ class DiscoveryRouterService : public ::PROTOBUF_NAMESPACE_ID::Service {
   virtual void tso_service(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                        const ::sirius::proto::TsoRequest* request,
                        ::sirius::proto::TsoResponse* response,
+                       ::google::protobuf::Closure* done);
+  virtual void registry(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sirius::proto::ServletInfo* request,
+                       ::sirius::proto::DiscoveryRegisterResponse* response,
+                       ::google::protobuf::Closure* done);
+  virtual void update(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sirius::proto::ServletInfo* request,
+                       ::sirius::proto::DiscoveryRegisterResponse* response,
+                       ::google::protobuf::Closure* done);
+  virtual void cancel(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sirius::proto::ServletInfo* request,
+                       ::sirius::proto::DiscoveryRegisterResponse* response,
+                       ::google::protobuf::Closure* done);
+  virtual void naming(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sirius::proto::ServletNamingRequest* request,
+                       ::sirius::proto::ServletNamingResponse* response,
                        ::google::protobuf::Closure* done);
 
   // implements Service ----------------------------------------------
@@ -212,6 +236,22 @@ class DiscoveryRouterService_Stub : public DiscoveryRouterService {
   void tso_service(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                        const ::sirius::proto::TsoRequest* request,
                        ::sirius::proto::TsoResponse* response,
+                       ::google::protobuf::Closure* done);
+  void registry(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sirius::proto::ServletInfo* request,
+                       ::sirius::proto::DiscoveryRegisterResponse* response,
+                       ::google::protobuf::Closure* done);
+  void update(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sirius::proto::ServletInfo* request,
+                       ::sirius::proto::DiscoveryRegisterResponse* response,
+                       ::google::protobuf::Closure* done);
+  void cancel(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sirius::proto::ServletInfo* request,
+                       ::sirius::proto::DiscoveryRegisterResponse* response,
+                       ::google::protobuf::Closure* done);
+  void naming(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sirius::proto::ServletNamingRequest* request,
+                       ::sirius::proto::ServletNamingResponse* response,
                        ::google::protobuf::Closure* done);
  private:
   ::PROTOBUF_NAMESPACE_ID::RpcChannel* channel_;

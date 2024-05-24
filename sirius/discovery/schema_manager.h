@@ -48,11 +48,6 @@ namespace sirius::discovery {
         /// \return
         int check_and_get_for_privilege(sirius::proto::UserPrivilege &user_privilege);
 
-        ///
-        /// \param instance
-        /// \return
-        int check_and_get_for_instance(sirius::proto::ServletInstance &instance);
-
         int load_snapshot();
 
         ///

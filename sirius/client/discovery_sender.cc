@@ -71,6 +71,16 @@ namespace sirius::client {
         return send_request("discovery_query", request, response, _retry_times);
     }
 
+    collie::Status DiscoverySender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                    sirius::proto::ServletNamingResponse &response, int retry_time) {
+        return send_request("naming", request, response, retry_time);
+    }
+
+    collie::Status DiscoverySender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                                     sirius::proto::ServletNamingResponse &response) {
+        return send_request("naming", request, response, _retry_times);
+    }
+
 
     DiscoverySender &DiscoverySender::set_verbose(bool verbose) {
         _verbose = verbose;

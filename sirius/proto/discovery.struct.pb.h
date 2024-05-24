@@ -52,6 +52,9 @@ struct TableStruct_sirius_2fproto_2fdiscovery_2estruct_2eproto {
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_sirius_2fproto_2fdiscovery_2estruct_2eproto;
 namespace sirius {
 namespace proto {
+class AppInfo;
+struct AppInfoDefaultTypeInternal;
+extern AppInfoDefaultTypeInternal _AppInfo_default_instance_;
 class DiscoveryManagerRequest;
 struct DiscoveryManagerRequestDefaultTypeInternal;
 extern DiscoveryManagerRequestDefaultTypeInternal _DiscoveryManagerRequest_default_instance_;
@@ -64,40 +67,41 @@ extern DiscoveryQueryRequestDefaultTypeInternal _DiscoveryQueryRequest_default_i
 class DiscoveryQueryResponse;
 struct DiscoveryQueryResponseDefaultTypeInternal;
 extern DiscoveryQueryResponseDefaultTypeInternal _DiscoveryQueryResponse_default_instance_;
-class NameSpaceInfo;
-struct NameSpaceInfoDefaultTypeInternal;
-extern NameSpaceInfoDefaultTypeInternal _NameSpaceInfo_default_instance_;
+class DiscoveryRegisterResponse;
+struct DiscoveryRegisterResponseDefaultTypeInternal;
+extern DiscoveryRegisterResponseDefaultTypeInternal _DiscoveryRegisterResponse_default_instance_;
 class QueryInstance;
 struct QueryInstanceDefaultTypeInternal;
 extern QueryInstanceDefaultTypeInternal _QueryInstance_default_instance_;
 class QueryUserPrivilege;
 struct QueryUserPrivilegeDefaultTypeInternal;
 extern QueryUserPrivilegeDefaultTypeInternal _QueryUserPrivilege_default_instance_;
-class ServletHeartbeat;
-struct ServletHeartbeatDefaultTypeInternal;
-extern ServletHeartbeatDefaultTypeInternal _ServletHeartbeat_default_instance_;
 class ServletInfo;
 struct ServletInfoDefaultTypeInternal;
 extern ServletInfoDefaultTypeInternal _ServletInfo_default_instance_;
-class ServletInstance;
-struct ServletInstanceDefaultTypeInternal;
-extern ServletInstanceDefaultTypeInternal _ServletInstance_default_instance_;
+class ServletNamingRequest;
+struct ServletNamingRequestDefaultTypeInternal;
+extern ServletNamingRequestDefaultTypeInternal _ServletNamingRequest_default_instance_;
+class ServletNamingResponse;
+struct ServletNamingResponseDefaultTypeInternal;
+extern ServletNamingResponseDefaultTypeInternal _ServletNamingResponse_default_instance_;
 class ZoneInfo;
 struct ZoneInfoDefaultTypeInternal;
 extern ZoneInfoDefaultTypeInternal _ZoneInfo_default_instance_;
 }  // namespace proto
 }  // namespace sirius
 PROTOBUF_NAMESPACE_OPEN
+template<> ::sirius::proto::AppInfo* Arena::CreateMaybeMessage<::sirius::proto::AppInfo>(Arena*);
 template<> ::sirius::proto::DiscoveryManagerRequest* Arena::CreateMaybeMessage<::sirius::proto::DiscoveryManagerRequest>(Arena*);
 template<> ::sirius::proto::DiscoveryManagerResponse* Arena::CreateMaybeMessage<::sirius::proto::DiscoveryManagerResponse>(Arena*);
 template<> ::sirius::proto::DiscoveryQueryRequest* Arena::CreateMaybeMessage<::sirius::proto::DiscoveryQueryRequest>(Arena*);
 template<> ::sirius::proto::DiscoveryQueryResponse* Arena::CreateMaybeMessage<::sirius::proto::DiscoveryQueryResponse>(Arena*);
-template<> ::sirius::proto::NameSpaceInfo* Arena::CreateMaybeMessage<::sirius::proto::NameSpaceInfo>(Arena*);
+template<> ::sirius::proto::DiscoveryRegisterResponse* Arena::CreateMaybeMessage<::sirius::proto::DiscoveryRegisterResponse>(Arena*);
 template<> ::sirius::proto::QueryInstance* Arena::CreateMaybeMessage<::sirius::proto::QueryInstance>(Arena*);
 template<> ::sirius::proto::QueryUserPrivilege* Arena::CreateMaybeMessage<::sirius::proto::QueryUserPrivilege>(Arena*);
-template<> ::sirius::proto::ServletHeartbeat* Arena::CreateMaybeMessage<::sirius::proto::ServletHeartbeat>(Arena*);
 template<> ::sirius::proto::ServletInfo* Arena::CreateMaybeMessage<::sirius::proto::ServletInfo>(Arena*);
-template<> ::sirius::proto::ServletInstance* Arena::CreateMaybeMessage<::sirius::proto::ServletInstance>(Arena*);
+template<> ::sirius::proto::ServletNamingRequest* Arena::CreateMaybeMessage<::sirius::proto::ServletNamingRequest>(Arena*);
+template<> ::sirius::proto::ServletNamingResponse* Arena::CreateMaybeMessage<::sirius::proto::ServletNamingResponse>(Arena*);
 template<> ::sirius::proto::ZoneInfo* Arena::CreateMaybeMessage<::sirius::proto::ZoneInfo>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace sirius {
@@ -133,24 +137,24 @@ inline bool Status_Parse(
 }
 // ===================================================================
 
-class NameSpaceInfo final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:sirius.proto.NameSpaceInfo) */ {
+class AppInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:sirius.proto.AppInfo) */ {
  public:
-  inline NameSpaceInfo() : NameSpaceInfo(nullptr) {}
-  ~NameSpaceInfo() override;
-  explicit PROTOBUF_CONSTEXPR NameSpaceInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline AppInfo() : AppInfo(nullptr) {}
+  ~AppInfo() override;
+  explicit PROTOBUF_CONSTEXPR AppInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  NameSpaceInfo(const NameSpaceInfo& from);
-  NameSpaceInfo(NameSpaceInfo&& from) noexcept
-    : NameSpaceInfo() {
+  AppInfo(const AppInfo& from);
+  AppInfo(AppInfo&& from) noexcept
+    : AppInfo() {
     *this = ::std::move(from);
   }
 
-  inline NameSpaceInfo& operator=(const NameSpaceInfo& from) {
+  inline AppInfo& operator=(const AppInfo& from) {
     CopyFrom(from);
     return *this;
   }
-  inline NameSpaceInfo& operator=(NameSpaceInfo&& from) noexcept {
+  inline AppInfo& operator=(AppInfo&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -180,20 +184,20 @@ class NameSpaceInfo final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const NameSpaceInfo& default_instance() {
+  static const AppInfo& default_instance() {
     return *internal_default_instance();
   }
-  static inline const NameSpaceInfo* internal_default_instance() {
-    return reinterpret_cast<const NameSpaceInfo*>(
-               &_NameSpaceInfo_default_instance_);
+  static inline const AppInfo* internal_default_instance() {
+    return reinterpret_cast<const AppInfo*>(
+               &_AppInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     0;
 
-  friend void swap(NameSpaceInfo& a, NameSpaceInfo& b) {
+  friend void swap(AppInfo& a, AppInfo& b) {
     a.Swap(&b);
   }
-  inline void Swap(NameSpaceInfo* other) {
+  inline void Swap(AppInfo* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -206,7 +210,7 @@ class NameSpaceInfo final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(NameSpaceInfo* other) {
+  void UnsafeArenaSwap(AppInfo* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -214,14 +218,14 @@ class NameSpaceInfo final :
 
   // implements Message ----------------------------------------------
 
-  NameSpaceInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<NameSpaceInfo>(arena);
+  AppInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<AppInfo>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const NameSpaceInfo& from);
+  void CopyFrom(const AppInfo& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const NameSpaceInfo& from) {
-    NameSpaceInfo::MergeImpl(*this, from);
+  void MergeFrom( const AppInfo& from) {
+    AppInfo::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -239,15 +243,15 @@ class NameSpaceInfo final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(NameSpaceInfo* other);
+  void InternalSwap(AppInfo* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "sirius.proto.NameSpaceInfo";
+    return "sirius.proto.AppInfo";
   }
   protected:
-  explicit NameSpaceInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit AppInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -261,63 +265,41 @@ class NameSpaceInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kNamespaceNameFieldNumber = 1,
-    kResourceTagFieldNumber = 6,
-    kNamespaceIdFieldNumber = 2,
+    kAppNameFieldNumber = 1,
+    kAppIdFieldNumber = 2,
     kQuotaFieldNumber = 3,
     kVersionFieldNumber = 4,
-    kByteSizePerRecordFieldNumber = 9,
-    kReplicaNumFieldNumber = 10,
-    kRegionSplitLinesFieldNumber = 11,
     kDeletedFieldNumber = 5,
   };
-  // required string namespace_name = 1;
-  bool has_namespace_name() const;
+  // required string app_name = 1;
+  bool has_app_name() const;
   private:
-  bool _internal_has_namespace_name() const;
+  bool _internal_has_app_name() const;
   public:
-  void clear_namespace_name();
-  const std::string& namespace_name() const;
+  void clear_app_name();
+  const std::string& app_name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_namespace_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_namespace_name();
-  PROTOBUF_NODISCARD std::string* release_namespace_name();
-  void set_allocated_namespace_name(std::string* namespace_name);
+  void set_app_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_app_name();
+  PROTOBUF_NODISCARD std::string* release_app_name();
+  void set_allocated_app_name(std::string* app_name);
   private:
-  const std::string& _internal_namespace_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_namespace_name(const std::string& value);
-  std::string* _internal_mutable_namespace_name();
+  const std::string& _internal_app_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_app_name(const std::string& value);
+  std::string* _internal_mutable_app_name();
   public:
 
-  // optional string resource_tag = 6;
-  bool has_resource_tag() const;
+  // optional int64 app_id = 2;
+  bool has_app_id() const;
   private:
-  bool _internal_has_resource_tag() const;
+  bool _internal_has_app_id() const;
   public:
-  void clear_resource_tag();
-  const std::string& resource_tag() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_resource_tag(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_resource_tag();
-  PROTOBUF_NODISCARD std::string* release_resource_tag();
-  void set_allocated_resource_tag(std::string* resource_tag);
+  void clear_app_id();
+  int64_t app_id() const;
+  void set_app_id(int64_t value);
   private:
-  const std::string& _internal_resource_tag() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_resource_tag(const std::string& value);
-  std::string* _internal_mutable_resource_tag();
-  public:
-
-  // optional int64 namespace_id = 2;
-  bool has_namespace_id() const;
-  private:
-  bool _internal_has_namespace_id() const;
-  public:
-  void clear_namespace_id();
-  int64_t namespace_id() const;
-  void set_namespace_id(int64_t value);
-  private:
-  int64_t _internal_namespace_id() const;
-  void _internal_set_namespace_id(int64_t value);
+  int64_t _internal_app_id() const;
+  void _internal_set_app_id(int64_t value);
   public:
 
   // optional int64 quota = 3;
@@ -346,45 +328,6 @@ class NameSpaceInfo final :
   void _internal_set_version(int64_t value);
   public:
 
-  // optional int64 byte_size_per_record = 9;
-  bool has_byte_size_per_record() const;
-  private:
-  bool _internal_has_byte_size_per_record() const;
-  public:
-  void clear_byte_size_per_record();
-  int64_t byte_size_per_record() const;
-  void set_byte_size_per_record(int64_t value);
-  private:
-  int64_t _internal_byte_size_per_record() const;
-  void _internal_set_byte_size_per_record(int64_t value);
-  public:
-
-  // optional int64 replica_num = 10;
-  bool has_replica_num() const;
-  private:
-  bool _internal_has_replica_num() const;
-  public:
-  void clear_replica_num();
-  int64_t replica_num() const;
-  void set_replica_num(int64_t value);
-  private:
-  int64_t _internal_replica_num() const;
-  void _internal_set_replica_num(int64_t value);
-  public:
-
-  // optional int64 region_split_lines = 11;
-  bool has_region_split_lines() const;
-  private:
-  bool _internal_has_region_split_lines() const;
-  public:
-  void clear_region_split_lines();
-  int64_t region_split_lines() const;
-  void set_region_split_lines(int64_t value);
-  private:
-  int64_t _internal_region_split_lines() const;
-  void _internal_set_region_split_lines(int64_t value);
-  public:
-
   // optional bool deleted = 5;
   bool has_deleted() const;
   private:
@@ -398,7 +341,7 @@ class NameSpaceInfo final :
   void _internal_set_deleted(bool value);
   public:
 
-  // @@protoc_insertion_point(class_scope:sirius.proto.NameSpaceInfo)
+  // @@protoc_insertion_point(class_scope:sirius.proto.AppInfo)
  private:
   class _Internal;
 
@@ -408,14 +351,10 @@ class NameSpaceInfo final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr namespace_name_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr resource_tag_;
-    int64_t namespace_id_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr app_name_;
+    int64_t app_id_;
     int64_t quota_;
     int64_t version_;
-    int64_t byte_size_per_record_;
-    int64_t replica_num_;
-    int64_t region_split_lines_;
     bool deleted_;
   };
   union { Impl_ _impl_; };
@@ -552,15 +491,11 @@ class ZoneInfo final :
 
   enum : int {
     kZoneFieldNumber = 1,
-    kNamespaceNameFieldNumber = 3,
-    kResourceTagFieldNumber = 8,
+    kAppNameFieldNumber = 3,
     kZoneIdFieldNumber = 2,
-    kNamespaceIdFieldNumber = 4,
+    kAppIdFieldNumber = 4,
     kQuotaFieldNumber = 5,
     kVersionFieldNumber = 6,
-    kByteSizePerRecordFieldNumber = 11,
-    kReplicaNumFieldNumber = 12,
-    kRegionSplitLinesFieldNumber = 13,
     kDeletedFieldNumber = 7,
   };
   // required string zone = 1;
@@ -581,40 +516,22 @@ class ZoneInfo final :
   std::string* _internal_mutable_zone();
   public:
 
-  // required string namespace_name = 3;
-  bool has_namespace_name() const;
+  // required string app_name = 3;
+  bool has_app_name() const;
   private:
-  bool _internal_has_namespace_name() const;
+  bool _internal_has_app_name() const;
   public:
-  void clear_namespace_name();
-  const std::string& namespace_name() const;
+  void clear_app_name();
+  const std::string& app_name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_namespace_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_namespace_name();
-  PROTOBUF_NODISCARD std::string* release_namespace_name();
-  void set_allocated_namespace_name(std::string* namespace_name);
+  void set_app_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_app_name();
+  PROTOBUF_NODISCARD std::string* release_app_name();
+  void set_allocated_app_name(std::string* app_name);
   private:
-  const std::string& _internal_namespace_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_namespace_name(const std::string& value);
-  std::string* _internal_mutable_namespace_name();
-  public:
-
-  // optional string resource_tag = 8;
-  bool has_resource_tag() const;
-  private:
-  bool _internal_has_resource_tag() const;
-  public:
-  void clear_resource_tag();
-  const std::string& resource_tag() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_resource_tag(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_resource_tag();
-  PROTOBUF_NODISCARD std::string* release_resource_tag();
-  void set_allocated_resource_tag(std::string* resource_tag);
-  private:
-  const std::string& _internal_resource_tag() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_resource_tag(const std::string& value);
-  std::string* _internal_mutable_resource_tag();
+  const std::string& _internal_app_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_app_name(const std::string& value);
+  std::string* _internal_mutable_app_name();
   public:
 
   // optional int64 zone_id = 2;
@@ -630,17 +547,17 @@ class ZoneInfo final :
   void _internal_set_zone_id(int64_t value);
   public:
 
-  // optional int64 namespace_id = 4;
-  bool has_namespace_id() const;
+  // optional int64 app_id = 4;
+  bool has_app_id() const;
   private:
-  bool _internal_has_namespace_id() const;
+  bool _internal_has_app_id() const;
   public:
-  void clear_namespace_id();
-  int64_t namespace_id() const;
-  void set_namespace_id(int64_t value);
+  void clear_app_id();
+  int64_t app_id() const;
+  void set_app_id(int64_t value);
   private:
-  int64_t _internal_namespace_id() const;
-  void _internal_set_namespace_id(int64_t value);
+  int64_t _internal_app_id() const;
+  void _internal_set_app_id(int64_t value);
   public:
 
   // optional int64 quota = 5;
@@ -667,45 +584,6 @@ class ZoneInfo final :
   private:
   int64_t _internal_version() const;
   void _internal_set_version(int64_t value);
-  public:
-
-  // optional int64 byte_size_per_record = 11;
-  bool has_byte_size_per_record() const;
-  private:
-  bool _internal_has_byte_size_per_record() const;
-  public:
-  void clear_byte_size_per_record();
-  int64_t byte_size_per_record() const;
-  void set_byte_size_per_record(int64_t value);
-  private:
-  int64_t _internal_byte_size_per_record() const;
-  void _internal_set_byte_size_per_record(int64_t value);
-  public:
-
-  // optional int64 replica_num = 12;
-  bool has_replica_num() const;
-  private:
-  bool _internal_has_replica_num() const;
-  public:
-  void clear_replica_num();
-  int64_t replica_num() const;
-  void set_replica_num(int64_t value);
-  private:
-  int64_t _internal_replica_num() const;
-  void _internal_set_replica_num(int64_t value);
-  public:
-
-  // optional int64 region_split_lines = 13;
-  bool has_region_split_lines() const;
-  private:
-  bool _internal_has_region_split_lines() const;
-  public:
-  void clear_region_split_lines();
-  int64_t region_split_lines() const;
-  void set_region_split_lines(int64_t value);
-  private:
-  int64_t _internal_region_split_lines() const;
-  void _internal_set_region_split_lines(int64_t value);
   public:
 
   // optional bool deleted = 7;
@@ -735,15 +613,11 @@ class ZoneInfo final :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr zone_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr namespace_name_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr resource_tag_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr app_name_;
     int64_t zone_id_;
-    int64_t namespace_id_;
+    int64_t app_id_;
     int64_t quota_;
     int64_t version_;
-    int64_t byte_size_per_record_;
-    int64_t replica_num_;
-    int64_t region_split_lines_;
     bool deleted_;
   };
   union { Impl_ _impl_; };
@@ -879,47 +753,20 @@ class ServletInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kEnvFieldNumber = 16,
     kServletNameFieldNumber = 2,
     kZoneFieldNumber = 3,
-    kNamespaceNameFieldNumber = 5,
-    kResourceTagFieldNumber = 8,
-    kConfFieldNumber = 15,
-    kCommentFieldNumber = 17,
-    kConfVersionFieldNumber = 18,
+    kAppNameFieldNumber = 5,
+    kColorFieldNumber = 7,
+    kEnvFieldNumber = 12,
+    kAddressFieldNumber = 13,
     kServletIdFieldNumber = 1,
     kZoneIdFieldNumber = 4,
-    kNamespaceIdFieldNumber = 6,
-    kReplicaNumFieldNumber = 7,
-    kVersionFieldNumber = 9,
-    kDeletedFieldNumber = 11,
-    kTimestampFieldNumber = 12,
-    kStatusFieldNumber = 10,
+    kAppIdFieldNumber = 6,
+    kDeletedFieldNumber = 9,
+    kCtimeFieldNumber = 10,
+    kMtimeFieldNumber = 11,
+    kStatusFieldNumber = 8,
   };
-  // repeated string env = 16;
-  int env_size() const;
-  private:
-  int _internal_env_size() const;
-  public:
-  void clear_env();
-  const std::string& env(int index) const;
-  std::string* mutable_env(int index);
-  void set_env(int index, const std::string& value);
-  void set_env(int index, std::string&& value);
-  void set_env(int index, const char* value);
-  void set_env(int index, const char* value, size_t size);
-  std::string* add_env();
-  void add_env(const std::string& value);
-  void add_env(std::string&& value);
-  void add_env(const char* value);
-  void add_env(const char* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& env() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_env();
-  private:
-  const std::string& _internal_env(int index) const;
-  std::string* _internal_add_env();
-  public:
-
   // required string servlet_name = 2;
   bool has_servlet_name() const;
   private:
@@ -956,95 +803,77 @@ class ServletInfo final :
   std::string* _internal_mutable_zone();
   public:
 
-  // required string namespace_name = 5;
-  bool has_namespace_name() const;
+  // required string app_name = 5;
+  bool has_app_name() const;
   private:
-  bool _internal_has_namespace_name() const;
+  bool _internal_has_app_name() const;
   public:
-  void clear_namespace_name();
-  const std::string& namespace_name() const;
+  void clear_app_name();
+  const std::string& app_name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_namespace_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_namespace_name();
-  PROTOBUF_NODISCARD std::string* release_namespace_name();
-  void set_allocated_namespace_name(std::string* namespace_name);
+  void set_app_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_app_name();
+  PROTOBUF_NODISCARD std::string* release_app_name();
+  void set_allocated_app_name(std::string* app_name);
   private:
-  const std::string& _internal_namespace_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_namespace_name(const std::string& value);
-  std::string* _internal_mutable_namespace_name();
+  const std::string& _internal_app_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_app_name(const std::string& value);
+  std::string* _internal_mutable_app_name();
   public:
 
-  // optional string resource_tag = 8;
-  bool has_resource_tag() const;
+  // optional string color = 7;
+  bool has_color() const;
   private:
-  bool _internal_has_resource_tag() const;
+  bool _internal_has_color() const;
   public:
-  void clear_resource_tag();
-  const std::string& resource_tag() const;
+  void clear_color();
+  const std::string& color() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_resource_tag(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_resource_tag();
-  PROTOBUF_NODISCARD std::string* release_resource_tag();
-  void set_allocated_resource_tag(std::string* resource_tag);
+  void set_color(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_color();
+  PROTOBUF_NODISCARD std::string* release_color();
+  void set_allocated_color(std::string* color);
   private:
-  const std::string& _internal_resource_tag() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_resource_tag(const std::string& value);
-  std::string* _internal_mutable_resource_tag();
+  const std::string& _internal_color() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_color(const std::string& value);
+  std::string* _internal_mutable_color();
   public:
 
-  // optional string conf = 15;
-  bool has_conf() const;
+  // required string env = 12;
+  bool has_env() const;
   private:
-  bool _internal_has_conf() const;
+  bool _internal_has_env() const;
   public:
-  void clear_conf();
-  const std::string& conf() const;
+  void clear_env();
+  const std::string& env() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_conf(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_conf();
-  PROTOBUF_NODISCARD std::string* release_conf();
-  void set_allocated_conf(std::string* conf);
+  void set_env(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_env();
+  PROTOBUF_NODISCARD std::string* release_env();
+  void set_allocated_env(std::string* env);
   private:
-  const std::string& _internal_conf() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_conf(const std::string& value);
-  std::string* _internal_mutable_conf();
+  const std::string& _internal_env() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_env(const std::string& value);
+  std::string* _internal_mutable_env();
   public:
 
-  // optional string comment = 17;
-  bool has_comment() const;
+  // required string address = 13;
+  bool has_address() const;
   private:
-  bool _internal_has_comment() const;
+  bool _internal_has_address() const;
   public:
-  void clear_comment();
-  const std::string& comment() const;
+  void clear_address();
+  const std::string& address() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_comment(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_comment();
-  PROTOBUF_NODISCARD std::string* release_comment();
-  void set_allocated_comment(std::string* comment);
+  void set_address(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_address();
+  PROTOBUF_NODISCARD std::string* release_address();
+  void set_allocated_address(std::string* address);
   private:
-  const std::string& _internal_comment() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_comment(const std::string& value);
-  std::string* _internal_mutable_comment();
+  const std::string& _internal_address() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_address(const std::string& value);
+  std::string* _internal_mutable_address();
   public:
-
-  // optional .sirius.proto.Version conf_version = 18;
-  bool has_conf_version() const;
-  private:
-  bool _internal_has_conf_version() const;
-  public:
-  void clear_conf_version();
-  const ::sirius::proto::Version& conf_version() const;
-  PROTOBUF_NODISCARD ::sirius::proto::Version* release_conf_version();
-  ::sirius::proto::Version* mutable_conf_version();
-  void set_allocated_conf_version(::sirius::proto::Version* conf_version);
-  private:
-  const ::sirius::proto::Version& _internal_conf_version() const;
-  ::sirius::proto::Version* _internal_mutable_conf_version();
-  public:
-  void unsafe_arena_set_allocated_conf_version(
-      ::sirius::proto::Version* conf_version);
-  ::sirius::proto::Version* unsafe_arena_release_conf_version();
 
   // optional int64 servlet_id = 1;
   bool has_servlet_id() const;
@@ -1072,46 +901,20 @@ class ServletInfo final :
   void _internal_set_zone_id(int64_t value);
   public:
 
-  // optional int64 namespace_id = 6;
-  bool has_namespace_id() const;
+  // optional int64 app_id = 6;
+  bool has_app_id() const;
   private:
-  bool _internal_has_namespace_id() const;
+  bool _internal_has_app_id() const;
   public:
-  void clear_namespace_id();
-  int64_t namespace_id() const;
-  void set_namespace_id(int64_t value);
+  void clear_app_id();
+  int64_t app_id() const;
+  void set_app_id(int64_t value);
   private:
-  int64_t _internal_namespace_id() const;
-  void _internal_set_namespace_id(int64_t value);
-  public:
-
-  // optional int64 replica_num = 7;
-  bool has_replica_num() const;
-  private:
-  bool _internal_has_replica_num() const;
-  public:
-  void clear_replica_num();
-  int64_t replica_num() const;
-  void set_replica_num(int64_t value);
-  private:
-  int64_t _internal_replica_num() const;
-  void _internal_set_replica_num(int64_t value);
+  int64_t _internal_app_id() const;
+  void _internal_set_app_id(int64_t value);
   public:
 
-  // optional int64 version = 9;
-  bool has_version() const;
-  private:
-  bool _internal_has_version() const;
-  public:
-  void clear_version();
-  int64_t version() const;
-  void set_version(int64_t value);
-  private:
-  int64_t _internal_version() const;
-  void _internal_set_version(int64_t value);
-  public:
-
-  // optional bool deleted = 11;
+  // optional bool deleted = 9;
   bool has_deleted() const;
   private:
   bool _internal_has_deleted() const;
@@ -1124,20 +927,33 @@ class ServletInfo final :
   void _internal_set_deleted(bool value);
   public:
 
-  // optional uint32 timestamp = 12;
-  bool has_timestamp() const;
+  // optional uint32 ctime = 10;
+  bool has_ctime() const;
   private:
-  bool _internal_has_timestamp() const;
+  bool _internal_has_ctime() const;
   public:
-  void clear_timestamp();
-  uint32_t timestamp() const;
-  void set_timestamp(uint32_t value);
+  void clear_ctime();
+  uint32_t ctime() const;
+  void set_ctime(uint32_t value);
   private:
-  uint32_t _internal_timestamp() const;
-  void _internal_set_timestamp(uint32_t value);
+  uint32_t _internal_ctime() const;
+  void _internal_set_ctime(uint32_t value);
   public:
 
-  // optional .sirius.proto.Status status = 10;
+  // optional uint32 mtime = 11;
+  bool has_mtime() const;
+  private:
+  bool _internal_has_mtime() const;
+  public:
+  void clear_mtime();
+  uint32_t mtime() const;
+  void set_mtime(uint32_t value);
+  private:
+  uint32_t _internal_mtime() const;
+  void _internal_set_mtime(uint32_t value);
+  public:
+
+  // optional .sirius.proto.Status status = 8;
   bool has_status() const;
   private:
   bool _internal_has_status() const;
@@ -1163,21 +979,18 @@ class ServletInfo final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> env_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr servlet_name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr zone_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr namespace_name_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr resource_tag_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr conf_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr comment_;
-    ::sirius::proto::Version* conf_version_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr app_name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr color_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr env_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr address_;
     int64_t servlet_id_;
     int64_t zone_id_;
-    int64_t namespace_id_;
-    int64_t replica_num_;
-    int64_t version_;
+    int64_t app_id_;
     bool deleted_;
-    uint32_t timestamp_;
+    uint32_t ctime_;
+    uint32_t mtime_;
     int status_;
   };
   union { Impl_ _impl_; };
@@ -1185,24 +998,24 @@ class ServletInfo final :
 };
 // -------------------------------------------------------------------
 
-class ServletInstance final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:sirius.proto.ServletInstance) */ {
+class ServletNamingRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:sirius.proto.ServletNamingRequest) */ {
  public:
-  inline ServletInstance() : ServletInstance(nullptr) {}
-  ~ServletInstance() override;
-  explicit PROTOBUF_CONSTEXPR ServletInstance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline ServletNamingRequest() : ServletNamingRequest(nullptr) {}
+  ~ServletNamingRequest() override;
+  explicit PROTOBUF_CONSTEXPR ServletNamingRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  ServletInstance(const ServletInstance& from);
-  ServletInstance(ServletInstance&& from) noexcept
-    : ServletInstance() {
+  ServletNamingRequest(const ServletNamingRequest& from);
+  ServletNamingRequest(ServletNamingRequest&& from) noexcept
+    : ServletNamingRequest() {
     *this = ::std::move(from);
   }
 
-  inline ServletInstance& operator=(const ServletInstance& from) {
+  inline ServletNamingRequest& operator=(const ServletNamingRequest& from) {
     CopyFrom(from);
     return *this;
   }
-  inline ServletInstance& operator=(ServletInstance&& from) noexcept {
+  inline ServletNamingRequest& operator=(ServletNamingRequest&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1232,20 +1045,20 @@ class ServletInstance final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const ServletInstance& default_instance() {
+  static const ServletNamingRequest& default_instance() {
     return *internal_default_instance();
   }
-  static inline const ServletInstance* internal_default_instance() {
-    return reinterpret_cast<const ServletInstance*>(
-               &_ServletInstance_default_instance_);
+  static inline const ServletNamingRequest* internal_default_instance() {
+    return reinterpret_cast<const ServletNamingRequest*>(
+               &_ServletNamingRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     3;
 
-  friend void swap(ServletInstance& a, ServletInstance& b) {
+  friend void swap(ServletNamingRequest& a, ServletNamingRequest& b) {
     a.Swap(&b);
   }
-  inline void Swap(ServletInstance* other) {
+  inline void Swap(ServletNamingRequest* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1258,7 +1071,7 @@ class ServletInstance final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(ServletInstance* other) {
+  void UnsafeArenaSwap(ServletNamingRequest* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1266,14 +1079,14 @@ class ServletInstance final :
 
   // implements Message ----------------------------------------------
 
-  ServletInstance* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<ServletInstance>(arena);
+  ServletNamingRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ServletNamingRequest>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const ServletInstance& from);
+  void CopyFrom(const ServletNamingRequest& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const ServletInstance& from) {
-    ServletInstance::MergeImpl(*this, from);
+  void MergeFrom( const ServletNamingRequest& from) {
+    ServletNamingRequest::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -1291,15 +1104,15 @@ class ServletInstance final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(ServletInstance* other);
+  void InternalSwap(ServletNamingRequest* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "sirius.proto.ServletInstance";
+    return "sirius.proto.ServletNamingRequest";
   }
   protected:
-  explicit ServletInstance(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit ServletNamingRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -1313,159 +1126,114 @@ class ServletInstance final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kNamespaceNameFieldNumber = 1,
-    kZoneNameFieldNumber = 3,
-    kServletNameFieldNumber = 5,
-    kAddressFieldNumber = 8,
-    kColorFieldNumber = 9,
-    kEnvFieldNumber = 10,
-    kUserFieldNumber = 15,
-    kNamespaceIdFieldNumber = 2,
+    kZonesFieldNumber = 3,
+    kEnvFieldNumber = 5,
+    kColorFieldNumber = 6,
+    kAppNameFieldNumber = 1,
+    kAppIdFieldNumber = 2,
     kZoneIdFieldNumber = 4,
-    kServletIdFieldNumber = 6,
-    kVersionFieldNumber = 12,
-    kTimestampFieldNumber = 13,
-    kWeightFieldNumber = 14,
-    kUserIdFieldNumber = 16,
-    kStatusFieldNumber = 11,
   };
-  // required string namespace_name = 1;
-  bool has_namespace_name() const;
+  // repeated string zones = 3;
+  int zones_size() const;
   private:
-  bool _internal_has_namespace_name() const;
+  int _internal_zones_size() const;
   public:
-  void clear_namespace_name();
-  const std::string& namespace_name() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_namespace_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_namespace_name();
-  PROTOBUF_NODISCARD std::string* release_namespace_name();
-  void set_allocated_namespace_name(std::string* namespace_name);
+  void clear_zones();
+  const std::string& zones(int index) const;
+  std::string* mutable_zones(int index);
+  void set_zones(int index, const std::string& value);
+  void set_zones(int index, std::string&& value);
+  void set_zones(int index, const char* value);
+  void set_zones(int index, const char* value, size_t size);
+  std::string* add_zones();
+  void add_zones(const std::string& value);
+  void add_zones(std::string&& value);
+  void add_zones(const char* value);
+  void add_zones(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& zones() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_zones();
   private:
-  const std::string& _internal_namespace_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_namespace_name(const std::string& value);
-  std::string* _internal_mutable_namespace_name();
-  public:
-
-  // required string zone_name = 3;
-  bool has_zone_name() const;
-  private:
-  bool _internal_has_zone_name() const;
-  public:
-  void clear_zone_name();
-  const std::string& zone_name() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_zone_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_zone_name();
-  PROTOBUF_NODISCARD std::string* release_zone_name();
-  void set_allocated_zone_name(std::string* zone_name);
-  private:
-  const std::string& _internal_zone_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_zone_name(const std::string& value);
-  std::string* _internal_mutable_zone_name();
+  const std::string& _internal_zones(int index) const;
+  std::string* _internal_add_zones();
   public:
 
-  // required string servlet_name = 5;
-  bool has_servlet_name() const;
+  // repeated string env = 5;
+  int env_size() const;
   private:
-  bool _internal_has_servlet_name() const;
-  public:
-  void clear_servlet_name();
-  const std::string& servlet_name() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_servlet_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_servlet_name();
-  PROTOBUF_NODISCARD std::string* release_servlet_name();
-  void set_allocated_servlet_name(std::string* servlet_name);
-  private:
-  const std::string& _internal_servlet_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_servlet_name(const std::string& value);
-  std::string* _internal_mutable_servlet_name();
-  public:
-
-  // required string address = 8;
-  bool has_address() const;
-  private:
-  bool _internal_has_address() const;
-  public:
-  void clear_address();
-  const std::string& address() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_address(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_address();
-  PROTOBUF_NODISCARD std::string* release_address();
-  void set_allocated_address(std::string* address);
-  private:
-  const std::string& _internal_address() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_address(const std::string& value);
-  std::string* _internal_mutable_address();
-  public:
-
-  // optional string color = 9;
-  bool has_color() const;
-  private:
-  bool _internal_has_color() const;
-  public:
-  void clear_color();
-  const std::string& color() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_color(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_color();
-  PROTOBUF_NODISCARD std::string* release_color();
-  void set_allocated_color(std::string* color);
-  private:
-  const std::string& _internal_color() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_color(const std::string& value);
-  std::string* _internal_mutable_color();
-  public:
-
-  // optional string env = 10;
-  bool has_env() const;
-  private:
-  bool _internal_has_env() const;
+  int _internal_env_size() const;
   public:
   void clear_env();
-  const std::string& env() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_env(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_env();
-  PROTOBUF_NODISCARD std::string* release_env();
-  void set_allocated_env(std::string* env);
+  const std::string& env(int index) const;
+  std::string* mutable_env(int index);
+  void set_env(int index, const std::string& value);
+  void set_env(int index, std::string&& value);
+  void set_env(int index, const char* value);
+  void set_env(int index, const char* value, size_t size);
+  std::string* add_env();
+  void add_env(const std::string& value);
+  void add_env(std::string&& value);
+  void add_env(const char* value);
+  void add_env(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& env() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_env();
   private:
-  const std::string& _internal_env() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_env(const std::string& value);
-  std::string* _internal_mutable_env();
+  const std::string& _internal_env(int index) const;
+  std::string* _internal_add_env();
   public:
 
-  // optional string user = 15;
-  bool has_user() const;
+  // repeated string color = 6;
+  int color_size() const;
   private:
-  bool _internal_has_user() const;
+  int _internal_color_size() const;
   public:
-  void clear_user();
-  const std::string& user() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_user(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_user();
-  PROTOBUF_NODISCARD std::string* release_user();
-  void set_allocated_user(std::string* user);
+  void clear_color();
+  const std::string& color(int index) const;
+  std::string* mutable_color(int index);
+  void set_color(int index, const std::string& value);
+  void set_color(int index, std::string&& value);
+  void set_color(int index, const char* value);
+  void set_color(int index, const char* value, size_t size);
+  std::string* add_color();
+  void add_color(const std::string& value);
+  void add_color(std::string&& value);
+  void add_color(const char* value);
+  void add_color(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& color() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_color();
   private:
-  const std::string& _internal_user() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_user(const std::string& value);
-  std::string* _internal_mutable_user();
+  const std::string& _internal_color(int index) const;
+  std::string* _internal_add_color();
   public:
 
-  // optional int64 namespace_id = 2;
-  bool has_namespace_id() const;
+  // required string app_name = 1;
+  bool has_app_name() const;
   private:
-  bool _internal_has_namespace_id() const;
+  bool _internal_has_app_name() const;
   public:
-  void clear_namespace_id();
-  int64_t namespace_id() const;
-  void set_namespace_id(int64_t value);
+  void clear_app_name();
+  const std::string& app_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_app_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_app_name();
+  PROTOBUF_NODISCARD std::string* release_app_name();
+  void set_allocated_app_name(std::string* app_name);
   private:
-  int64_t _internal_namespace_id() const;
-  void _internal_set_namespace_id(int64_t value);
+  const std::string& _internal_app_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_app_name(const std::string& value);
+  std::string* _internal_mutable_app_name();
+  public:
+
+  // optional int64 app_id = 2;
+  bool has_app_id() const;
+  private:
+  bool _internal_has_app_id() const;
+  public:
+  void clear_app_id();
+  int64_t app_id() const;
+  void set_app_id(int64_t value);
+  private:
+  int64_t _internal_app_id() const;
+  void _internal_set_app_id(int64_t value);
   public:
 
   // optional int64 zone_id = 4;
@@ -1481,90 +1249,9 @@ class ServletInstance final :
   void _internal_set_zone_id(int64_t value);
   public:
 
-  // optional int64 servlet_id = 6;
-  bool has_servlet_id() const;
-  private:
-  bool _internal_has_servlet_id() const;
-  public:
-  void clear_servlet_id();
-  int64_t servlet_id() const;
-  void set_servlet_id(int64_t value);
-  private:
-  int64_t _internal_servlet_id() const;
-  void _internal_set_servlet_id(int64_t value);
-  public:
-
-  // optional int64 version = 12;
-  bool has_version() const;
-  private:
-  bool _internal_has_version() const;
-  public:
-  void clear_version();
-  int64_t version() const;
-  void set_version(int64_t value);
-  private:
-  int64_t _internal_version() const;
-  void _internal_set_version(int64_t value);
-  public:
-
-  // optional int32 timestamp = 13;
-  bool has_timestamp() const;
-  private:
-  bool _internal_has_timestamp() const;
-  public:
-  void clear_timestamp();
-  int32_t timestamp() const;
-  void set_timestamp(int32_t value);
-  private:
-  int32_t _internal_timestamp() const;
-  void _internal_set_timestamp(int32_t value);
-  public:
-
-  // optional int32 weight = 14;
-  bool has_weight() const;
-  private:
-  bool _internal_has_weight() const;
-  public:
-  void clear_weight();
-  int32_t weight() const;
-  void set_weight(int32_t value);
-  private:
-  int32_t _internal_weight() const;
-  void _internal_set_weight(int32_t value);
-  public:
-
-  // optional int64 user_id = 16;
-  bool has_user_id() const;
-  private:
-  bool _internal_has_user_id() const;
-  public:
-  void clear_user_id();
-  int64_t user_id() const;
-  void set_user_id(int64_t value);
-  private:
-  int64_t _internal_user_id() const;
-  void _internal_set_user_id(int64_t value);
-  public:
-
-  // optional .sirius.proto.Status status = 11;
-  bool has_status() const;
-  private:
-  bool _internal_has_status() const;
-  public:
-  void clear_status();
-  ::sirius::proto::Status status() const;
-  void set_status(::sirius::proto::Status value);
-  private:
-  ::sirius::proto::Status _internal_status() const;
-  void _internal_set_status(::sirius::proto::Status value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:sirius.proto.ServletInstance)
+  // @@protoc_insertion_point(class_scope:sirius.proto.ServletNamingRequest)
  private:
   class _Internal;
-
-  // helper for ByteSizeLong()
-  size_t RequiredFieldsByteSizeFallback() const;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
@@ -1572,45 +1259,36 @@ class ServletInstance final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr namespace_name_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr zone_name_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr servlet_name_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr address_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr color_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr env_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr user_;
-    int64_t namespace_id_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> zones_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> env_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> color_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr app_name_;
+    int64_t app_id_;
     int64_t zone_id_;
-    int64_t servlet_id_;
-    int64_t version_;
-    int32_t timestamp_;
-    int32_t weight_;
-    int64_t user_id_;
-    int status_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_sirius_2fproto_2fdiscovery_2estruct_2eproto;
 };
 // -------------------------------------------------------------------
 
-class ServletHeartbeat final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:sirius.proto.ServletHeartbeat) */ {
+class ServletNamingResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:sirius.proto.ServletNamingResponse) */ {
  public:
-  inline ServletHeartbeat() : ServletHeartbeat(nullptr) {}
-  ~ServletHeartbeat() override;
-  explicit PROTOBUF_CONSTEXPR ServletHeartbeat(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline ServletNamingResponse() : ServletNamingResponse(nullptr) {}
+  ~ServletNamingResponse() override;
+  explicit PROTOBUF_CONSTEXPR ServletNamingResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  ServletHeartbeat(const ServletHeartbeat& from);
-  ServletHeartbeat(ServletHeartbeat&& from) noexcept
-    : ServletHeartbeat() {
+  ServletNamingResponse(const ServletNamingResponse& from);
+  ServletNamingResponse(ServletNamingResponse&& from) noexcept
+    : ServletNamingResponse() {
     *this = ::std::move(from);
   }
 
-  inline ServletHeartbeat& operator=(const ServletHeartbeat& from) {
+  inline ServletNamingResponse& operator=(const ServletNamingResponse& from) {
     CopyFrom(from);
     return *this;
   }
-  inline ServletHeartbeat& operator=(ServletHeartbeat&& from) noexcept {
+  inline ServletNamingResponse& operator=(ServletNamingResponse&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1640,20 +1318,20 @@ class ServletHeartbeat final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const ServletHeartbeat& default_instance() {
+  static const ServletNamingResponse& default_instance() {
     return *internal_default_instance();
   }
-  static inline const ServletHeartbeat* internal_default_instance() {
-    return reinterpret_cast<const ServletHeartbeat*>(
-               &_ServletHeartbeat_default_instance_);
+  static inline const ServletNamingResponse* internal_default_instance() {
+    return reinterpret_cast<const ServletNamingResponse*>(
+               &_ServletNamingResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     4;
 
-  friend void swap(ServletHeartbeat& a, ServletHeartbeat& b) {
+  friend void swap(ServletNamingResponse& a, ServletNamingResponse& b) {
     a.Swap(&b);
   }
-  inline void Swap(ServletHeartbeat* other) {
+  inline void Swap(ServletNamingResponse* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1666,7 +1344,7 @@ class ServletHeartbeat final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(ServletHeartbeat* other) {
+  void UnsafeArenaSwap(ServletNamingResponse* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1674,14 +1352,14 @@ class ServletHeartbeat final :
 
   // implements Message ----------------------------------------------
 
-  ServletHeartbeat* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<ServletHeartbeat>(arena);
+  ServletNamingResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ServletNamingResponse>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const ServletHeartbeat& from);
+  void CopyFrom(const ServletNamingResponse& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const ServletHeartbeat& from) {
-    ServletHeartbeat::MergeImpl(*this, from);
+  void MergeFrom( const ServletNamingResponse& from) {
+    ServletNamingResponse::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -1699,15 +1377,15 @@ class ServletHeartbeat final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(ServletHeartbeat* other);
+  void InternalSwap(ServletNamingResponse* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "sirius.proto.ServletHeartbeat";
+    return "sirius.proto.ServletNamingResponse";
   }
   protected:
-  explicit ServletHeartbeat(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit ServletNamingResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -1721,27 +1399,79 @@ class ServletHeartbeat final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kAddressFieldNumber = 1,
+    kServletsFieldNumber = 4,
+    kErrmsgFieldNumber = 2,
+    kLeaderFieldNumber = 3,
+    kErrcodeFieldNumber = 1,
   };
-  // required string address = 1;
-  bool has_address() const;
+  // repeated .sirius.proto.ServletInfo servlets = 4;
+  int servlets_size() const;
   private:
-  bool _internal_has_address() const;
+  int _internal_servlets_size() const;
   public:
-  void clear_address();
-  const std::string& address() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_address(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_address();
-  PROTOBUF_NODISCARD std::string* release_address();
-  void set_allocated_address(std::string* address);
+  void clear_servlets();
+  ::sirius::proto::ServletInfo* mutable_servlets(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ServletInfo >*
+      mutable_servlets();
   private:
-  const std::string& _internal_address() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_address(const std::string& value);
-  std::string* _internal_mutable_address();
+  const ::sirius::proto::ServletInfo& _internal_servlets(int index) const;
+  ::sirius::proto::ServletInfo* _internal_add_servlets();
+  public:
+  const ::sirius::proto::ServletInfo& servlets(int index) const;
+  ::sirius::proto::ServletInfo* add_servlets();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ServletInfo >&
+      servlets() const;
+
+  // optional string errmsg = 2;
+  bool has_errmsg() const;
+  private:
+  bool _internal_has_errmsg() const;
+  public:
+  void clear_errmsg();
+  const std::string& errmsg() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_errmsg(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_errmsg();
+  PROTOBUF_NODISCARD std::string* release_errmsg();
+  void set_allocated_errmsg(std::string* errmsg);
+  private:
+  const std::string& _internal_errmsg() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_errmsg(const std::string& value);
+  std::string* _internal_mutable_errmsg();
   public:
 
-  // @@protoc_insertion_point(class_scope:sirius.proto.ServletHeartbeat)
+  // optional string leader = 3;
+  bool has_leader() const;
+  private:
+  bool _internal_has_leader() const;
+  public:
+  void clear_leader();
+  const std::string& leader() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_leader(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_leader();
+  PROTOBUF_NODISCARD std::string* release_leader();
+  void set_allocated_leader(std::string* leader);
+  private:
+  const std::string& _internal_leader() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_leader(const std::string& value);
+  std::string* _internal_mutable_leader();
+  public:
+
+  // required .sirius.proto.ErrCode errcode = 1;
+  bool has_errcode() const;
+  private:
+  bool _internal_has_errcode() const;
+  public:
+  void clear_errcode();
+  ::sirius::proto::ErrCode errcode() const;
+  void set_errcode(::sirius::proto::ErrCode value);
+  private:
+  ::sirius::proto::ErrCode _internal_errcode() const;
+  void _internal_set_errcode(::sirius::proto::ErrCode value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:sirius.proto.ServletNamingResponse)
  private:
   class _Internal;
 
@@ -1751,7 +1481,10 @@ class ServletHeartbeat final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr address_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ServletInfo > servlets_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr errmsg_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr leader_;
+    int errcode_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_sirius_2fproto_2fdiscovery_2estruct_2eproto;
@@ -1887,14 +1620,12 @@ class DiscoveryManagerRequest final :
 
   enum : int {
     kResourceTagsFieldNumber = 5,
-    kNamespaceInfoFieldNumber = 2,
+    kAppInfoFieldNumber = 2,
     kUserPrivilegeFieldNumber = 3,
     kAutoIncrementFieldNumber = 4,
     kConfigInfoFieldNumber = 6,
     kZoneInfoFieldNumber = 7,
     kServletInfoFieldNumber = 8,
-    kServletRenewFieldNumber = 9,
-    kInstanceInfoFieldNumber = 10,
     kOpTypeFieldNumber = 1,
   };
   // repeated string resource_tags = 5;
@@ -1921,23 +1652,23 @@ class DiscoveryManagerRequest final :
   std::string* _internal_add_resource_tags();
   public:
 
-  // optional .sirius.proto.NameSpaceInfo namespace_info = 2;
-  bool has_namespace_info() const;
+  // optional .sirius.proto.AppInfo app_info = 2;
+  bool has_app_info() const;
   private:
-  bool _internal_has_namespace_info() const;
+  bool _internal_has_app_info() const;
   public:
-  void clear_namespace_info();
-  const ::sirius::proto::NameSpaceInfo& namespace_info() const;
-  PROTOBUF_NODISCARD ::sirius::proto::NameSpaceInfo* release_namespace_info();
-  ::sirius::proto::NameSpaceInfo* mutable_namespace_info();
-  void set_allocated_namespace_info(::sirius::proto::NameSpaceInfo* namespace_info);
+  void clear_app_info();
+  const ::sirius::proto::AppInfo& app_info() const;
+  PROTOBUF_NODISCARD ::sirius::proto::AppInfo* release_app_info();
+  ::sirius::proto::AppInfo* mutable_app_info();
+  void set_allocated_app_info(::sirius::proto::AppInfo* app_info);
   private:
-  const ::sirius::proto::NameSpaceInfo& _internal_namespace_info() const;
-  ::sirius::proto::NameSpaceInfo* _internal_mutable_namespace_info();
+  const ::sirius::proto::AppInfo& _internal_app_info() const;
+  ::sirius::proto::AppInfo* _internal_mutable_app_info();
   public:
-  void unsafe_arena_set_allocated_namespace_info(
-      ::sirius::proto::NameSpaceInfo* namespace_info);
-  ::sirius::proto::NameSpaceInfo* unsafe_arena_release_namespace_info();
+  void unsafe_arena_set_allocated_app_info(
+      ::sirius::proto::AppInfo* app_info);
+  ::sirius::proto::AppInfo* unsafe_arena_release_app_info();
 
   // optional .sirius.proto.UserPrivilege user_privilege = 3;
   bool has_user_privilege() const;
@@ -2029,42 +1760,6 @@ class DiscoveryManagerRequest final :
       ::sirius::proto::ServletInfo* servlet_info);
   ::sirius::proto::ServletInfo* unsafe_arena_release_servlet_info();
 
-  // optional .sirius.proto.ServletHeartbeat servlet_renew = 9;
-  bool has_servlet_renew() const;
-  private:
-  bool _internal_has_servlet_renew() const;
-  public:
-  void clear_servlet_renew();
-  const ::sirius::proto::ServletHeartbeat& servlet_renew() const;
-  PROTOBUF_NODISCARD ::sirius::proto::ServletHeartbeat* release_servlet_renew();
-  ::sirius::proto::ServletHeartbeat* mutable_servlet_renew();
-  void set_allocated_servlet_renew(::sirius::proto::ServletHeartbeat* servlet_renew);
-  private:
-  const ::sirius::proto::ServletHeartbeat& _internal_servlet_renew() const;
-  ::sirius::proto::ServletHeartbeat* _internal_mutable_servlet_renew();
-  public:
-  void unsafe_arena_set_allocated_servlet_renew(
-      ::sirius::proto::ServletHeartbeat* servlet_renew);
-  ::sirius::proto::ServletHeartbeat* unsafe_arena_release_servlet_renew();
-
-  // optional .sirius.proto.ServletInstance instance_info = 10;
-  bool has_instance_info() const;
-  private:
-  bool _internal_has_instance_info() const;
-  public:
-  void clear_instance_info();
-  const ::sirius::proto::ServletInstance& instance_info() const;
-  PROTOBUF_NODISCARD ::sirius::proto::ServletInstance* release_instance_info();
-  ::sirius::proto::ServletInstance* mutable_instance_info();
-  void set_allocated_instance_info(::sirius::proto::ServletInstance* instance_info);
-  private:
-  const ::sirius::proto::ServletInstance& _internal_instance_info() const;
-  ::sirius::proto::ServletInstance* _internal_mutable_instance_info();
-  public:
-  void unsafe_arena_set_allocated_instance_info(
-      ::sirius::proto::ServletInstance* instance_info);
-  ::sirius::proto::ServletInstance* unsafe_arena_release_instance_info();
-
   // required .sirius.proto.OpType op_type = 1;
   bool has_op_type() const;
   private:
@@ -2089,15 +1784,193 @@ class DiscoveryManagerRequest final :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> resource_tags_;
-    ::sirius::proto::NameSpaceInfo* namespace_info_;
+    ::sirius::proto::AppInfo* app_info_;
     ::sirius::proto::UserPrivilege* user_privilege_;
     ::sirius::proto::AutoIncrementRequest* auto_increment_;
     ::sirius::proto::ConfigInfo* config_info_;
     ::sirius::proto::ZoneInfo* zone_info_;
     ::sirius::proto::ServletInfo* servlet_info_;
-    ::sirius::proto::ServletHeartbeat* servlet_renew_;
-    ::sirius::proto::ServletInstance* instance_info_;
     int op_type_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_sirius_2fproto_2fdiscovery_2estruct_2eproto;
+};
+// -------------------------------------------------------------------
+
+class DiscoveryRegisterResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:sirius.proto.DiscoveryRegisterResponse) */ {
+ public:
+  inline DiscoveryRegisterResponse() : DiscoveryRegisterResponse(nullptr) {}
+  ~DiscoveryRegisterResponse() override;
+  explicit PROTOBUF_CONSTEXPR DiscoveryRegisterResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  DiscoveryRegisterResponse(const DiscoveryRegisterResponse& from);
+  DiscoveryRegisterResponse(DiscoveryRegisterResponse&& from) noexcept
+    : DiscoveryRegisterResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline DiscoveryRegisterResponse& operator=(const DiscoveryRegisterResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline DiscoveryRegisterResponse& operator=(DiscoveryRegisterResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const DiscoveryRegisterResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const DiscoveryRegisterResponse* internal_default_instance() {
+    return reinterpret_cast<const DiscoveryRegisterResponse*>(
+               &_DiscoveryRegisterResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    6;
+
+  friend void swap(DiscoveryRegisterResponse& a, DiscoveryRegisterResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(DiscoveryRegisterResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(DiscoveryRegisterResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  DiscoveryRegisterResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<DiscoveryRegisterResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const DiscoveryRegisterResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const DiscoveryRegisterResponse& from) {
+    DiscoveryRegisterResponse::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(DiscoveryRegisterResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "sirius.proto.DiscoveryRegisterResponse";
+  }
+  protected:
+  explicit DiscoveryRegisterResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kErrmsgFieldNumber = 2,
+    kErrcodeFieldNumber = 1,
+  };
+  // optional string errmsg = 2;
+  bool has_errmsg() const;
+  private:
+  bool _internal_has_errmsg() const;
+  public:
+  void clear_errmsg();
+  const std::string& errmsg() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_errmsg(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_errmsg();
+  PROTOBUF_NODISCARD std::string* release_errmsg();
+  void set_allocated_errmsg(std::string* errmsg);
+  private:
+  const std::string& _internal_errmsg() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_errmsg(const std::string& value);
+  std::string* _internal_mutable_errmsg();
+  public:
+
+  // required .sirius.proto.ErrCode errcode = 1;
+  bool has_errcode() const;
+  private:
+  bool _internal_has_errcode() const;
+  public:
+  void clear_errcode();
+  ::sirius::proto::ErrCode errcode() const;
+  void set_errcode(::sirius::proto::ErrCode value);
+  private:
+  ::sirius::proto::ErrCode _internal_errcode() const;
+  void _internal_set_errcode(::sirius::proto::ErrCode value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:sirius.proto.DiscoveryRegisterResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr errmsg_;
+    int errcode_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_sirius_2fproto_2fdiscovery_2estruct_2eproto;
@@ -2159,7 +2032,7 @@ class DiscoveryManagerResponse final :
                &_DiscoveryManagerResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    7;
 
   friend void swap(DiscoveryManagerResponse& a, DiscoveryManagerResponse& b) {
     a.Swap(&b);
@@ -2404,7 +2277,7 @@ class DiscoveryQueryRequest final :
                &_DiscoveryQueryRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    8;
 
   friend void swap(DiscoveryQueryRequest& a, DiscoveryQueryRequest& b) {
     a.Swap(&b);
@@ -2479,7 +2352,7 @@ class DiscoveryQueryRequest final :
   enum : int {
     kInstanceAddressFieldNumber = 2,
     kUserNameFieldNumber = 3,
-    kNamespaceNameFieldNumber = 4,
+    kAppNameFieldNumber = 4,
     kConfigNameFieldNumber = 5,
     kZoneFieldNumber = 7,
     kServletFieldNumber = 8,
@@ -2525,22 +2398,22 @@ class DiscoveryQueryRequest final :
   std::string* _internal_mutable_user_name();
   public:
 
-  // optional string namespace_name = 4;
-  bool has_namespace_name() const;
+  // optional string app_name = 4;
+  bool has_app_name() const;
   private:
-  bool _internal_has_namespace_name() const;
+  bool _internal_has_app_name() const;
   public:
-  void clear_namespace_name();
-  const std::string& namespace_name() const;
+  void clear_app_name();
+  const std::string& app_name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_namespace_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_namespace_name();
-  PROTOBUF_NODISCARD std::string* release_namespace_name();
-  void set_allocated_namespace_name(std::string* namespace_name);
+  void set_app_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_app_name();
+  PROTOBUF_NODISCARD std::string* release_app_name();
+  void set_allocated_app_name(std::string* app_name);
   private:
-  const std::string& _internal_namespace_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_namespace_name(const std::string& value);
-  std::string* _internal_mutable_namespace_name();
+  const std::string& _internal_app_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_app_name(const std::string& value);
+  std::string* _internal_mutable_app_name();
   public:
 
   // optional string config_name = 5;
@@ -2689,7 +2562,7 @@ class DiscoveryQueryRequest final :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr instance_address_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr user_name_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr namespace_name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr app_name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr config_name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr zone_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr servlet_;
@@ -2759,7 +2632,7 @@ class DiscoveryQueryResponse final :
                &_DiscoveryQueryResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(DiscoveryQueryResponse& a, DiscoveryQueryResponse& b) {
     a.Swap(&b);
@@ -2833,14 +2706,13 @@ class DiscoveryQueryResponse final :
 
   enum : int {
     kUserPrivilegeFieldNumber = 4,
-    kNamespaceInfosFieldNumber = 5,
+    kAppInfosFieldNumber = 5,
     kFlattenInstancesFieldNumber = 6,
     kFlattenPrivilegesFieldNumber = 7,
     kPeerIdsFieldNumber = 8,
     kZoneInfosFieldNumber = 9,
     kServletInfosFieldNumber = 10,
     kConfigInfosFieldNumber = 11,
-    kInstanceFieldNumber = 12,
     kErrmsgFieldNumber = 2,
     kLeaderFieldNumber = 3,
     kErrcodeFieldNumber = 1,
@@ -2863,23 +2735,23 @@ class DiscoveryQueryResponse final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::UserPrivilege >&
       user_privilege() const;
 
-  // repeated .sirius.proto.NameSpaceInfo namespace_infos = 5;
-  int namespace_infos_size() const;
+  // repeated .sirius.proto.AppInfo app_infos = 5;
+  int app_infos_size() const;
   private:
-  int _internal_namespace_infos_size() const;
+  int _internal_app_infos_size() const;
   public:
-  void clear_namespace_infos();
-  ::sirius::proto::NameSpaceInfo* mutable_namespace_infos(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::NameSpaceInfo >*
-      mutable_namespace_infos();
+  void clear_app_infos();
+  ::sirius::proto::AppInfo* mutable_app_infos(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::AppInfo >*
+      mutable_app_infos();
   private:
-  const ::sirius::proto::NameSpaceInfo& _internal_namespace_infos(int index) const;
-  ::sirius::proto::NameSpaceInfo* _internal_add_namespace_infos();
+  const ::sirius::proto::AppInfo& _internal_app_infos(int index) const;
+  ::sirius::proto::AppInfo* _internal_add_app_infos();
   public:
-  const ::sirius::proto::NameSpaceInfo& namespace_infos(int index) const;
-  ::sirius::proto::NameSpaceInfo* add_namespace_infos();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::NameSpaceInfo >&
-      namespace_infos() const;
+  const ::sirius::proto::AppInfo& app_infos(int index) const;
+  ::sirius::proto::AppInfo* add_app_infos();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::AppInfo >&
+      app_infos() const;
 
   // repeated .sirius.proto.QueryInstance flatten_instances = 6;
   int flatten_instances_size() const;
@@ -2993,24 +2865,6 @@ class DiscoveryQueryResponse final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ConfigInfo >&
       config_infos() const;
 
-  // repeated .sirius.proto.ServletInstance instance = 12;
-  int instance_size() const;
-  private:
-  int _internal_instance_size() const;
-  public:
-  void clear_instance();
-  ::sirius::proto::ServletInstance* mutable_instance(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ServletInstance >*
-      mutable_instance();
-  private:
-  const ::sirius::proto::ServletInstance& _internal_instance(int index) const;
-  ::sirius::proto::ServletInstance* _internal_add_instance();
-  public:
-  const ::sirius::proto::ServletInstance& instance(int index) const;
-  ::sirius::proto::ServletInstance* add_instance();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ServletInstance >&
-      instance() const;
-
   // optional string errmsg = 2;
   bool has_errmsg() const;
   private:
@@ -3071,14 +2925,13 @@ class DiscoveryQueryResponse final :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::UserPrivilege > user_privilege_;
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::NameSpaceInfo > namespace_infos_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::AppInfo > app_infos_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::QueryInstance > flatten_instances_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::QueryUserPrivilege > flatten_privileges_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedField< int64_t > peer_ids_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ZoneInfo > zone_infos_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ServletInfo > servlet_infos_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ConfigInfo > config_infos_;
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ServletInstance > instance_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr errmsg_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr leader_;
     int errcode_;
@@ -3143,7 +2996,7 @@ class QueryUserPrivilege final :
                &_QueryUserPrivilege_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    10;
 
   friend void swap(QueryUserPrivilege& a, QueryUserPrivilege& b) {
     a.Swap(&b);
@@ -3217,7 +3070,7 @@ class QueryUserPrivilege final :
 
   enum : int {
     kUsernameFieldNumber = 1,
-    kNamespaceNameFieldNumber = 2,
+    kAppNameFieldNumber = 2,
     kPrivilegeFieldNumber = 3,
     kPasswordFieldNumber = 5,
     kServletRwFieldNumber = 4,
@@ -3240,22 +3093,22 @@ class QueryUserPrivilege final :
   std::string* _internal_mutable_username();
   public:
 
-  // required string namespace_name = 2;
-  bool has_namespace_name() const;
+  // required string app_name = 2;
+  bool has_app_name() const;
   private:
-  bool _internal_has_namespace_name() const;
+  bool _internal_has_app_name() const;
   public:
-  void clear_namespace_name();
-  const std::string& namespace_name() const;
+  void clear_app_name();
+  const std::string& app_name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_namespace_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_namespace_name();
-  PROTOBUF_NODISCARD std::string* release_namespace_name();
-  void set_allocated_namespace_name(std::string* namespace_name);
+  void set_app_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_app_name();
+  PROTOBUF_NODISCARD std::string* release_app_name();
+  void set_allocated_app_name(std::string* app_name);
   private:
-  const std::string& _internal_namespace_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_namespace_name(const std::string& value);
-  std::string* _internal_mutable_namespace_name();
+  const std::string& _internal_app_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_app_name(const std::string& value);
+  std::string* _internal_mutable_app_name();
   public:
 
   // required string privilege = 3;
@@ -3321,7 +3174,7 @@ class QueryUserPrivilege final :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr username_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr namespace_name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr app_name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr privilege_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr password_;
     int servlet_rw_;
@@ -3386,7 +3239,7 @@ class QueryInstance final :
                &_QueryInstance_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    11;
 
   friend void swap(QueryInstance& a, QueryInstance& b) {
     a.Swap(&b);
@@ -3460,7 +3313,7 @@ class QueryInstance final :
 
   enum : int {
     kAddressFieldNumber = 1,
-    kNamespaceNameFieldNumber = 2,
+    kAppNameFieldNumber = 2,
     kZoneNameFieldNumber = 3,
     kServletNameFieldNumber = 4,
     kEnvFieldNumber = 5,
@@ -3486,22 +3339,22 @@ class QueryInstance final :
   std::string* _internal_mutable_address();
   public:
 
-  // optional string namespace_name = 2;
-  bool has_namespace_name() const;
+  // optional string app_name = 2;
+  bool has_app_name() const;
   private:
-  bool _internal_has_namespace_name() const;
+  bool _internal_has_app_name() const;
   public:
-  void clear_namespace_name();
-  const std::string& namespace_name() const;
+  void clear_app_name();
+  const std::string& app_name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_namespace_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_namespace_name();
-  PROTOBUF_NODISCARD std::string* release_namespace_name();
-  void set_allocated_namespace_name(std::string* namespace_name);
+  void set_app_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_app_name();
+  PROTOBUF_NODISCARD std::string* release_app_name();
+  void set_allocated_app_name(std::string* app_name);
   private:
-  const std::string& _internal_namespace_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_namespace_name(const std::string& value);
-  std::string* _internal_mutable_namespace_name();
+  const std::string& _internal_app_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_app_name(const std::string& value);
+  std::string* _internal_mutable_app_name();
   public:
 
   // optional string zone_name = 3;
@@ -3613,7 +3466,7 @@ class QueryInstance final :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr address_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr namespace_name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr app_name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr zone_name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr servlet_name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr env_;
@@ -3633,338 +3486,186 @@ class QueryInstance final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// NameSpaceInfo
+// AppInfo
 
-// required string namespace_name = 1;
-inline bool NameSpaceInfo::_internal_has_namespace_name() const {
+// required string app_name = 1;
+inline bool AppInfo::_internal_has_app_name() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   return value;
 }
-inline bool NameSpaceInfo::has_namespace_name() const {
-  return _internal_has_namespace_name();
+inline bool AppInfo::has_app_name() const {
+  return _internal_has_app_name();
 }
-inline void NameSpaceInfo::clear_namespace_name() {
-  _impl_.namespace_name_.ClearToEmpty();
+inline void AppInfo::clear_app_name() {
+  _impl_.app_name_.ClearToEmpty();
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
-inline const std::string& NameSpaceInfo::namespace_name() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.NameSpaceInfo.namespace_name)
-  return _internal_namespace_name();
+inline const std::string& AppInfo::app_name() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.AppInfo.app_name)
+  return _internal_app_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void NameSpaceInfo::set_namespace_name(ArgT0&& arg0, ArgT... args) {
+void AppInfo::set_app_name(ArgT0&& arg0, ArgT... args) {
  _impl_._has_bits_[0] |= 0x00000001u;
- _impl_.namespace_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.NameSpaceInfo.namespace_name)
+ _impl_.app_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:sirius.proto.AppInfo.app_name)
 }
-inline std::string* NameSpaceInfo::mutable_namespace_name() {
-  std::string* _s = _internal_mutable_namespace_name();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.NameSpaceInfo.namespace_name)
+inline std::string* AppInfo::mutable_app_name() {
+  std::string* _s = _internal_mutable_app_name();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.AppInfo.app_name)
   return _s;
 }
-inline const std::string& NameSpaceInfo::_internal_namespace_name() const {
-  return _impl_.namespace_name_.Get();
+inline const std::string& AppInfo::_internal_app_name() const {
+  return _impl_.app_name_.Get();
 }
-inline void NameSpaceInfo::_internal_set_namespace_name(const std::string& value) {
+inline void AppInfo::_internal_set_app_name(const std::string& value) {
   _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.namespace_name_.Set(value, GetArenaForAllocation());
+  _impl_.app_name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* NameSpaceInfo::_internal_mutable_namespace_name() {
+inline std::string* AppInfo::_internal_mutable_app_name() {
   _impl_._has_bits_[0] |= 0x00000001u;
-  return _impl_.namespace_name_.Mutable(GetArenaForAllocation());
+  return _impl_.app_name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* NameSpaceInfo::release_namespace_name() {
-  // @@protoc_insertion_point(field_release:sirius.proto.NameSpaceInfo.namespace_name)
-  if (!_internal_has_namespace_name()) {
+inline std::string* AppInfo::release_app_name() {
+  // @@protoc_insertion_point(field_release:sirius.proto.AppInfo.app_name)
+  if (!_internal_has_app_name()) {
     return nullptr;
   }
   _impl_._has_bits_[0] &= ~0x00000001u;
-  auto* p = _impl_.namespace_name_.Release();
+  auto* p = _impl_.app_name_.Release();
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   return p;
 }
-inline void NameSpaceInfo::set_allocated_namespace_name(std::string* namespace_name) {
-  if (namespace_name != nullptr) {
+inline void AppInfo::set_allocated_app_name(std::string* app_name) {
+  if (app_name != nullptr) {
     _impl_._has_bits_[0] |= 0x00000001u;
   } else {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
-  _impl_.namespace_name_.SetAllocated(namespace_name, GetArenaForAllocation());
+  _impl_.app_name_.SetAllocated(app_name, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.NameSpaceInfo.namespace_name)
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.AppInfo.app_name)
 }
 
-// optional int64 namespace_id = 2;
-inline bool NameSpaceInfo::_internal_has_namespace_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool NameSpaceInfo::has_namespace_id() const {
-  return _internal_has_namespace_id();
-}
-inline void NameSpaceInfo::clear_namespace_id() {
-  _impl_.namespace_id_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline int64_t NameSpaceInfo::_internal_namespace_id() const {
-  return _impl_.namespace_id_;
-}
-inline int64_t NameSpaceInfo::namespace_id() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.NameSpaceInfo.namespace_id)
-  return _internal_namespace_id();
-}
-inline void NameSpaceInfo::_internal_set_namespace_id(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.namespace_id_ = value;
-}
-inline void NameSpaceInfo::set_namespace_id(int64_t value) {
-  _internal_set_namespace_id(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.NameSpaceInfo.namespace_id)
-}
-
-// optional int64 quota = 3;
-inline bool NameSpaceInfo::_internal_has_quota() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
-  return value;
-}
-inline bool NameSpaceInfo::has_quota() const {
-  return _internal_has_quota();
-}
-inline void NameSpaceInfo::clear_quota() {
-  _impl_.quota_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000008u;
-}
-inline int64_t NameSpaceInfo::_internal_quota() const {
-  return _impl_.quota_;
-}
-inline int64_t NameSpaceInfo::quota() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.NameSpaceInfo.quota)
-  return _internal_quota();
-}
-inline void NameSpaceInfo::_internal_set_quota(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
-  _impl_.quota_ = value;
-}
-inline void NameSpaceInfo::set_quota(int64_t value) {
-  _internal_set_quota(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.NameSpaceInfo.quota)
-}
-
-// optional int64 version = 4;
-inline bool NameSpaceInfo::_internal_has_version() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
-  return value;
-}
-inline bool NameSpaceInfo::has_version() const {
-  return _internal_has_version();
-}
-inline void NameSpaceInfo::clear_version() {
-  _impl_.version_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000010u;
-}
-inline int64_t NameSpaceInfo::_internal_version() const {
-  return _impl_.version_;
-}
-inline int64_t NameSpaceInfo::version() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.NameSpaceInfo.version)
-  return _internal_version();
-}
-inline void NameSpaceInfo::_internal_set_version(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
-  _impl_.version_ = value;
-}
-inline void NameSpaceInfo::set_version(int64_t value) {
-  _internal_set_version(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.NameSpaceInfo.version)
-}
-
-// optional bool deleted = 5;
-inline bool NameSpaceInfo::_internal_has_deleted() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
-  return value;
-}
-inline bool NameSpaceInfo::has_deleted() const {
-  return _internal_has_deleted();
-}
-inline void NameSpaceInfo::clear_deleted() {
-  _impl_.deleted_ = false;
-  _impl_._has_bits_[0] &= ~0x00000100u;
-}
-inline bool NameSpaceInfo::_internal_deleted() const {
-  return _impl_.deleted_;
-}
-inline bool NameSpaceInfo::deleted() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.NameSpaceInfo.deleted)
-  return _internal_deleted();
-}
-inline void NameSpaceInfo::_internal_set_deleted(bool value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
-  _impl_.deleted_ = value;
-}
-inline void NameSpaceInfo::set_deleted(bool value) {
-  _internal_set_deleted(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.NameSpaceInfo.deleted)
-}
-
-// optional string resource_tag = 6;
-inline bool NameSpaceInfo::_internal_has_resource_tag() const {
+// optional int64 app_id = 2;
+inline bool AppInfo::_internal_has_app_id() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
-inline bool NameSpaceInfo::has_resource_tag() const {
-  return _internal_has_resource_tag();
+inline bool AppInfo::has_app_id() const {
+  return _internal_has_app_id();
 }
-inline void NameSpaceInfo::clear_resource_tag() {
-  _impl_.resource_tag_.ClearToEmpty();
+inline void AppInfo::clear_app_id() {
+  _impl_.app_id_ = int64_t{0};
   _impl_._has_bits_[0] &= ~0x00000002u;
 }
-inline const std::string& NameSpaceInfo::resource_tag() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.NameSpaceInfo.resource_tag)
-  return _internal_resource_tag();
+inline int64_t AppInfo::_internal_app_id() const {
+  return _impl_.app_id_;
 }
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void NameSpaceInfo::set_resource_tag(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000002u;
- _impl_.resource_tag_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.NameSpaceInfo.resource_tag)
+inline int64_t AppInfo::app_id() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.AppInfo.app_id)
+  return _internal_app_id();
 }
-inline std::string* NameSpaceInfo::mutable_resource_tag() {
-  std::string* _s = _internal_mutable_resource_tag();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.NameSpaceInfo.resource_tag)
-  return _s;
-}
-inline const std::string& NameSpaceInfo::_internal_resource_tag() const {
-  return _impl_.resource_tag_.Get();
-}
-inline void NameSpaceInfo::_internal_set_resource_tag(const std::string& value) {
+inline void AppInfo::_internal_set_app_id(int64_t value) {
   _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.resource_tag_.Set(value, GetArenaForAllocation());
+  _impl_.app_id_ = value;
 }
-inline std::string* NameSpaceInfo::_internal_mutable_resource_tag() {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  return _impl_.resource_tag_.Mutable(GetArenaForAllocation());
-}
-inline std::string* NameSpaceInfo::release_resource_tag() {
-  // @@protoc_insertion_point(field_release:sirius.proto.NameSpaceInfo.resource_tag)
-  if (!_internal_has_resource_tag()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000002u;
-  auto* p = _impl_.resource_tag_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.resource_tag_.IsDefault()) {
-    _impl_.resource_tag_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void NameSpaceInfo::set_allocated_resource_tag(std::string* resource_tag) {
-  if (resource_tag != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000002u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000002u;
-  }
-  _impl_.resource_tag_.SetAllocated(resource_tag, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.resource_tag_.IsDefault()) {
-    _impl_.resource_tag_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.NameSpaceInfo.resource_tag)
+inline void AppInfo::set_app_id(int64_t value) {
+  _internal_set_app_id(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.AppInfo.app_id)
 }
 
-// optional int64 byte_size_per_record = 9;
-inline bool NameSpaceInfo::_internal_has_byte_size_per_record() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+// optional int64 quota = 3;
+inline bool AppInfo::_internal_has_quota() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
-inline bool NameSpaceInfo::has_byte_size_per_record() const {
-  return _internal_has_byte_size_per_record();
+inline bool AppInfo::has_quota() const {
+  return _internal_has_quota();
 }
-inline void NameSpaceInfo::clear_byte_size_per_record() {
-  _impl_.byte_size_per_record_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000020u;
+inline void AppInfo::clear_quota() {
+  _impl_.quota_ = int64_t{0};
+  _impl_._has_bits_[0] &= ~0x00000004u;
 }
-inline int64_t NameSpaceInfo::_internal_byte_size_per_record() const {
-  return _impl_.byte_size_per_record_;
+inline int64_t AppInfo::_internal_quota() const {
+  return _impl_.quota_;
 }
-inline int64_t NameSpaceInfo::byte_size_per_record() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.NameSpaceInfo.byte_size_per_record)
-  return _internal_byte_size_per_record();
+inline int64_t AppInfo::quota() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.AppInfo.quota)
+  return _internal_quota();
 }
-inline void NameSpaceInfo::_internal_set_byte_size_per_record(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
-  _impl_.byte_size_per_record_ = value;
+inline void AppInfo::_internal_set_quota(int64_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.quota_ = value;
 }
-inline void NameSpaceInfo::set_byte_size_per_record(int64_t value) {
-  _internal_set_byte_size_per_record(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.NameSpaceInfo.byte_size_per_record)
+inline void AppInfo::set_quota(int64_t value) {
+  _internal_set_quota(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.AppInfo.quota)
 }
 
-// optional int64 replica_num = 10;
-inline bool NameSpaceInfo::_internal_has_replica_num() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+// optional int64 version = 4;
+inline bool AppInfo::_internal_has_version() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
-inline bool NameSpaceInfo::has_replica_num() const {
-  return _internal_has_replica_num();
+inline bool AppInfo::has_version() const {
+  return _internal_has_version();
 }
-inline void NameSpaceInfo::clear_replica_num() {
-  _impl_.replica_num_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000040u;
+inline void AppInfo::clear_version() {
+  _impl_.version_ = int64_t{0};
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
-inline int64_t NameSpaceInfo::_internal_replica_num() const {
-  return _impl_.replica_num_;
+inline int64_t AppInfo::_internal_version() const {
+  return _impl_.version_;
 }
-inline int64_t NameSpaceInfo::replica_num() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.NameSpaceInfo.replica_num)
-  return _internal_replica_num();
+inline int64_t AppInfo::version() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.AppInfo.version)
+  return _internal_version();
 }
-inline void NameSpaceInfo::_internal_set_replica_num(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
-  _impl_.replica_num_ = value;
+inline void AppInfo::_internal_set_version(int64_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.version_ = value;
 }
-inline void NameSpaceInfo::set_replica_num(int64_t value) {
-  _internal_set_replica_num(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.NameSpaceInfo.replica_num)
+inline void AppInfo::set_version(int64_t value) {
+  _internal_set_version(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.AppInfo.version)
 }
 
-// optional int64 region_split_lines = 11;
-inline bool NameSpaceInfo::_internal_has_region_split_lines() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+// optional bool deleted = 5;
+inline bool AppInfo::_internal_has_deleted() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
-inline bool NameSpaceInfo::has_region_split_lines() const {
-  return _internal_has_region_split_lines();
+inline bool AppInfo::has_deleted() const {
+  return _internal_has_deleted();
 }
-inline void NameSpaceInfo::clear_region_split_lines() {
-  _impl_.region_split_lines_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000080u;
+inline void AppInfo::clear_deleted() {
+  _impl_.deleted_ = false;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
-inline int64_t NameSpaceInfo::_internal_region_split_lines() const {
-  return _impl_.region_split_lines_;
+inline bool AppInfo::_internal_deleted() const {
+  return _impl_.deleted_;
 }
-inline int64_t NameSpaceInfo::region_split_lines() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.NameSpaceInfo.region_split_lines)
-  return _internal_region_split_lines();
+inline bool AppInfo::deleted() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.AppInfo.deleted)
+  return _internal_deleted();
 }
-inline void NameSpaceInfo::_internal_set_region_split_lines(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
-  _impl_.region_split_lines_ = value;
+inline void AppInfo::_internal_set_deleted(bool value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.deleted_ = value;
 }
-inline void NameSpaceInfo::set_region_split_lines(int64_t value) {
-  _internal_set_region_split_lines(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.NameSpaceInfo.region_split_lines)
+inline void AppInfo::set_deleted(bool value) {
+  _internal_set_deleted(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.AppInfo.deleted)
 }
 
 // -------------------------------------------------------------------
@@ -4041,7 +3742,7 @@ inline void ZoneInfo::set_allocated_zone(std::string* zone) {
 
 // optional int64 zone_id = 2;
 inline bool ZoneInfo::_internal_has_zone_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
 inline bool ZoneInfo::has_zone_id() const {
@@ -4049,7 +3750,7 @@ inline bool ZoneInfo::has_zone_id() const {
 }
 inline void ZoneInfo::clear_zone_id() {
   _impl_.zone_id_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
 }
 inline int64_t ZoneInfo::_internal_zone_id() const {
   return _impl_.zone_id_;
@@ -4059,7 +3760,7 @@ inline int64_t ZoneInfo::zone_id() const {
   return _internal_zone_id();
 }
 inline void ZoneInfo::_internal_set_zone_id(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000004u;
   _impl_.zone_id_ = value;
 }
 inline void ZoneInfo::set_zone_id(int64_t value) {
@@ -4067,105 +3768,105 @@ inline void ZoneInfo::set_zone_id(int64_t value) {
   // @@protoc_insertion_point(field_set:sirius.proto.ZoneInfo.zone_id)
 }
 
-// required string namespace_name = 3;
-inline bool ZoneInfo::_internal_has_namespace_name() const {
+// required string app_name = 3;
+inline bool ZoneInfo::_internal_has_app_name() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
-inline bool ZoneInfo::has_namespace_name() const {
-  return _internal_has_namespace_name();
+inline bool ZoneInfo::has_app_name() const {
+  return _internal_has_app_name();
 }
-inline void ZoneInfo::clear_namespace_name() {
-  _impl_.namespace_name_.ClearToEmpty();
+inline void ZoneInfo::clear_app_name() {
+  _impl_.app_name_.ClearToEmpty();
   _impl_._has_bits_[0] &= ~0x00000002u;
 }
-inline const std::string& ZoneInfo::namespace_name() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ZoneInfo.namespace_name)
-  return _internal_namespace_name();
+inline const std::string& ZoneInfo::app_name() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ZoneInfo.app_name)
+  return _internal_app_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void ZoneInfo::set_namespace_name(ArgT0&& arg0, ArgT... args) {
+void ZoneInfo::set_app_name(ArgT0&& arg0, ArgT... args) {
  _impl_._has_bits_[0] |= 0x00000002u;
- _impl_.namespace_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ZoneInfo.namespace_name)
+ _impl_.app_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:sirius.proto.ZoneInfo.app_name)
 }
-inline std::string* ZoneInfo::mutable_namespace_name() {
-  std::string* _s = _internal_mutable_namespace_name();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ZoneInfo.namespace_name)
+inline std::string* ZoneInfo::mutable_app_name() {
+  std::string* _s = _internal_mutable_app_name();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ZoneInfo.app_name)
   return _s;
 }
-inline const std::string& ZoneInfo::_internal_namespace_name() const {
-  return _impl_.namespace_name_.Get();
+inline const std::string& ZoneInfo::_internal_app_name() const {
+  return _impl_.app_name_.Get();
 }
-inline void ZoneInfo::_internal_set_namespace_name(const std::string& value) {
+inline void ZoneInfo::_internal_set_app_name(const std::string& value) {
   _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.namespace_name_.Set(value, GetArenaForAllocation());
+  _impl_.app_name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* ZoneInfo::_internal_mutable_namespace_name() {
+inline std::string* ZoneInfo::_internal_mutable_app_name() {
   _impl_._has_bits_[0] |= 0x00000002u;
-  return _impl_.namespace_name_.Mutable(GetArenaForAllocation());
+  return _impl_.app_name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* ZoneInfo::release_namespace_name() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ZoneInfo.namespace_name)
-  if (!_internal_has_namespace_name()) {
+inline std::string* ZoneInfo::release_app_name() {
+  // @@protoc_insertion_point(field_release:sirius.proto.ZoneInfo.app_name)
+  if (!_internal_has_app_name()) {
     return nullptr;
   }
   _impl_._has_bits_[0] &= ~0x00000002u;
-  auto* p = _impl_.namespace_name_.Release();
+  auto* p = _impl_.app_name_.Release();
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   return p;
 }
-inline void ZoneInfo::set_allocated_namespace_name(std::string* namespace_name) {
-  if (namespace_name != nullptr) {
+inline void ZoneInfo::set_allocated_app_name(std::string* app_name) {
+  if (app_name != nullptr) {
     _impl_._has_bits_[0] |= 0x00000002u;
   } else {
     _impl_._has_bits_[0] &= ~0x00000002u;
   }
-  _impl_.namespace_name_.SetAllocated(namespace_name, GetArenaForAllocation());
+  _impl_.app_name_.SetAllocated(app_name, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ZoneInfo.namespace_name)
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ZoneInfo.app_name)
 }
 
-// optional int64 namespace_id = 4;
-inline bool ZoneInfo::_internal_has_namespace_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+// optional int64 app_id = 4;
+inline bool ZoneInfo::_internal_has_app_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
-inline bool ZoneInfo::has_namespace_id() const {
-  return _internal_has_namespace_id();
+inline bool ZoneInfo::has_app_id() const {
+  return _internal_has_app_id();
 }
-inline void ZoneInfo::clear_namespace_id() {
-  _impl_.namespace_id_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000010u;
+inline void ZoneInfo::clear_app_id() {
+  _impl_.app_id_ = int64_t{0};
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
-inline int64_t ZoneInfo::_internal_namespace_id() const {
-  return _impl_.namespace_id_;
+inline int64_t ZoneInfo::_internal_app_id() const {
+  return _impl_.app_id_;
 }
-inline int64_t ZoneInfo::namespace_id() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ZoneInfo.namespace_id)
-  return _internal_namespace_id();
+inline int64_t ZoneInfo::app_id() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ZoneInfo.app_id)
+  return _internal_app_id();
 }
-inline void ZoneInfo::_internal_set_namespace_id(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
-  _impl_.namespace_id_ = value;
+inline void ZoneInfo::_internal_set_app_id(int64_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.app_id_ = value;
 }
-inline void ZoneInfo::set_namespace_id(int64_t value) {
-  _internal_set_namespace_id(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ZoneInfo.namespace_id)
+inline void ZoneInfo::set_app_id(int64_t value) {
+  _internal_set_app_id(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.ZoneInfo.app_id)
 }
 
 // optional int64 quota = 5;
 inline bool ZoneInfo::_internal_has_quota() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool ZoneInfo::has_quota() const {
@@ -4173,7 +3874,7 @@ inline bool ZoneInfo::has_quota() const {
 }
 inline void ZoneInfo::clear_quota() {
   _impl_.quota_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline int64_t ZoneInfo::_internal_quota() const {
   return _impl_.quota_;
@@ -4183,7 +3884,7 @@ inline int64_t ZoneInfo::quota() const {
   return _internal_quota();
 }
 inline void ZoneInfo::_internal_set_quota(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.quota_ = value;
 }
 inline void ZoneInfo::set_quota(int64_t value) {
@@ -4193,7 +3894,7 @@ inline void ZoneInfo::set_quota(int64_t value) {
 
 // optional int64 version = 6;
 inline bool ZoneInfo::_internal_has_version() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool ZoneInfo::has_version() const {
@@ -4201,7 +3902,7 @@ inline bool ZoneInfo::has_version() const {
 }
 inline void ZoneInfo::clear_version() {
   _impl_.version_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
 inline int64_t ZoneInfo::_internal_version() const {
   return _impl_.version_;
@@ -4211,7 +3912,7 @@ inline int64_t ZoneInfo::version() const {
   return _internal_version();
 }
 inline void ZoneInfo::_internal_set_version(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.version_ = value;
 }
 inline void ZoneInfo::set_version(int64_t value) {
@@ -4221,7 +3922,7 @@ inline void ZoneInfo::set_version(int64_t value) {
 
 // optional bool deleted = 7;
 inline bool ZoneInfo::_internal_has_deleted() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool ZoneInfo::has_deleted() const {
@@ -4229,7 +3930,7 @@ inline bool ZoneInfo::has_deleted() const {
 }
 inline void ZoneInfo::clear_deleted() {
   _impl_.deleted_ = false;
-  _impl_._has_bits_[0] &= ~0x00000400u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline bool ZoneInfo::_internal_deleted() const {
   return _impl_.deleted_;
@@ -4239,164 +3940,12 @@ inline bool ZoneInfo::deleted() const {
   return _internal_deleted();
 }
 inline void ZoneInfo::_internal_set_deleted(bool value) {
-  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.deleted_ = value;
 }
 inline void ZoneInfo::set_deleted(bool value) {
   _internal_set_deleted(value);
   // @@protoc_insertion_point(field_set:sirius.proto.ZoneInfo.deleted)
-}
-
-// optional string resource_tag = 8;
-inline bool ZoneInfo::_internal_has_resource_tag() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool ZoneInfo::has_resource_tag() const {
-  return _internal_has_resource_tag();
-}
-inline void ZoneInfo::clear_resource_tag() {
-  _impl_.resource_tag_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline const std::string& ZoneInfo::resource_tag() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ZoneInfo.resource_tag)
-  return _internal_resource_tag();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void ZoneInfo::set_resource_tag(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000004u;
- _impl_.resource_tag_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ZoneInfo.resource_tag)
-}
-inline std::string* ZoneInfo::mutable_resource_tag() {
-  std::string* _s = _internal_mutable_resource_tag();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ZoneInfo.resource_tag)
-  return _s;
-}
-inline const std::string& ZoneInfo::_internal_resource_tag() const {
-  return _impl_.resource_tag_.Get();
-}
-inline void ZoneInfo::_internal_set_resource_tag(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.resource_tag_.Set(value, GetArenaForAllocation());
-}
-inline std::string* ZoneInfo::_internal_mutable_resource_tag() {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  return _impl_.resource_tag_.Mutable(GetArenaForAllocation());
-}
-inline std::string* ZoneInfo::release_resource_tag() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ZoneInfo.resource_tag)
-  if (!_internal_has_resource_tag()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000004u;
-  auto* p = _impl_.resource_tag_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.resource_tag_.IsDefault()) {
-    _impl_.resource_tag_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void ZoneInfo::set_allocated_resource_tag(std::string* resource_tag) {
-  if (resource_tag != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000004u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000004u;
-  }
-  _impl_.resource_tag_.SetAllocated(resource_tag, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.resource_tag_.IsDefault()) {
-    _impl_.resource_tag_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ZoneInfo.resource_tag)
-}
-
-// optional int64 byte_size_per_record = 11;
-inline bool ZoneInfo::_internal_has_byte_size_per_record() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
-  return value;
-}
-inline bool ZoneInfo::has_byte_size_per_record() const {
-  return _internal_has_byte_size_per_record();
-}
-inline void ZoneInfo::clear_byte_size_per_record() {
-  _impl_.byte_size_per_record_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000080u;
-}
-inline int64_t ZoneInfo::_internal_byte_size_per_record() const {
-  return _impl_.byte_size_per_record_;
-}
-inline int64_t ZoneInfo::byte_size_per_record() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ZoneInfo.byte_size_per_record)
-  return _internal_byte_size_per_record();
-}
-inline void ZoneInfo::_internal_set_byte_size_per_record(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
-  _impl_.byte_size_per_record_ = value;
-}
-inline void ZoneInfo::set_byte_size_per_record(int64_t value) {
-  _internal_set_byte_size_per_record(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ZoneInfo.byte_size_per_record)
-}
-
-// optional int64 replica_num = 12;
-inline bool ZoneInfo::_internal_has_replica_num() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
-  return value;
-}
-inline bool ZoneInfo::has_replica_num() const {
-  return _internal_has_replica_num();
-}
-inline void ZoneInfo::clear_replica_num() {
-  _impl_.replica_num_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000100u;
-}
-inline int64_t ZoneInfo::_internal_replica_num() const {
-  return _impl_.replica_num_;
-}
-inline int64_t ZoneInfo::replica_num() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ZoneInfo.replica_num)
-  return _internal_replica_num();
-}
-inline void ZoneInfo::_internal_set_replica_num(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
-  _impl_.replica_num_ = value;
-}
-inline void ZoneInfo::set_replica_num(int64_t value) {
-  _internal_set_replica_num(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ZoneInfo.replica_num)
-}
-
-// optional int64 region_split_lines = 13;
-inline bool ZoneInfo::_internal_has_region_split_lines() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
-  return value;
-}
-inline bool ZoneInfo::has_region_split_lines() const {
-  return _internal_has_region_split_lines();
-}
-inline void ZoneInfo::clear_region_split_lines() {
-  _impl_.region_split_lines_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000200u;
-}
-inline int64_t ZoneInfo::_internal_region_split_lines() const {
-  return _impl_.region_split_lines_;
-}
-inline int64_t ZoneInfo::region_split_lines() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ZoneInfo.region_split_lines)
-  return _internal_region_split_lines();
-}
-inline void ZoneInfo::_internal_set_region_split_lines(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000200u;
-  _impl_.region_split_lines_ = value;
-}
-inline void ZoneInfo::set_region_split_lines(int64_t value) {
-  _internal_set_region_split_lines(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ZoneInfo.region_split_lines)
 }
 
 // -------------------------------------------------------------------
@@ -4405,7 +3954,7 @@ inline void ZoneInfo::set_region_split_lines(int64_t value) {
 
 // optional int64 servlet_id = 1;
 inline bool ServletInfo::_internal_has_servlet_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool ServletInfo::has_servlet_id() const {
@@ -4413,7 +3962,7 @@ inline bool ServletInfo::has_servlet_id() const {
 }
 inline void ServletInfo::clear_servlet_id() {
   _impl_.servlet_id_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline int64_t ServletInfo::_internal_servlet_id() const {
   return _impl_.servlet_id_;
@@ -4423,7 +3972,7 @@ inline int64_t ServletInfo::servlet_id() const {
   return _internal_servlet_id();
 }
 inline void ServletInfo::_internal_set_servlet_id(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.servlet_id_ = value;
 }
 inline void ServletInfo::set_servlet_id(int64_t value) {
@@ -4569,7 +4118,7 @@ inline void ServletInfo::set_allocated_zone(std::string* zone) {
 
 // optional int64 zone_id = 4;
 inline bool ServletInfo::_internal_has_zone_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
 inline bool ServletInfo::has_zone_id() const {
@@ -4577,7 +4126,7 @@ inline bool ServletInfo::has_zone_id() const {
 }
 inline void ServletInfo::clear_zone_id() {
   _impl_.zone_id_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
 inline int64_t ServletInfo::_internal_zone_id() const {
   return _impl_.zone_id_;
@@ -4587,7 +4136,7 @@ inline int64_t ServletInfo::zone_id() const {
   return _internal_zone_id();
 }
 inline void ServletInfo::_internal_set_zone_id(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   _impl_.zone_id_ = value;
 }
 inline void ServletInfo::set_zone_id(int64_t value) {
@@ -4595,229 +4144,173 @@ inline void ServletInfo::set_zone_id(int64_t value) {
   // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.zone_id)
 }
 
-// required string namespace_name = 5;
-inline bool ServletInfo::_internal_has_namespace_name() const {
+// required string app_name = 5;
+inline bool ServletInfo::_internal_has_app_name() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
-inline bool ServletInfo::has_namespace_name() const {
-  return _internal_has_namespace_name();
+inline bool ServletInfo::has_app_name() const {
+  return _internal_has_app_name();
 }
-inline void ServletInfo::clear_namespace_name() {
-  _impl_.namespace_name_.ClearToEmpty();
+inline void ServletInfo::clear_app_name() {
+  _impl_.app_name_.ClearToEmpty();
   _impl_._has_bits_[0] &= ~0x00000004u;
 }
-inline const std::string& ServletInfo::namespace_name() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.namespace_name)
-  return _internal_namespace_name();
+inline const std::string& ServletInfo::app_name() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.app_name)
+  return _internal_app_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void ServletInfo::set_namespace_name(ArgT0&& arg0, ArgT... args) {
+void ServletInfo::set_app_name(ArgT0&& arg0, ArgT... args) {
  _impl_._has_bits_[0] |= 0x00000004u;
- _impl_.namespace_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.namespace_name)
+ _impl_.app_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.app_name)
 }
-inline std::string* ServletInfo::mutable_namespace_name() {
-  std::string* _s = _internal_mutable_namespace_name();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInfo.namespace_name)
+inline std::string* ServletInfo::mutable_app_name() {
+  std::string* _s = _internal_mutable_app_name();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInfo.app_name)
   return _s;
 }
-inline const std::string& ServletInfo::_internal_namespace_name() const {
-  return _impl_.namespace_name_.Get();
+inline const std::string& ServletInfo::_internal_app_name() const {
+  return _impl_.app_name_.Get();
 }
-inline void ServletInfo::_internal_set_namespace_name(const std::string& value) {
+inline void ServletInfo::_internal_set_app_name(const std::string& value) {
   _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.namespace_name_.Set(value, GetArenaForAllocation());
+  _impl_.app_name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* ServletInfo::_internal_mutable_namespace_name() {
+inline std::string* ServletInfo::_internal_mutable_app_name() {
   _impl_._has_bits_[0] |= 0x00000004u;
-  return _impl_.namespace_name_.Mutable(GetArenaForAllocation());
+  return _impl_.app_name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* ServletInfo::release_namespace_name() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInfo.namespace_name)
-  if (!_internal_has_namespace_name()) {
+inline std::string* ServletInfo::release_app_name() {
+  // @@protoc_insertion_point(field_release:sirius.proto.ServletInfo.app_name)
+  if (!_internal_has_app_name()) {
     return nullptr;
   }
   _impl_._has_bits_[0] &= ~0x00000004u;
-  auto* p = _impl_.namespace_name_.Release();
+  auto* p = _impl_.app_name_.Release();
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   return p;
 }
-inline void ServletInfo::set_allocated_namespace_name(std::string* namespace_name) {
-  if (namespace_name != nullptr) {
+inline void ServletInfo::set_allocated_app_name(std::string* app_name) {
+  if (app_name != nullptr) {
     _impl_._has_bits_[0] |= 0x00000004u;
   } else {
     _impl_._has_bits_[0] &= ~0x00000004u;
   }
-  _impl_.namespace_name_.SetAllocated(namespace_name, GetArenaForAllocation());
+  _impl_.app_name_.SetAllocated(app_name, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInfo.namespace_name)
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInfo.app_name)
 }
 
-// optional int64 namespace_id = 6;
-inline bool ServletInfo::_internal_has_namespace_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+// optional int64 app_id = 6;
+inline bool ServletInfo::_internal_has_app_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   return value;
 }
-inline bool ServletInfo::has_namespace_id() const {
-  return _internal_has_namespace_id();
+inline bool ServletInfo::has_app_id() const {
+  return _internal_has_app_id();
 }
-inline void ServletInfo::clear_namespace_id() {
-  _impl_.namespace_id_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000200u;
+inline void ServletInfo::clear_app_id() {
+  _impl_.app_id_ = int64_t{0};
+  _impl_._has_bits_[0] &= ~0x00000100u;
 }
-inline int64_t ServletInfo::_internal_namespace_id() const {
-  return _impl_.namespace_id_;
+inline int64_t ServletInfo::_internal_app_id() const {
+  return _impl_.app_id_;
 }
-inline int64_t ServletInfo::namespace_id() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.namespace_id)
-  return _internal_namespace_id();
+inline int64_t ServletInfo::app_id() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.app_id)
+  return _internal_app_id();
 }
-inline void ServletInfo::_internal_set_namespace_id(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000200u;
-  _impl_.namespace_id_ = value;
+inline void ServletInfo::_internal_set_app_id(int64_t value) {
+  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_.app_id_ = value;
 }
-inline void ServletInfo::set_namespace_id(int64_t value) {
-  _internal_set_namespace_id(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.namespace_id)
-}
-
-// optional int64 replica_num = 7;
-inline bool ServletInfo::_internal_has_replica_num() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
-  return value;
-}
-inline bool ServletInfo::has_replica_num() const {
-  return _internal_has_replica_num();
-}
-inline void ServletInfo::clear_replica_num() {
-  _impl_.replica_num_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000400u;
-}
-inline int64_t ServletInfo::_internal_replica_num() const {
-  return _impl_.replica_num_;
-}
-inline int64_t ServletInfo::replica_num() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.replica_num)
-  return _internal_replica_num();
-}
-inline void ServletInfo::_internal_set_replica_num(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000400u;
-  _impl_.replica_num_ = value;
-}
-inline void ServletInfo::set_replica_num(int64_t value) {
-  _internal_set_replica_num(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.replica_num)
+inline void ServletInfo::set_app_id(int64_t value) {
+  _internal_set_app_id(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.app_id)
 }
 
-// optional string resource_tag = 8;
-inline bool ServletInfo::_internal_has_resource_tag() const {
+// optional string color = 7;
+inline bool ServletInfo::_internal_has_color() const {
   bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
-inline bool ServletInfo::has_resource_tag() const {
-  return _internal_has_resource_tag();
+inline bool ServletInfo::has_color() const {
+  return _internal_has_color();
 }
-inline void ServletInfo::clear_resource_tag() {
-  _impl_.resource_tag_.ClearToEmpty();
+inline void ServletInfo::clear_color() {
+  _impl_.color_.ClearToEmpty();
   _impl_._has_bits_[0] &= ~0x00000008u;
 }
-inline const std::string& ServletInfo::resource_tag() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.resource_tag)
-  return _internal_resource_tag();
+inline const std::string& ServletInfo::color() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.color)
+  return _internal_color();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void ServletInfo::set_resource_tag(ArgT0&& arg0, ArgT... args) {
+void ServletInfo::set_color(ArgT0&& arg0, ArgT... args) {
  _impl_._has_bits_[0] |= 0x00000008u;
- _impl_.resource_tag_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.resource_tag)
+ _impl_.color_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.color)
 }
-inline std::string* ServletInfo::mutable_resource_tag() {
-  std::string* _s = _internal_mutable_resource_tag();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInfo.resource_tag)
+inline std::string* ServletInfo::mutable_color() {
+  std::string* _s = _internal_mutable_color();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInfo.color)
   return _s;
 }
-inline const std::string& ServletInfo::_internal_resource_tag() const {
-  return _impl_.resource_tag_.Get();
+inline const std::string& ServletInfo::_internal_color() const {
+  return _impl_.color_.Get();
 }
-inline void ServletInfo::_internal_set_resource_tag(const std::string& value) {
+inline void ServletInfo::_internal_set_color(const std::string& value) {
   _impl_._has_bits_[0] |= 0x00000008u;
-  _impl_.resource_tag_.Set(value, GetArenaForAllocation());
+  _impl_.color_.Set(value, GetArenaForAllocation());
 }
-inline std::string* ServletInfo::_internal_mutable_resource_tag() {
+inline std::string* ServletInfo::_internal_mutable_color() {
   _impl_._has_bits_[0] |= 0x00000008u;
-  return _impl_.resource_tag_.Mutable(GetArenaForAllocation());
+  return _impl_.color_.Mutable(GetArenaForAllocation());
 }
-inline std::string* ServletInfo::release_resource_tag() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInfo.resource_tag)
-  if (!_internal_has_resource_tag()) {
+inline std::string* ServletInfo::release_color() {
+  // @@protoc_insertion_point(field_release:sirius.proto.ServletInfo.color)
+  if (!_internal_has_color()) {
     return nullptr;
   }
   _impl_._has_bits_[0] &= ~0x00000008u;
-  auto* p = _impl_.resource_tag_.Release();
+  auto* p = _impl_.color_.Release();
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.resource_tag_.IsDefault()) {
-    _impl_.resource_tag_.Set("", GetArenaForAllocation());
+  if (_impl_.color_.IsDefault()) {
+    _impl_.color_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   return p;
 }
-inline void ServletInfo::set_allocated_resource_tag(std::string* resource_tag) {
-  if (resource_tag != nullptr) {
+inline void ServletInfo::set_allocated_color(std::string* color) {
+  if (color != nullptr) {
     _impl_._has_bits_[0] |= 0x00000008u;
   } else {
     _impl_._has_bits_[0] &= ~0x00000008u;
   }
-  _impl_.resource_tag_.SetAllocated(resource_tag, GetArenaForAllocation());
+  _impl_.color_.SetAllocated(color, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.resource_tag_.IsDefault()) {
-    _impl_.resource_tag_.Set("", GetArenaForAllocation());
+  if (_impl_.color_.IsDefault()) {
+    _impl_.color_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInfo.resource_tag)
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInfo.color)
 }
 
-// optional int64 version = 9;
-inline bool ServletInfo::_internal_has_version() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
-  return value;
-}
-inline bool ServletInfo::has_version() const {
-  return _internal_has_version();
-}
-inline void ServletInfo::clear_version() {
-  _impl_.version_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000800u;
-}
-inline int64_t ServletInfo::_internal_version() const {
-  return _impl_.version_;
-}
-inline int64_t ServletInfo::version() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.version)
-  return _internal_version();
-}
-inline void ServletInfo::_internal_set_version(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000800u;
-  _impl_.version_ = value;
-}
-inline void ServletInfo::set_version(int64_t value) {
-  _internal_set_version(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.version)
-}
-
-// optional .sirius.proto.Status status = 10;
+// optional .sirius.proto.Status status = 8;
 inline bool ServletInfo::_internal_has_status() const {
-  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
   return value;
 }
 inline bool ServletInfo::has_status() const {
@@ -4825,7 +4318,7 @@ inline bool ServletInfo::has_status() const {
 }
 inline void ServletInfo::clear_status() {
   _impl_.status_ = 1;
-  _impl_._has_bits_[0] &= ~0x00004000u;
+  _impl_._has_bits_[0] &= ~0x00001000u;
 }
 inline ::sirius::proto::Status ServletInfo::_internal_status() const {
   return static_cast< ::sirius::proto::Status >(_impl_.status_);
@@ -4836,7 +4329,7 @@ inline ::sirius::proto::Status ServletInfo::status() const {
 }
 inline void ServletInfo::_internal_set_status(::sirius::proto::Status value) {
   assert(::sirius::proto::Status_IsValid(value));
-  _impl_._has_bits_[0] |= 0x00004000u;
+  _impl_._has_bits_[0] |= 0x00001000u;
   _impl_.status_ = value;
 }
 inline void ServletInfo::set_status(::sirius::proto::Status value) {
@@ -4844,9 +4337,9 @@ inline void ServletInfo::set_status(::sirius::proto::Status value) {
   // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.status)
 }
 
-// optional bool deleted = 11;
+// optional bool deleted = 9;
 inline bool ServletInfo::_internal_has_deleted() const {
-  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
   return value;
 }
 inline bool ServletInfo::has_deleted() const {
@@ -4854,7 +4347,7 @@ inline bool ServletInfo::has_deleted() const {
 }
 inline void ServletInfo::clear_deleted() {
   _impl_.deleted_ = false;
-  _impl_._has_bits_[0] &= ~0x00001000u;
+  _impl_._has_bits_[0] &= ~0x00000200u;
 }
 inline bool ServletInfo::_internal_deleted() const {
   return _impl_.deleted_;
@@ -4864,7 +4357,7 @@ inline bool ServletInfo::deleted() const {
   return _internal_deleted();
 }
 inline void ServletInfo::_internal_set_deleted(bool value) {
-  _impl_._has_bits_[0] |= 0x00001000u;
+  _impl_._has_bits_[0] |= 0x00000200u;
   _impl_.deleted_ = value;
 }
 inline void ServletInfo::set_deleted(bool value) {
@@ -4872,805 +4365,107 @@ inline void ServletInfo::set_deleted(bool value) {
   // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.deleted)
 }
 
-// optional uint32 timestamp = 12;
-inline bool ServletInfo::_internal_has_timestamp() const {
-  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+// optional uint32 ctime = 10;
+inline bool ServletInfo::_internal_has_ctime() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
   return value;
 }
-inline bool ServletInfo::has_timestamp() const {
-  return _internal_has_timestamp();
+inline bool ServletInfo::has_ctime() const {
+  return _internal_has_ctime();
 }
-inline void ServletInfo::clear_timestamp() {
-  _impl_.timestamp_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00002000u;
+inline void ServletInfo::clear_ctime() {
+  _impl_.ctime_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000400u;
 }
-inline uint32_t ServletInfo::_internal_timestamp() const {
-  return _impl_.timestamp_;
+inline uint32_t ServletInfo::_internal_ctime() const {
+  return _impl_.ctime_;
 }
-inline uint32_t ServletInfo::timestamp() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.timestamp)
-  return _internal_timestamp();
+inline uint32_t ServletInfo::ctime() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.ctime)
+  return _internal_ctime();
 }
-inline void ServletInfo::_internal_set_timestamp(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00002000u;
-  _impl_.timestamp_ = value;
+inline void ServletInfo::_internal_set_ctime(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_.ctime_ = value;
 }
-inline void ServletInfo::set_timestamp(uint32_t value) {
-  _internal_set_timestamp(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.timestamp)
+inline void ServletInfo::set_ctime(uint32_t value) {
+  _internal_set_ctime(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.ctime)
 }
 
-// optional string conf = 15;
-inline bool ServletInfo::_internal_has_conf() const {
+// optional uint32 mtime = 11;
+inline bool ServletInfo::_internal_has_mtime() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  return value;
+}
+inline bool ServletInfo::has_mtime() const {
+  return _internal_has_mtime();
+}
+inline void ServletInfo::clear_mtime() {
+  _impl_.mtime_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
+}
+inline uint32_t ServletInfo::_internal_mtime() const {
+  return _impl_.mtime_;
+}
+inline uint32_t ServletInfo::mtime() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.mtime)
+  return _internal_mtime();
+}
+inline void ServletInfo::_internal_set_mtime(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_.mtime_ = value;
+}
+inline void ServletInfo::set_mtime(uint32_t value) {
+  _internal_set_mtime(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.mtime)
+}
+
+// required string env = 12;
+inline bool ServletInfo::_internal_has_env() const {
   bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
-inline bool ServletInfo::has_conf() const {
-  return _internal_has_conf();
-}
-inline void ServletInfo::clear_conf() {
-  _impl_.conf_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000010u;
-}
-inline const std::string& ServletInfo::conf() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.conf)
-  return _internal_conf();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void ServletInfo::set_conf(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000010u;
- _impl_.conf_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.conf)
-}
-inline std::string* ServletInfo::mutable_conf() {
-  std::string* _s = _internal_mutable_conf();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInfo.conf)
-  return _s;
-}
-inline const std::string& ServletInfo::_internal_conf() const {
-  return _impl_.conf_.Get();
-}
-inline void ServletInfo::_internal_set_conf(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
-  _impl_.conf_.Set(value, GetArenaForAllocation());
-}
-inline std::string* ServletInfo::_internal_mutable_conf() {
-  _impl_._has_bits_[0] |= 0x00000010u;
-  return _impl_.conf_.Mutable(GetArenaForAllocation());
-}
-inline std::string* ServletInfo::release_conf() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInfo.conf)
-  if (!_internal_has_conf()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000010u;
-  auto* p = _impl_.conf_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.conf_.IsDefault()) {
-    _impl_.conf_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void ServletInfo::set_allocated_conf(std::string* conf) {
-  if (conf != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000010u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000010u;
-  }
-  _impl_.conf_.SetAllocated(conf, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.conf_.IsDefault()) {
-    _impl_.conf_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInfo.conf)
-}
-
-// repeated string env = 16;
-inline int ServletInfo::_internal_env_size() const {
-  return _impl_.env_.size();
-}
-inline int ServletInfo::env_size() const {
-  return _internal_env_size();
-}
-inline void ServletInfo::clear_env() {
-  _impl_.env_.Clear();
-}
-inline std::string* ServletInfo::add_env() {
-  std::string* _s = _internal_add_env();
-  // @@protoc_insertion_point(field_add_mutable:sirius.proto.ServletInfo.env)
-  return _s;
-}
-inline const std::string& ServletInfo::_internal_env(int index) const {
-  return _impl_.env_.Get(index);
-}
-inline const std::string& ServletInfo::env(int index) const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.env)
-  return _internal_env(index);
-}
-inline std::string* ServletInfo::mutable_env(int index) {
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInfo.env)
-  return _impl_.env_.Mutable(index);
-}
-inline void ServletInfo::set_env(int index, const std::string& value) {
-  _impl_.env_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.env)
-}
-inline void ServletInfo::set_env(int index, std::string&& value) {
-  _impl_.env_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.env)
-}
-inline void ServletInfo::set_env(int index, const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.env_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:sirius.proto.ServletInfo.env)
-}
-inline void ServletInfo::set_env(int index, const char* value, size_t size) {
-  _impl_.env_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:sirius.proto.ServletInfo.env)
-}
-inline std::string* ServletInfo::_internal_add_env() {
-  return _impl_.env_.Add();
-}
-inline void ServletInfo::add_env(const std::string& value) {
-  _impl_.env_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:sirius.proto.ServletInfo.env)
-}
-inline void ServletInfo::add_env(std::string&& value) {
-  _impl_.env_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:sirius.proto.ServletInfo.env)
-}
-inline void ServletInfo::add_env(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.env_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:sirius.proto.ServletInfo.env)
-}
-inline void ServletInfo::add_env(const char* value, size_t size) {
-  _impl_.env_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:sirius.proto.ServletInfo.env)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-ServletInfo::env() const {
-  // @@protoc_insertion_point(field_list:sirius.proto.ServletInfo.env)
-  return _impl_.env_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-ServletInfo::mutable_env() {
-  // @@protoc_insertion_point(field_mutable_list:sirius.proto.ServletInfo.env)
-  return &_impl_.env_;
-}
-
-// optional string comment = 17;
-inline bool ServletInfo::_internal_has_comment() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
-  return value;
-}
-inline bool ServletInfo::has_comment() const {
-  return _internal_has_comment();
-}
-inline void ServletInfo::clear_comment() {
-  _impl_.comment_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000020u;
-}
-inline const std::string& ServletInfo::comment() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.comment)
-  return _internal_comment();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void ServletInfo::set_comment(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000020u;
- _impl_.comment_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.comment)
-}
-inline std::string* ServletInfo::mutable_comment() {
-  std::string* _s = _internal_mutable_comment();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInfo.comment)
-  return _s;
-}
-inline const std::string& ServletInfo::_internal_comment() const {
-  return _impl_.comment_.Get();
-}
-inline void ServletInfo::_internal_set_comment(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
-  _impl_.comment_.Set(value, GetArenaForAllocation());
-}
-inline std::string* ServletInfo::_internal_mutable_comment() {
-  _impl_._has_bits_[0] |= 0x00000020u;
-  return _impl_.comment_.Mutable(GetArenaForAllocation());
-}
-inline std::string* ServletInfo::release_comment() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInfo.comment)
-  if (!_internal_has_comment()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000020u;
-  auto* p = _impl_.comment_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.comment_.IsDefault()) {
-    _impl_.comment_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void ServletInfo::set_allocated_comment(std::string* comment) {
-  if (comment != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000020u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000020u;
-  }
-  _impl_.comment_.SetAllocated(comment, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.comment_.IsDefault()) {
-    _impl_.comment_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInfo.comment)
-}
-
-// optional .sirius.proto.Version conf_version = 18;
-inline bool ServletInfo::_internal_has_conf_version() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
-  PROTOBUF_ASSUME(!value || _impl_.conf_version_ != nullptr);
-  return value;
-}
-inline bool ServletInfo::has_conf_version() const {
-  return _internal_has_conf_version();
-}
-inline const ::sirius::proto::Version& ServletInfo::_internal_conf_version() const {
-  const ::sirius::proto::Version* p = _impl_.conf_version_;
-  return p != nullptr ? *p : reinterpret_cast<const ::sirius::proto::Version&>(
-      ::sirius::proto::_Version_default_instance_);
-}
-inline const ::sirius::proto::Version& ServletInfo::conf_version() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.conf_version)
-  return _internal_conf_version();
-}
-inline void ServletInfo::unsafe_arena_set_allocated_conf_version(
-    ::sirius::proto::Version* conf_version) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.conf_version_);
-  }
-  _impl_.conf_version_ = conf_version;
-  if (conf_version) {
-    _impl_._has_bits_[0] |= 0x00000040u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000040u;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:sirius.proto.ServletInfo.conf_version)
-}
-inline ::sirius::proto::Version* ServletInfo::release_conf_version() {
-  _impl_._has_bits_[0] &= ~0x00000040u;
-  ::sirius::proto::Version* temp = _impl_.conf_version_;
-  _impl_.conf_version_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::sirius::proto::Version* ServletInfo::unsafe_arena_release_conf_version() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInfo.conf_version)
-  _impl_._has_bits_[0] &= ~0x00000040u;
-  ::sirius::proto::Version* temp = _impl_.conf_version_;
-  _impl_.conf_version_ = nullptr;
-  return temp;
-}
-inline ::sirius::proto::Version* ServletInfo::_internal_mutable_conf_version() {
-  _impl_._has_bits_[0] |= 0x00000040u;
-  if (_impl_.conf_version_ == nullptr) {
-    auto* p = CreateMaybeMessage<::sirius::proto::Version>(GetArenaForAllocation());
-    _impl_.conf_version_ = p;
-  }
-  return _impl_.conf_version_;
-}
-inline ::sirius::proto::Version* ServletInfo::mutable_conf_version() {
-  ::sirius::proto::Version* _msg = _internal_mutable_conf_version();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInfo.conf_version)
-  return _msg;
-}
-inline void ServletInfo::set_allocated_conf_version(::sirius::proto::Version* conf_version) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.conf_version_);
-  }
-  if (conf_version) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(conf_version));
-    if (message_arena != submessage_arena) {
-      conf_version = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, conf_version, submessage_arena);
-    }
-    _impl_._has_bits_[0] |= 0x00000040u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000040u;
-  }
-  _impl_.conf_version_ = conf_version;
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInfo.conf_version)
-}
-
-// -------------------------------------------------------------------
-
-// ServletInstance
-
-// required string namespace_name = 1;
-inline bool ServletInstance::_internal_has_namespace_name() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_namespace_name() const {
-  return _internal_has_namespace_name();
-}
-inline void ServletInstance::clear_namespace_name() {
-  _impl_.namespace_name_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-inline const std::string& ServletInstance::namespace_name() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.namespace_name)
-  return _internal_namespace_name();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void ServletInstance::set_namespace_name(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000001u;
- _impl_.namespace_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.namespace_name)
-}
-inline std::string* ServletInstance::mutable_namespace_name() {
-  std::string* _s = _internal_mutable_namespace_name();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInstance.namespace_name)
-  return _s;
-}
-inline const std::string& ServletInstance::_internal_namespace_name() const {
-  return _impl_.namespace_name_.Get();
-}
-inline void ServletInstance::_internal_set_namespace_name(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.namespace_name_.Set(value, GetArenaForAllocation());
-}
-inline std::string* ServletInstance::_internal_mutable_namespace_name() {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  return _impl_.namespace_name_.Mutable(GetArenaForAllocation());
-}
-inline std::string* ServletInstance::release_namespace_name() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInstance.namespace_name)
-  if (!_internal_has_namespace_name()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  auto* p = _impl_.namespace_name_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void ServletInstance::set_allocated_namespace_name(std::string* namespace_name) {
-  if (namespace_name != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000001u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
-  }
-  _impl_.namespace_name_.SetAllocated(namespace_name, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInstance.namespace_name)
-}
-
-// optional int64 namespace_id = 2;
-inline bool ServletInstance::_internal_has_namespace_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_namespace_id() const {
-  return _internal_has_namespace_id();
-}
-inline void ServletInstance::clear_namespace_id() {
-  _impl_.namespace_id_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000080u;
-}
-inline int64_t ServletInstance::_internal_namespace_id() const {
-  return _impl_.namespace_id_;
-}
-inline int64_t ServletInstance::namespace_id() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.namespace_id)
-  return _internal_namespace_id();
-}
-inline void ServletInstance::_internal_set_namespace_id(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
-  _impl_.namespace_id_ = value;
-}
-inline void ServletInstance::set_namespace_id(int64_t value) {
-  _internal_set_namespace_id(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.namespace_id)
-}
-
-// required string zone_name = 3;
-inline bool ServletInstance::_internal_has_zone_name() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_zone_name() const {
-  return _internal_has_zone_name();
-}
-inline void ServletInstance::clear_zone_name() {
-  _impl_.zone_name_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-inline const std::string& ServletInstance::zone_name() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.zone_name)
-  return _internal_zone_name();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void ServletInstance::set_zone_name(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000002u;
- _impl_.zone_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.zone_name)
-}
-inline std::string* ServletInstance::mutable_zone_name() {
-  std::string* _s = _internal_mutable_zone_name();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInstance.zone_name)
-  return _s;
-}
-inline const std::string& ServletInstance::_internal_zone_name() const {
-  return _impl_.zone_name_.Get();
-}
-inline void ServletInstance::_internal_set_zone_name(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.zone_name_.Set(value, GetArenaForAllocation());
-}
-inline std::string* ServletInstance::_internal_mutable_zone_name() {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  return _impl_.zone_name_.Mutable(GetArenaForAllocation());
-}
-inline std::string* ServletInstance::release_zone_name() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInstance.zone_name)
-  if (!_internal_has_zone_name()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000002u;
-  auto* p = _impl_.zone_name_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.zone_name_.IsDefault()) {
-    _impl_.zone_name_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void ServletInstance::set_allocated_zone_name(std::string* zone_name) {
-  if (zone_name != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000002u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000002u;
-  }
-  _impl_.zone_name_.SetAllocated(zone_name, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.zone_name_.IsDefault()) {
-    _impl_.zone_name_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInstance.zone_name)
-}
-
-// optional int64 zone_id = 4;
-inline bool ServletInstance::_internal_has_zone_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_zone_id() const {
-  return _internal_has_zone_id();
-}
-inline void ServletInstance::clear_zone_id() {
-  _impl_.zone_id_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000100u;
-}
-inline int64_t ServletInstance::_internal_zone_id() const {
-  return _impl_.zone_id_;
-}
-inline int64_t ServletInstance::zone_id() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.zone_id)
-  return _internal_zone_id();
-}
-inline void ServletInstance::_internal_set_zone_id(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
-  _impl_.zone_id_ = value;
-}
-inline void ServletInstance::set_zone_id(int64_t value) {
-  _internal_set_zone_id(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.zone_id)
-}
-
-// required string servlet_name = 5;
-inline bool ServletInstance::_internal_has_servlet_name() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_servlet_name() const {
-  return _internal_has_servlet_name();
-}
-inline void ServletInstance::clear_servlet_name() {
-  _impl_.servlet_name_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline const std::string& ServletInstance::servlet_name() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.servlet_name)
-  return _internal_servlet_name();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void ServletInstance::set_servlet_name(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000004u;
- _impl_.servlet_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.servlet_name)
-}
-inline std::string* ServletInstance::mutable_servlet_name() {
-  std::string* _s = _internal_mutable_servlet_name();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInstance.servlet_name)
-  return _s;
-}
-inline const std::string& ServletInstance::_internal_servlet_name() const {
-  return _impl_.servlet_name_.Get();
-}
-inline void ServletInstance::_internal_set_servlet_name(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.servlet_name_.Set(value, GetArenaForAllocation());
-}
-inline std::string* ServletInstance::_internal_mutable_servlet_name() {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  return _impl_.servlet_name_.Mutable(GetArenaForAllocation());
-}
-inline std::string* ServletInstance::release_servlet_name() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInstance.servlet_name)
-  if (!_internal_has_servlet_name()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000004u;
-  auto* p = _impl_.servlet_name_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.servlet_name_.IsDefault()) {
-    _impl_.servlet_name_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void ServletInstance::set_allocated_servlet_name(std::string* servlet_name) {
-  if (servlet_name != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000004u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000004u;
-  }
-  _impl_.servlet_name_.SetAllocated(servlet_name, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.servlet_name_.IsDefault()) {
-    _impl_.servlet_name_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInstance.servlet_name)
-}
-
-// optional int64 servlet_id = 6;
-inline bool ServletInstance::_internal_has_servlet_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_servlet_id() const {
-  return _internal_has_servlet_id();
-}
-inline void ServletInstance::clear_servlet_id() {
-  _impl_.servlet_id_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000200u;
-}
-inline int64_t ServletInstance::_internal_servlet_id() const {
-  return _impl_.servlet_id_;
-}
-inline int64_t ServletInstance::servlet_id() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.servlet_id)
-  return _internal_servlet_id();
-}
-inline void ServletInstance::_internal_set_servlet_id(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000200u;
-  _impl_.servlet_id_ = value;
-}
-inline void ServletInstance::set_servlet_id(int64_t value) {
-  _internal_set_servlet_id(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.servlet_id)
-}
-
-// required string address = 8;
-inline bool ServletInstance::_internal_has_address() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_address() const {
-  return _internal_has_address();
-}
-inline void ServletInstance::clear_address() {
-  _impl_.address_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000008u;
-}
-inline const std::string& ServletInstance::address() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.address)
-  return _internal_address();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void ServletInstance::set_address(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000008u;
- _impl_.address_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.address)
-}
-inline std::string* ServletInstance::mutable_address() {
-  std::string* _s = _internal_mutable_address();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInstance.address)
-  return _s;
-}
-inline const std::string& ServletInstance::_internal_address() const {
-  return _impl_.address_.Get();
-}
-inline void ServletInstance::_internal_set_address(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
-  _impl_.address_.Set(value, GetArenaForAllocation());
-}
-inline std::string* ServletInstance::_internal_mutable_address() {
-  _impl_._has_bits_[0] |= 0x00000008u;
-  return _impl_.address_.Mutable(GetArenaForAllocation());
-}
-inline std::string* ServletInstance::release_address() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInstance.address)
-  if (!_internal_has_address()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000008u;
-  auto* p = _impl_.address_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.address_.IsDefault()) {
-    _impl_.address_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void ServletInstance::set_allocated_address(std::string* address) {
-  if (address != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000008u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000008u;
-  }
-  _impl_.address_.SetAllocated(address, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.address_.IsDefault()) {
-    _impl_.address_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInstance.address)
-}
-
-// optional string color = 9;
-inline bool ServletInstance::_internal_has_color() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_color() const {
-  return _internal_has_color();
-}
-inline void ServletInstance::clear_color() {
-  _impl_.color_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000010u;
-}
-inline const std::string& ServletInstance::color() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.color)
-  return _internal_color();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void ServletInstance::set_color(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000010u;
- _impl_.color_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.color)
-}
-inline std::string* ServletInstance::mutable_color() {
-  std::string* _s = _internal_mutable_color();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInstance.color)
-  return _s;
-}
-inline const std::string& ServletInstance::_internal_color() const {
-  return _impl_.color_.Get();
-}
-inline void ServletInstance::_internal_set_color(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
-  _impl_.color_.Set(value, GetArenaForAllocation());
-}
-inline std::string* ServletInstance::_internal_mutable_color() {
-  _impl_._has_bits_[0] |= 0x00000010u;
-  return _impl_.color_.Mutable(GetArenaForAllocation());
-}
-inline std::string* ServletInstance::release_color() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInstance.color)
-  if (!_internal_has_color()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000010u;
-  auto* p = _impl_.color_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.color_.IsDefault()) {
-    _impl_.color_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void ServletInstance::set_allocated_color(std::string* color) {
-  if (color != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000010u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000010u;
-  }
-  _impl_.color_.SetAllocated(color, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.color_.IsDefault()) {
-    _impl_.color_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInstance.color)
-}
-
-// optional string env = 10;
-inline bool ServletInstance::_internal_has_env() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_env() const {
+inline bool ServletInfo::has_env() const {
   return _internal_has_env();
 }
-inline void ServletInstance::clear_env() {
+inline void ServletInfo::clear_env() {
   _impl_.env_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
-inline const std::string& ServletInstance::env() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.env)
+inline const std::string& ServletInfo::env() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.env)
   return _internal_env();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void ServletInstance::set_env(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000020u;
+void ServletInfo::set_env(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000010u;
  _impl_.env_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.env)
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.env)
 }
-inline std::string* ServletInstance::mutable_env() {
+inline std::string* ServletInfo::mutable_env() {
   std::string* _s = _internal_mutable_env();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInstance.env)
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInfo.env)
   return _s;
 }
-inline const std::string& ServletInstance::_internal_env() const {
+inline const std::string& ServletInfo::_internal_env() const {
   return _impl_.env_.Get();
 }
-inline void ServletInstance::_internal_set_env(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+inline void ServletInfo::_internal_set_env(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.env_.Set(value, GetArenaForAllocation());
 }
-inline std::string* ServletInstance::_internal_mutable_env() {
-  _impl_._has_bits_[0] |= 0x00000020u;
+inline std::string* ServletInfo::_internal_mutable_env() {
+  _impl_._has_bits_[0] |= 0x00000010u;
   return _impl_.env_.Mutable(GetArenaForAllocation());
 }
-inline std::string* ServletInstance::release_env() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInstance.env)
+inline std::string* ServletInfo::release_env() {
+  // @@protoc_insertion_point(field_release:sirius.proto.ServletInfo.env)
   if (!_internal_has_env()) {
     return nullptr;
   }
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
   auto* p = _impl_.env_.Release();
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (_impl_.env_.IsDefault()) {
@@ -5679,11 +4474,11 @@ inline std::string* ServletInstance::release_env() {
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   return p;
 }
-inline void ServletInstance::set_allocated_env(std::string* env) {
+inline void ServletInfo::set_allocated_env(std::string* env) {
   if (env != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000020u;
+    _impl_._has_bits_[0] |= 0x00000010u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000020u;
+    _impl_._has_bits_[0] &= ~0x00000010u;
   }
   _impl_.env_.SetAllocated(env, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -5691,267 +4486,54 @@ inline void ServletInstance::set_allocated_env(std::string* env) {
     _impl_.env_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInstance.env)
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInfo.env)
 }
 
-// optional .sirius.proto.Status status = 11;
-inline bool ServletInstance::_internal_has_status() const {
-  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+// required string address = 13;
+inline bool ServletInfo::_internal_has_address() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
-inline bool ServletInstance::has_status() const {
-  return _internal_has_status();
-}
-inline void ServletInstance::clear_status() {
-  _impl_.status_ = 1;
-  _impl_._has_bits_[0] &= ~0x00004000u;
-}
-inline ::sirius::proto::Status ServletInstance::_internal_status() const {
-  return static_cast< ::sirius::proto::Status >(_impl_.status_);
-}
-inline ::sirius::proto::Status ServletInstance::status() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.status)
-  return _internal_status();
-}
-inline void ServletInstance::_internal_set_status(::sirius::proto::Status value) {
-  assert(::sirius::proto::Status_IsValid(value));
-  _impl_._has_bits_[0] |= 0x00004000u;
-  _impl_.status_ = value;
-}
-inline void ServletInstance::set_status(::sirius::proto::Status value) {
-  _internal_set_status(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.status)
-}
-
-// optional int64 version = 12;
-inline bool ServletInstance::_internal_has_version() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_version() const {
-  return _internal_has_version();
-}
-inline void ServletInstance::clear_version() {
-  _impl_.version_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00000400u;
-}
-inline int64_t ServletInstance::_internal_version() const {
-  return _impl_.version_;
-}
-inline int64_t ServletInstance::version() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.version)
-  return _internal_version();
-}
-inline void ServletInstance::_internal_set_version(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00000400u;
-  _impl_.version_ = value;
-}
-inline void ServletInstance::set_version(int64_t value) {
-  _internal_set_version(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.version)
-}
-
-// optional int32 timestamp = 13;
-inline bool ServletInstance::_internal_has_timestamp() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_timestamp() const {
-  return _internal_has_timestamp();
-}
-inline void ServletInstance::clear_timestamp() {
-  _impl_.timestamp_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000800u;
-}
-inline int32_t ServletInstance::_internal_timestamp() const {
-  return _impl_.timestamp_;
-}
-inline int32_t ServletInstance::timestamp() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.timestamp)
-  return _internal_timestamp();
-}
-inline void ServletInstance::_internal_set_timestamp(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000800u;
-  _impl_.timestamp_ = value;
-}
-inline void ServletInstance::set_timestamp(int32_t value) {
-  _internal_set_timestamp(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.timestamp)
-}
-
-// optional int32 weight = 14;
-inline bool ServletInstance::_internal_has_weight() const {
-  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_weight() const {
-  return _internal_has_weight();
-}
-inline void ServletInstance::clear_weight() {
-  _impl_.weight_ = 0;
-  _impl_._has_bits_[0] &= ~0x00001000u;
-}
-inline int32_t ServletInstance::_internal_weight() const {
-  return _impl_.weight_;
-}
-inline int32_t ServletInstance::weight() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.weight)
-  return _internal_weight();
-}
-inline void ServletInstance::_internal_set_weight(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00001000u;
-  _impl_.weight_ = value;
-}
-inline void ServletInstance::set_weight(int32_t value) {
-  _internal_set_weight(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.weight)
-}
-
-// optional string user = 15;
-inline bool ServletInstance::_internal_has_user() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_user() const {
-  return _internal_has_user();
-}
-inline void ServletInstance::clear_user() {
-  _impl_.user_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000040u;
-}
-inline const std::string& ServletInstance::user() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.user)
-  return _internal_user();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void ServletInstance::set_user(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000040u;
- _impl_.user_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.user)
-}
-inline std::string* ServletInstance::mutable_user() {
-  std::string* _s = _internal_mutable_user();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInstance.user)
-  return _s;
-}
-inline const std::string& ServletInstance::_internal_user() const {
-  return _impl_.user_.Get();
-}
-inline void ServletInstance::_internal_set_user(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
-  _impl_.user_.Set(value, GetArenaForAllocation());
-}
-inline std::string* ServletInstance::_internal_mutable_user() {
-  _impl_._has_bits_[0] |= 0x00000040u;
-  return _impl_.user_.Mutable(GetArenaForAllocation());
-}
-inline std::string* ServletInstance::release_user() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletInstance.user)
-  if (!_internal_has_user()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000040u;
-  auto* p = _impl_.user_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.user_.IsDefault()) {
-    _impl_.user_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void ServletInstance::set_allocated_user(std::string* user) {
-  if (user != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000040u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000040u;
-  }
-  _impl_.user_.SetAllocated(user, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.user_.IsDefault()) {
-    _impl_.user_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInstance.user)
-}
-
-// optional int64 user_id = 16;
-inline bool ServletInstance::_internal_has_user_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
-  return value;
-}
-inline bool ServletInstance::has_user_id() const {
-  return _internal_has_user_id();
-}
-inline void ServletInstance::clear_user_id() {
-  _impl_.user_id_ = int64_t{0};
-  _impl_._has_bits_[0] &= ~0x00002000u;
-}
-inline int64_t ServletInstance::_internal_user_id() const {
-  return _impl_.user_id_;
-}
-inline int64_t ServletInstance::user_id() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletInstance.user_id)
-  return _internal_user_id();
-}
-inline void ServletInstance::_internal_set_user_id(int64_t value) {
-  _impl_._has_bits_[0] |= 0x00002000u;
-  _impl_.user_id_ = value;
-}
-inline void ServletInstance::set_user_id(int64_t value) {
-  _internal_set_user_id(value);
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletInstance.user_id)
-}
-
-// -------------------------------------------------------------------
-
-// ServletHeartbeat
-
-// required string address = 1;
-inline bool ServletHeartbeat::_internal_has_address() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool ServletHeartbeat::has_address() const {
+inline bool ServletInfo::has_address() const {
   return _internal_has_address();
 }
-inline void ServletHeartbeat::clear_address() {
+inline void ServletInfo::clear_address() {
   _impl_.address_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000001u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
-inline const std::string& ServletHeartbeat::address() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.ServletHeartbeat.address)
+inline const std::string& ServletInfo::address() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletInfo.address)
   return _internal_address();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void ServletHeartbeat::set_address(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000001u;
+void ServletInfo::set_address(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000020u;
  _impl_.address_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.ServletHeartbeat.address)
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletInfo.address)
 }
-inline std::string* ServletHeartbeat::mutable_address() {
+inline std::string* ServletInfo::mutable_address() {
   std::string* _s = _internal_mutable_address();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletHeartbeat.address)
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletInfo.address)
   return _s;
 }
-inline const std::string& ServletHeartbeat::_internal_address() const {
+inline const std::string& ServletInfo::_internal_address() const {
   return _impl_.address_.Get();
 }
-inline void ServletHeartbeat::_internal_set_address(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
+inline void ServletInfo::_internal_set_address(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.address_.Set(value, GetArenaForAllocation());
 }
-inline std::string* ServletHeartbeat::_internal_mutable_address() {
-  _impl_._has_bits_[0] |= 0x00000001u;
+inline std::string* ServletInfo::_internal_mutable_address() {
+  _impl_._has_bits_[0] |= 0x00000020u;
   return _impl_.address_.Mutable(GetArenaForAllocation());
 }
-inline std::string* ServletHeartbeat::release_address() {
-  // @@protoc_insertion_point(field_release:sirius.proto.ServletHeartbeat.address)
+inline std::string* ServletInfo::release_address() {
+  // @@protoc_insertion_point(field_release:sirius.proto.ServletInfo.address)
   if (!_internal_has_address()) {
     return nullptr;
   }
-  _impl_._has_bits_[0] &= ~0x00000001u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
   auto* p = _impl_.address_.Release();
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (_impl_.address_.IsDefault()) {
@@ -5960,11 +4542,11 @@ inline std::string* ServletHeartbeat::release_address() {
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   return p;
 }
-inline void ServletHeartbeat::set_allocated_address(std::string* address) {
+inline void ServletInfo::set_allocated_address(std::string* address) {
   if (address != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000001u;
+    _impl_._has_bits_[0] |= 0x00000020u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
+    _impl_._has_bits_[0] &= ~0x00000020u;
   }
   _impl_.address_.SetAllocated(address, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -5972,7 +4554,569 @@ inline void ServletHeartbeat::set_allocated_address(std::string* address) {
     _impl_.address_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletHeartbeat.address)
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletInfo.address)
+}
+
+// -------------------------------------------------------------------
+
+// ServletNamingRequest
+
+// required string app_name = 1;
+inline bool ServletNamingRequest::_internal_has_app_name() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool ServletNamingRequest::has_app_name() const {
+  return _internal_has_app_name();
+}
+inline void ServletNamingRequest::clear_app_name() {
+  _impl_.app_name_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& ServletNamingRequest::app_name() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletNamingRequest.app_name)
+  return _internal_app_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ServletNamingRequest::set_app_name(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.app_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingRequest.app_name)
+}
+inline std::string* ServletNamingRequest::mutable_app_name() {
+  std::string* _s = _internal_mutable_app_name();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletNamingRequest.app_name)
+  return _s;
+}
+inline const std::string& ServletNamingRequest::_internal_app_name() const {
+  return _impl_.app_name_.Get();
+}
+inline void ServletNamingRequest::_internal_set_app_name(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.app_name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ServletNamingRequest::_internal_mutable_app_name() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.app_name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ServletNamingRequest::release_app_name() {
+  // @@protoc_insertion_point(field_release:sirius.proto.ServletNamingRequest.app_name)
+  if (!_internal_has_app_name()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.app_name_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void ServletNamingRequest::set_allocated_app_name(std::string* app_name) {
+  if (app_name != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.app_name_.SetAllocated(app_name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletNamingRequest.app_name)
+}
+
+// optional int64 app_id = 2;
+inline bool ServletNamingRequest::_internal_has_app_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool ServletNamingRequest::has_app_id() const {
+  return _internal_has_app_id();
+}
+inline void ServletNamingRequest::clear_app_id() {
+  _impl_.app_id_ = int64_t{0};
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline int64_t ServletNamingRequest::_internal_app_id() const {
+  return _impl_.app_id_;
+}
+inline int64_t ServletNamingRequest::app_id() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletNamingRequest.app_id)
+  return _internal_app_id();
+}
+inline void ServletNamingRequest::_internal_set_app_id(int64_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.app_id_ = value;
+}
+inline void ServletNamingRequest::set_app_id(int64_t value) {
+  _internal_set_app_id(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingRequest.app_id)
+}
+
+// repeated string zones = 3;
+inline int ServletNamingRequest::_internal_zones_size() const {
+  return _impl_.zones_.size();
+}
+inline int ServletNamingRequest::zones_size() const {
+  return _internal_zones_size();
+}
+inline void ServletNamingRequest::clear_zones() {
+  _impl_.zones_.Clear();
+}
+inline std::string* ServletNamingRequest::add_zones() {
+  std::string* _s = _internal_add_zones();
+  // @@protoc_insertion_point(field_add_mutable:sirius.proto.ServletNamingRequest.zones)
+  return _s;
+}
+inline const std::string& ServletNamingRequest::_internal_zones(int index) const {
+  return _impl_.zones_.Get(index);
+}
+inline const std::string& ServletNamingRequest::zones(int index) const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletNamingRequest.zones)
+  return _internal_zones(index);
+}
+inline std::string* ServletNamingRequest::mutable_zones(int index) {
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletNamingRequest.zones)
+  return _impl_.zones_.Mutable(index);
+}
+inline void ServletNamingRequest::set_zones(int index, const std::string& value) {
+  _impl_.zones_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingRequest.zones)
+}
+inline void ServletNamingRequest::set_zones(int index, std::string&& value) {
+  _impl_.zones_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingRequest.zones)
+}
+inline void ServletNamingRequest::set_zones(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.zones_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:sirius.proto.ServletNamingRequest.zones)
+}
+inline void ServletNamingRequest::set_zones(int index, const char* value, size_t size) {
+  _impl_.zones_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:sirius.proto.ServletNamingRequest.zones)
+}
+inline std::string* ServletNamingRequest::_internal_add_zones() {
+  return _impl_.zones_.Add();
+}
+inline void ServletNamingRequest::add_zones(const std::string& value) {
+  _impl_.zones_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:sirius.proto.ServletNamingRequest.zones)
+}
+inline void ServletNamingRequest::add_zones(std::string&& value) {
+  _impl_.zones_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:sirius.proto.ServletNamingRequest.zones)
+}
+inline void ServletNamingRequest::add_zones(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.zones_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:sirius.proto.ServletNamingRequest.zones)
+}
+inline void ServletNamingRequest::add_zones(const char* value, size_t size) {
+  _impl_.zones_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:sirius.proto.ServletNamingRequest.zones)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+ServletNamingRequest::zones() const {
+  // @@protoc_insertion_point(field_list:sirius.proto.ServletNamingRequest.zones)
+  return _impl_.zones_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+ServletNamingRequest::mutable_zones() {
+  // @@protoc_insertion_point(field_mutable_list:sirius.proto.ServletNamingRequest.zones)
+  return &_impl_.zones_;
+}
+
+// optional int64 zone_id = 4;
+inline bool ServletNamingRequest::_internal_has_zone_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool ServletNamingRequest::has_zone_id() const {
+  return _internal_has_zone_id();
+}
+inline void ServletNamingRequest::clear_zone_id() {
+  _impl_.zone_id_ = int64_t{0};
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline int64_t ServletNamingRequest::_internal_zone_id() const {
+  return _impl_.zone_id_;
+}
+inline int64_t ServletNamingRequest::zone_id() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletNamingRequest.zone_id)
+  return _internal_zone_id();
+}
+inline void ServletNamingRequest::_internal_set_zone_id(int64_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.zone_id_ = value;
+}
+inline void ServletNamingRequest::set_zone_id(int64_t value) {
+  _internal_set_zone_id(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingRequest.zone_id)
+}
+
+// repeated string env = 5;
+inline int ServletNamingRequest::_internal_env_size() const {
+  return _impl_.env_.size();
+}
+inline int ServletNamingRequest::env_size() const {
+  return _internal_env_size();
+}
+inline void ServletNamingRequest::clear_env() {
+  _impl_.env_.Clear();
+}
+inline std::string* ServletNamingRequest::add_env() {
+  std::string* _s = _internal_add_env();
+  // @@protoc_insertion_point(field_add_mutable:sirius.proto.ServletNamingRequest.env)
+  return _s;
+}
+inline const std::string& ServletNamingRequest::_internal_env(int index) const {
+  return _impl_.env_.Get(index);
+}
+inline const std::string& ServletNamingRequest::env(int index) const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletNamingRequest.env)
+  return _internal_env(index);
+}
+inline std::string* ServletNamingRequest::mutable_env(int index) {
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletNamingRequest.env)
+  return _impl_.env_.Mutable(index);
+}
+inline void ServletNamingRequest::set_env(int index, const std::string& value) {
+  _impl_.env_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingRequest.env)
+}
+inline void ServletNamingRequest::set_env(int index, std::string&& value) {
+  _impl_.env_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingRequest.env)
+}
+inline void ServletNamingRequest::set_env(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.env_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:sirius.proto.ServletNamingRequest.env)
+}
+inline void ServletNamingRequest::set_env(int index, const char* value, size_t size) {
+  _impl_.env_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:sirius.proto.ServletNamingRequest.env)
+}
+inline std::string* ServletNamingRequest::_internal_add_env() {
+  return _impl_.env_.Add();
+}
+inline void ServletNamingRequest::add_env(const std::string& value) {
+  _impl_.env_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:sirius.proto.ServletNamingRequest.env)
+}
+inline void ServletNamingRequest::add_env(std::string&& value) {
+  _impl_.env_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:sirius.proto.ServletNamingRequest.env)
+}
+inline void ServletNamingRequest::add_env(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.env_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:sirius.proto.ServletNamingRequest.env)
+}
+inline void ServletNamingRequest::add_env(const char* value, size_t size) {
+  _impl_.env_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:sirius.proto.ServletNamingRequest.env)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+ServletNamingRequest::env() const {
+  // @@protoc_insertion_point(field_list:sirius.proto.ServletNamingRequest.env)
+  return _impl_.env_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+ServletNamingRequest::mutable_env() {
+  // @@protoc_insertion_point(field_mutable_list:sirius.proto.ServletNamingRequest.env)
+  return &_impl_.env_;
+}
+
+// repeated string color = 6;
+inline int ServletNamingRequest::_internal_color_size() const {
+  return _impl_.color_.size();
+}
+inline int ServletNamingRequest::color_size() const {
+  return _internal_color_size();
+}
+inline void ServletNamingRequest::clear_color() {
+  _impl_.color_.Clear();
+}
+inline std::string* ServletNamingRequest::add_color() {
+  std::string* _s = _internal_add_color();
+  // @@protoc_insertion_point(field_add_mutable:sirius.proto.ServletNamingRequest.color)
+  return _s;
+}
+inline const std::string& ServletNamingRequest::_internal_color(int index) const {
+  return _impl_.color_.Get(index);
+}
+inline const std::string& ServletNamingRequest::color(int index) const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletNamingRequest.color)
+  return _internal_color(index);
+}
+inline std::string* ServletNamingRequest::mutable_color(int index) {
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletNamingRequest.color)
+  return _impl_.color_.Mutable(index);
+}
+inline void ServletNamingRequest::set_color(int index, const std::string& value) {
+  _impl_.color_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingRequest.color)
+}
+inline void ServletNamingRequest::set_color(int index, std::string&& value) {
+  _impl_.color_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingRequest.color)
+}
+inline void ServletNamingRequest::set_color(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.color_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:sirius.proto.ServletNamingRequest.color)
+}
+inline void ServletNamingRequest::set_color(int index, const char* value, size_t size) {
+  _impl_.color_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:sirius.proto.ServletNamingRequest.color)
+}
+inline std::string* ServletNamingRequest::_internal_add_color() {
+  return _impl_.color_.Add();
+}
+inline void ServletNamingRequest::add_color(const std::string& value) {
+  _impl_.color_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:sirius.proto.ServletNamingRequest.color)
+}
+inline void ServletNamingRequest::add_color(std::string&& value) {
+  _impl_.color_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:sirius.proto.ServletNamingRequest.color)
+}
+inline void ServletNamingRequest::add_color(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.color_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:sirius.proto.ServletNamingRequest.color)
+}
+inline void ServletNamingRequest::add_color(const char* value, size_t size) {
+  _impl_.color_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:sirius.proto.ServletNamingRequest.color)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+ServletNamingRequest::color() const {
+  // @@protoc_insertion_point(field_list:sirius.proto.ServletNamingRequest.color)
+  return _impl_.color_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+ServletNamingRequest::mutable_color() {
+  // @@protoc_insertion_point(field_mutable_list:sirius.proto.ServletNamingRequest.color)
+  return &_impl_.color_;
+}
+
+// -------------------------------------------------------------------
+
+// ServletNamingResponse
+
+// required .sirius.proto.ErrCode errcode = 1;
+inline bool ServletNamingResponse::_internal_has_errcode() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool ServletNamingResponse::has_errcode() const {
+  return _internal_has_errcode();
+}
+inline void ServletNamingResponse::clear_errcode() {
+  _impl_.errcode_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline ::sirius::proto::ErrCode ServletNamingResponse::_internal_errcode() const {
+  return static_cast< ::sirius::proto::ErrCode >(_impl_.errcode_);
+}
+inline ::sirius::proto::ErrCode ServletNamingResponse::errcode() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletNamingResponse.errcode)
+  return _internal_errcode();
+}
+inline void ServletNamingResponse::_internal_set_errcode(::sirius::proto::ErrCode value) {
+  assert(::sirius::proto::ErrCode_IsValid(value));
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.errcode_ = value;
+}
+inline void ServletNamingResponse::set_errcode(::sirius::proto::ErrCode value) {
+  _internal_set_errcode(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingResponse.errcode)
+}
+
+// optional string errmsg = 2;
+inline bool ServletNamingResponse::_internal_has_errmsg() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool ServletNamingResponse::has_errmsg() const {
+  return _internal_has_errmsg();
+}
+inline void ServletNamingResponse::clear_errmsg() {
+  _impl_.errmsg_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& ServletNamingResponse::errmsg() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletNamingResponse.errmsg)
+  return _internal_errmsg();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ServletNamingResponse::set_errmsg(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.errmsg_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingResponse.errmsg)
+}
+inline std::string* ServletNamingResponse::mutable_errmsg() {
+  std::string* _s = _internal_mutable_errmsg();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletNamingResponse.errmsg)
+  return _s;
+}
+inline const std::string& ServletNamingResponse::_internal_errmsg() const {
+  return _impl_.errmsg_.Get();
+}
+inline void ServletNamingResponse::_internal_set_errmsg(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.errmsg_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ServletNamingResponse::_internal_mutable_errmsg() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.errmsg_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ServletNamingResponse::release_errmsg() {
+  // @@protoc_insertion_point(field_release:sirius.proto.ServletNamingResponse.errmsg)
+  if (!_internal_has_errmsg()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.errmsg_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.errmsg_.IsDefault()) {
+    _impl_.errmsg_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void ServletNamingResponse::set_allocated_errmsg(std::string* errmsg) {
+  if (errmsg != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.errmsg_.SetAllocated(errmsg, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.errmsg_.IsDefault()) {
+    _impl_.errmsg_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletNamingResponse.errmsg)
+}
+
+// optional string leader = 3;
+inline bool ServletNamingResponse::_internal_has_leader() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool ServletNamingResponse::has_leader() const {
+  return _internal_has_leader();
+}
+inline void ServletNamingResponse::clear_leader() {
+  _impl_.leader_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& ServletNamingResponse::leader() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletNamingResponse.leader)
+  return _internal_leader();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ServletNamingResponse::set_leader(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.leader_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:sirius.proto.ServletNamingResponse.leader)
+}
+inline std::string* ServletNamingResponse::mutable_leader() {
+  std::string* _s = _internal_mutable_leader();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletNamingResponse.leader)
+  return _s;
+}
+inline const std::string& ServletNamingResponse::_internal_leader() const {
+  return _impl_.leader_.Get();
+}
+inline void ServletNamingResponse::_internal_set_leader(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.leader_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ServletNamingResponse::_internal_mutable_leader() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.leader_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ServletNamingResponse::release_leader() {
+  // @@protoc_insertion_point(field_release:sirius.proto.ServletNamingResponse.leader)
+  if (!_internal_has_leader()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.leader_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.leader_.IsDefault()) {
+    _impl_.leader_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void ServletNamingResponse::set_allocated_leader(std::string* leader) {
+  if (leader != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.leader_.SetAllocated(leader, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.leader_.IsDefault()) {
+    _impl_.leader_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.ServletNamingResponse.leader)
+}
+
+// repeated .sirius.proto.ServletInfo servlets = 4;
+inline int ServletNamingResponse::_internal_servlets_size() const {
+  return _impl_.servlets_.size();
+}
+inline int ServletNamingResponse::servlets_size() const {
+  return _internal_servlets_size();
+}
+inline void ServletNamingResponse::clear_servlets() {
+  _impl_.servlets_.Clear();
+}
+inline ::sirius::proto::ServletInfo* ServletNamingResponse::mutable_servlets(int index) {
+  // @@protoc_insertion_point(field_mutable:sirius.proto.ServletNamingResponse.servlets)
+  return _impl_.servlets_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ServletInfo >*
+ServletNamingResponse::mutable_servlets() {
+  // @@protoc_insertion_point(field_mutable_list:sirius.proto.ServletNamingResponse.servlets)
+  return &_impl_.servlets_;
+}
+inline const ::sirius::proto::ServletInfo& ServletNamingResponse::_internal_servlets(int index) const {
+  return _impl_.servlets_.Get(index);
+}
+inline const ::sirius::proto::ServletInfo& ServletNamingResponse::servlets(int index) const {
+  // @@protoc_insertion_point(field_get:sirius.proto.ServletNamingResponse.servlets)
+  return _internal_servlets(index);
+}
+inline ::sirius::proto::ServletInfo* ServletNamingResponse::_internal_add_servlets() {
+  return _impl_.servlets_.Add();
+}
+inline ::sirius::proto::ServletInfo* ServletNamingResponse::add_servlets() {
+  ::sirius::proto::ServletInfo* _add = _internal_add_servlets();
+  // @@protoc_insertion_point(field_add:sirius.proto.ServletNamingResponse.servlets)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ServletInfo >&
+ServletNamingResponse::servlets() const {
+  // @@protoc_insertion_point(field_list:sirius.proto.ServletNamingResponse.servlets)
+  return _impl_.servlets_;
 }
 
 // -------------------------------------------------------------------
@@ -5981,7 +5125,7 @@ inline void ServletHeartbeat::set_allocated_address(std::string* address) {
 
 // required .sirius.proto.OpType op_type = 1;
 inline bool DiscoveryManagerRequest::_internal_has_op_type() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool DiscoveryManagerRequest::has_op_type() const {
@@ -5989,7 +5133,7 @@ inline bool DiscoveryManagerRequest::has_op_type() const {
 }
 inline void DiscoveryManagerRequest::clear_op_type() {
   _impl_.op_type_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline ::sirius::proto::OpType DiscoveryManagerRequest::_internal_op_type() const {
   return static_cast< ::sirius::proto::OpType >(_impl_.op_type_);
@@ -6000,7 +5144,7 @@ inline ::sirius::proto::OpType DiscoveryManagerRequest::op_type() const {
 }
 inline void DiscoveryManagerRequest::_internal_set_op_type(::sirius::proto::OpType value) {
   assert(::sirius::proto::OpType_IsValid(value));
-  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.op_type_ = value;
 }
 inline void DiscoveryManagerRequest::set_op_type(::sirius::proto::OpType value) {
@@ -6008,45 +5152,45 @@ inline void DiscoveryManagerRequest::set_op_type(::sirius::proto::OpType value) 
   // @@protoc_insertion_point(field_set:sirius.proto.DiscoveryManagerRequest.op_type)
 }
 
-// optional .sirius.proto.NameSpaceInfo namespace_info = 2;
-inline bool DiscoveryManagerRequest::_internal_has_namespace_info() const {
+// optional .sirius.proto.AppInfo app_info = 2;
+inline bool DiscoveryManagerRequest::_internal_has_app_info() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  PROTOBUF_ASSUME(!value || _impl_.namespace_info_ != nullptr);
+  PROTOBUF_ASSUME(!value || _impl_.app_info_ != nullptr);
   return value;
 }
-inline bool DiscoveryManagerRequest::has_namespace_info() const {
-  return _internal_has_namespace_info();
+inline bool DiscoveryManagerRequest::has_app_info() const {
+  return _internal_has_app_info();
 }
-inline void DiscoveryManagerRequest::clear_namespace_info() {
-  if (_impl_.namespace_info_ != nullptr) _impl_.namespace_info_->Clear();
+inline void DiscoveryManagerRequest::clear_app_info() {
+  if (_impl_.app_info_ != nullptr) _impl_.app_info_->Clear();
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
-inline const ::sirius::proto::NameSpaceInfo& DiscoveryManagerRequest::_internal_namespace_info() const {
-  const ::sirius::proto::NameSpaceInfo* p = _impl_.namespace_info_;
-  return p != nullptr ? *p : reinterpret_cast<const ::sirius::proto::NameSpaceInfo&>(
-      ::sirius::proto::_NameSpaceInfo_default_instance_);
+inline const ::sirius::proto::AppInfo& DiscoveryManagerRequest::_internal_app_info() const {
+  const ::sirius::proto::AppInfo* p = _impl_.app_info_;
+  return p != nullptr ? *p : reinterpret_cast<const ::sirius::proto::AppInfo&>(
+      ::sirius::proto::_AppInfo_default_instance_);
 }
-inline const ::sirius::proto::NameSpaceInfo& DiscoveryManagerRequest::namespace_info() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.DiscoveryManagerRequest.namespace_info)
-  return _internal_namespace_info();
+inline const ::sirius::proto::AppInfo& DiscoveryManagerRequest::app_info() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.DiscoveryManagerRequest.app_info)
+  return _internal_app_info();
 }
-inline void DiscoveryManagerRequest::unsafe_arena_set_allocated_namespace_info(
-    ::sirius::proto::NameSpaceInfo* namespace_info) {
+inline void DiscoveryManagerRequest::unsafe_arena_set_allocated_app_info(
+    ::sirius::proto::AppInfo* app_info) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.namespace_info_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.app_info_);
   }
-  _impl_.namespace_info_ = namespace_info;
-  if (namespace_info) {
+  _impl_.app_info_ = app_info;
+  if (app_info) {
     _impl_._has_bits_[0] |= 0x00000001u;
   } else {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:sirius.proto.DiscoveryManagerRequest.namespace_info)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:sirius.proto.DiscoveryManagerRequest.app_info)
 }
-inline ::sirius::proto::NameSpaceInfo* DiscoveryManagerRequest::release_namespace_info() {
+inline ::sirius::proto::AppInfo* DiscoveryManagerRequest::release_app_info() {
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::sirius::proto::NameSpaceInfo* temp = _impl_.namespace_info_;
-  _impl_.namespace_info_ = nullptr;
+  ::sirius::proto::AppInfo* temp = _impl_.app_info_;
+  _impl_.app_info_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -6058,44 +5202,44 @@ inline ::sirius::proto::NameSpaceInfo* DiscoveryManagerRequest::release_namespac
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::sirius::proto::NameSpaceInfo* DiscoveryManagerRequest::unsafe_arena_release_namespace_info() {
-  // @@protoc_insertion_point(field_release:sirius.proto.DiscoveryManagerRequest.namespace_info)
+inline ::sirius::proto::AppInfo* DiscoveryManagerRequest::unsafe_arena_release_app_info() {
+  // @@protoc_insertion_point(field_release:sirius.proto.DiscoveryManagerRequest.app_info)
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::sirius::proto::NameSpaceInfo* temp = _impl_.namespace_info_;
-  _impl_.namespace_info_ = nullptr;
+  ::sirius::proto::AppInfo* temp = _impl_.app_info_;
+  _impl_.app_info_ = nullptr;
   return temp;
 }
-inline ::sirius::proto::NameSpaceInfo* DiscoveryManagerRequest::_internal_mutable_namespace_info() {
+inline ::sirius::proto::AppInfo* DiscoveryManagerRequest::_internal_mutable_app_info() {
   _impl_._has_bits_[0] |= 0x00000001u;
-  if (_impl_.namespace_info_ == nullptr) {
-    auto* p = CreateMaybeMessage<::sirius::proto::NameSpaceInfo>(GetArenaForAllocation());
-    _impl_.namespace_info_ = p;
+  if (_impl_.app_info_ == nullptr) {
+    auto* p = CreateMaybeMessage<::sirius::proto::AppInfo>(GetArenaForAllocation());
+    _impl_.app_info_ = p;
   }
-  return _impl_.namespace_info_;
+  return _impl_.app_info_;
 }
-inline ::sirius::proto::NameSpaceInfo* DiscoveryManagerRequest::mutable_namespace_info() {
-  ::sirius::proto::NameSpaceInfo* _msg = _internal_mutable_namespace_info();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.DiscoveryManagerRequest.namespace_info)
+inline ::sirius::proto::AppInfo* DiscoveryManagerRequest::mutable_app_info() {
+  ::sirius::proto::AppInfo* _msg = _internal_mutable_app_info();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.DiscoveryManagerRequest.app_info)
   return _msg;
 }
-inline void DiscoveryManagerRequest::set_allocated_namespace_info(::sirius::proto::NameSpaceInfo* namespace_info) {
+inline void DiscoveryManagerRequest::set_allocated_app_info(::sirius::proto::AppInfo* app_info) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete _impl_.namespace_info_;
+    delete _impl_.app_info_;
   }
-  if (namespace_info) {
+  if (app_info) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(namespace_info);
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(app_info);
     if (message_arena != submessage_arena) {
-      namespace_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, namespace_info, submessage_arena);
+      app_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, app_info, submessage_arena);
     }
     _impl_._has_bits_[0] |= 0x00000001u;
   } else {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
-  _impl_.namespace_info_ = namespace_info;
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.DiscoveryManagerRequest.namespace_info)
+  _impl_.app_info_ = app_info;
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.DiscoveryManagerRequest.app_info)
 }
 
 // optional .sirius.proto.UserPrivilege user_privilege = 3;
@@ -6614,184 +5758,105 @@ inline void DiscoveryManagerRequest::set_allocated_servlet_info(::sirius::proto:
   // @@protoc_insertion_point(field_set_allocated:sirius.proto.DiscoveryManagerRequest.servlet_info)
 }
 
-// optional .sirius.proto.ServletHeartbeat servlet_renew = 9;
-inline bool DiscoveryManagerRequest::_internal_has_servlet_renew() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
-  PROTOBUF_ASSUME(!value || _impl_.servlet_renew_ != nullptr);
+// -------------------------------------------------------------------
+
+// DiscoveryRegisterResponse
+
+// required .sirius.proto.ErrCode errcode = 1;
+inline bool DiscoveryRegisterResponse::_internal_has_errcode() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
-inline bool DiscoveryManagerRequest::has_servlet_renew() const {
-  return _internal_has_servlet_renew();
+inline bool DiscoveryRegisterResponse::has_errcode() const {
+  return _internal_has_errcode();
 }
-inline void DiscoveryManagerRequest::clear_servlet_renew() {
-  if (_impl_.servlet_renew_ != nullptr) _impl_.servlet_renew_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000040u;
+inline void DiscoveryRegisterResponse::clear_errcode() {
+  _impl_.errcode_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
 }
-inline const ::sirius::proto::ServletHeartbeat& DiscoveryManagerRequest::_internal_servlet_renew() const {
-  const ::sirius::proto::ServletHeartbeat* p = _impl_.servlet_renew_;
-  return p != nullptr ? *p : reinterpret_cast<const ::sirius::proto::ServletHeartbeat&>(
-      ::sirius::proto::_ServletHeartbeat_default_instance_);
+inline ::sirius::proto::ErrCode DiscoveryRegisterResponse::_internal_errcode() const {
+  return static_cast< ::sirius::proto::ErrCode >(_impl_.errcode_);
 }
-inline const ::sirius::proto::ServletHeartbeat& DiscoveryManagerRequest::servlet_renew() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.DiscoveryManagerRequest.servlet_renew)
-  return _internal_servlet_renew();
+inline ::sirius::proto::ErrCode DiscoveryRegisterResponse::errcode() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.DiscoveryRegisterResponse.errcode)
+  return _internal_errcode();
 }
-inline void DiscoveryManagerRequest::unsafe_arena_set_allocated_servlet_renew(
-    ::sirius::proto::ServletHeartbeat* servlet_renew) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.servlet_renew_);
-  }
-  _impl_.servlet_renew_ = servlet_renew;
-  if (servlet_renew) {
-    _impl_._has_bits_[0] |= 0x00000040u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000040u;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:sirius.proto.DiscoveryManagerRequest.servlet_renew)
+inline void DiscoveryRegisterResponse::_internal_set_errcode(::sirius::proto::ErrCode value) {
+  assert(::sirius::proto::ErrCode_IsValid(value));
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.errcode_ = value;
 }
-inline ::sirius::proto::ServletHeartbeat* DiscoveryManagerRequest::release_servlet_renew() {
-  _impl_._has_bits_[0] &= ~0x00000040u;
-  ::sirius::proto::ServletHeartbeat* temp = _impl_.servlet_renew_;
-  _impl_.servlet_renew_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::sirius::proto::ServletHeartbeat* DiscoveryManagerRequest::unsafe_arena_release_servlet_renew() {
-  // @@protoc_insertion_point(field_release:sirius.proto.DiscoveryManagerRequest.servlet_renew)
-  _impl_._has_bits_[0] &= ~0x00000040u;
-  ::sirius::proto::ServletHeartbeat* temp = _impl_.servlet_renew_;
-  _impl_.servlet_renew_ = nullptr;
-  return temp;
-}
-inline ::sirius::proto::ServletHeartbeat* DiscoveryManagerRequest::_internal_mutable_servlet_renew() {
-  _impl_._has_bits_[0] |= 0x00000040u;
-  if (_impl_.servlet_renew_ == nullptr) {
-    auto* p = CreateMaybeMessage<::sirius::proto::ServletHeartbeat>(GetArenaForAllocation());
-    _impl_.servlet_renew_ = p;
-  }
-  return _impl_.servlet_renew_;
-}
-inline ::sirius::proto::ServletHeartbeat* DiscoveryManagerRequest::mutable_servlet_renew() {
-  ::sirius::proto::ServletHeartbeat* _msg = _internal_mutable_servlet_renew();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.DiscoveryManagerRequest.servlet_renew)
-  return _msg;
-}
-inline void DiscoveryManagerRequest::set_allocated_servlet_renew(::sirius::proto::ServletHeartbeat* servlet_renew) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete _impl_.servlet_renew_;
-  }
-  if (servlet_renew) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(servlet_renew);
-    if (message_arena != submessage_arena) {
-      servlet_renew = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, servlet_renew, submessage_arena);
-    }
-    _impl_._has_bits_[0] |= 0x00000040u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000040u;
-  }
-  _impl_.servlet_renew_ = servlet_renew;
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.DiscoveryManagerRequest.servlet_renew)
+inline void DiscoveryRegisterResponse::set_errcode(::sirius::proto::ErrCode value) {
+  _internal_set_errcode(value);
+  // @@protoc_insertion_point(field_set:sirius.proto.DiscoveryRegisterResponse.errcode)
 }
 
-// optional .sirius.proto.ServletInstance instance_info = 10;
-inline bool DiscoveryManagerRequest::_internal_has_instance_info() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
-  PROTOBUF_ASSUME(!value || _impl_.instance_info_ != nullptr);
+// optional string errmsg = 2;
+inline bool DiscoveryRegisterResponse::_internal_has_errmsg() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   return value;
 }
-inline bool DiscoveryManagerRequest::has_instance_info() const {
-  return _internal_has_instance_info();
+inline bool DiscoveryRegisterResponse::has_errmsg() const {
+  return _internal_has_errmsg();
 }
-inline void DiscoveryManagerRequest::clear_instance_info() {
-  if (_impl_.instance_info_ != nullptr) _impl_.instance_info_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000080u;
+inline void DiscoveryRegisterResponse::clear_errmsg() {
+  _impl_.errmsg_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
 }
-inline const ::sirius::proto::ServletInstance& DiscoveryManagerRequest::_internal_instance_info() const {
-  const ::sirius::proto::ServletInstance* p = _impl_.instance_info_;
-  return p != nullptr ? *p : reinterpret_cast<const ::sirius::proto::ServletInstance&>(
-      ::sirius::proto::_ServletInstance_default_instance_);
+inline const std::string& DiscoveryRegisterResponse::errmsg() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.DiscoveryRegisterResponse.errmsg)
+  return _internal_errmsg();
 }
-inline const ::sirius::proto::ServletInstance& DiscoveryManagerRequest::instance_info() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.DiscoveryManagerRequest.instance_info)
-  return _internal_instance_info();
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void DiscoveryRegisterResponse::set_errmsg(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.errmsg_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:sirius.proto.DiscoveryRegisterResponse.errmsg)
 }
-inline void DiscoveryManagerRequest::unsafe_arena_set_allocated_instance_info(
-    ::sirius::proto::ServletInstance* instance_info) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.instance_info_);
+inline std::string* DiscoveryRegisterResponse::mutable_errmsg() {
+  std::string* _s = _internal_mutable_errmsg();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.DiscoveryRegisterResponse.errmsg)
+  return _s;
+}
+inline const std::string& DiscoveryRegisterResponse::_internal_errmsg() const {
+  return _impl_.errmsg_.Get();
+}
+inline void DiscoveryRegisterResponse::_internal_set_errmsg(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.errmsg_.Set(value, GetArenaForAllocation());
+}
+inline std::string* DiscoveryRegisterResponse::_internal_mutable_errmsg() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.errmsg_.Mutable(GetArenaForAllocation());
+}
+inline std::string* DiscoveryRegisterResponse::release_errmsg() {
+  // @@protoc_insertion_point(field_release:sirius.proto.DiscoveryRegisterResponse.errmsg)
+  if (!_internal_has_errmsg()) {
+    return nullptr;
   }
-  _impl_.instance_info_ = instance_info;
-  if (instance_info) {
-    _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.errmsg_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.errmsg_.IsDefault()) {
+    _impl_.errmsg_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void DiscoveryRegisterResponse::set_allocated_errmsg(std::string* errmsg) {
+  if (errmsg != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000080u;
+    _impl_._has_bits_[0] &= ~0x00000001u;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:sirius.proto.DiscoveryManagerRequest.instance_info)
-}
-inline ::sirius::proto::ServletInstance* DiscoveryManagerRequest::release_instance_info() {
-  _impl_._has_bits_[0] &= ~0x00000080u;
-  ::sirius::proto::ServletInstance* temp = _impl_.instance_info_;
-  _impl_.instance_info_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  _impl_.errmsg_.SetAllocated(errmsg, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.errmsg_.IsDefault()) {
+    _impl_.errmsg_.Set("", GetArenaForAllocation());
   }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::sirius::proto::ServletInstance* DiscoveryManagerRequest::unsafe_arena_release_instance_info() {
-  // @@protoc_insertion_point(field_release:sirius.proto.DiscoveryManagerRequest.instance_info)
-  _impl_._has_bits_[0] &= ~0x00000080u;
-  ::sirius::proto::ServletInstance* temp = _impl_.instance_info_;
-  _impl_.instance_info_ = nullptr;
-  return temp;
-}
-inline ::sirius::proto::ServletInstance* DiscoveryManagerRequest::_internal_mutable_instance_info() {
-  _impl_._has_bits_[0] |= 0x00000080u;
-  if (_impl_.instance_info_ == nullptr) {
-    auto* p = CreateMaybeMessage<::sirius::proto::ServletInstance>(GetArenaForAllocation());
-    _impl_.instance_info_ = p;
-  }
-  return _impl_.instance_info_;
-}
-inline ::sirius::proto::ServletInstance* DiscoveryManagerRequest::mutable_instance_info() {
-  ::sirius::proto::ServletInstance* _msg = _internal_mutable_instance_info();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.DiscoveryManagerRequest.instance_info)
-  return _msg;
-}
-inline void DiscoveryManagerRequest::set_allocated_instance_info(::sirius::proto::ServletInstance* instance_info) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete _impl_.instance_info_;
-  }
-  if (instance_info) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(instance_info);
-    if (message_arena != submessage_arena) {
-      instance_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, instance_info, submessage_arena);
-    }
-    _impl_._has_bits_[0] |= 0x00000080u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000080u;
-  }
-  _impl_.instance_info_ = instance_info;
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.DiscoveryManagerRequest.instance_info)
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.DiscoveryRegisterResponse.errmsg)
 }
 
 // -------------------------------------------------------------------
@@ -7217,72 +6282,72 @@ inline void DiscoveryQueryRequest::set_allocated_user_name(std::string* user_nam
   // @@protoc_insertion_point(field_set_allocated:sirius.proto.DiscoveryQueryRequest.user_name)
 }
 
-// optional string namespace_name = 4;
-inline bool DiscoveryQueryRequest::_internal_has_namespace_name() const {
+// optional string app_name = 4;
+inline bool DiscoveryQueryRequest::_internal_has_app_name() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
-inline bool DiscoveryQueryRequest::has_namespace_name() const {
-  return _internal_has_namespace_name();
+inline bool DiscoveryQueryRequest::has_app_name() const {
+  return _internal_has_app_name();
 }
-inline void DiscoveryQueryRequest::clear_namespace_name() {
-  _impl_.namespace_name_.ClearToEmpty();
+inline void DiscoveryQueryRequest::clear_app_name() {
+  _impl_.app_name_.ClearToEmpty();
   _impl_._has_bits_[0] &= ~0x00000004u;
 }
-inline const std::string& DiscoveryQueryRequest::namespace_name() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.DiscoveryQueryRequest.namespace_name)
-  return _internal_namespace_name();
+inline const std::string& DiscoveryQueryRequest::app_name() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.DiscoveryQueryRequest.app_name)
+  return _internal_app_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void DiscoveryQueryRequest::set_namespace_name(ArgT0&& arg0, ArgT... args) {
+void DiscoveryQueryRequest::set_app_name(ArgT0&& arg0, ArgT... args) {
  _impl_._has_bits_[0] |= 0x00000004u;
- _impl_.namespace_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.DiscoveryQueryRequest.namespace_name)
+ _impl_.app_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:sirius.proto.DiscoveryQueryRequest.app_name)
 }
-inline std::string* DiscoveryQueryRequest::mutable_namespace_name() {
-  std::string* _s = _internal_mutable_namespace_name();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.DiscoveryQueryRequest.namespace_name)
+inline std::string* DiscoveryQueryRequest::mutable_app_name() {
+  std::string* _s = _internal_mutable_app_name();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.DiscoveryQueryRequest.app_name)
   return _s;
 }
-inline const std::string& DiscoveryQueryRequest::_internal_namespace_name() const {
-  return _impl_.namespace_name_.Get();
+inline const std::string& DiscoveryQueryRequest::_internal_app_name() const {
+  return _impl_.app_name_.Get();
 }
-inline void DiscoveryQueryRequest::_internal_set_namespace_name(const std::string& value) {
+inline void DiscoveryQueryRequest::_internal_set_app_name(const std::string& value) {
   _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.namespace_name_.Set(value, GetArenaForAllocation());
+  _impl_.app_name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* DiscoveryQueryRequest::_internal_mutable_namespace_name() {
+inline std::string* DiscoveryQueryRequest::_internal_mutable_app_name() {
   _impl_._has_bits_[0] |= 0x00000004u;
-  return _impl_.namespace_name_.Mutable(GetArenaForAllocation());
+  return _impl_.app_name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* DiscoveryQueryRequest::release_namespace_name() {
-  // @@protoc_insertion_point(field_release:sirius.proto.DiscoveryQueryRequest.namespace_name)
-  if (!_internal_has_namespace_name()) {
+inline std::string* DiscoveryQueryRequest::release_app_name() {
+  // @@protoc_insertion_point(field_release:sirius.proto.DiscoveryQueryRequest.app_name)
+  if (!_internal_has_app_name()) {
     return nullptr;
   }
   _impl_._has_bits_[0] &= ~0x00000004u;
-  auto* p = _impl_.namespace_name_.Release();
+  auto* p = _impl_.app_name_.Release();
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   return p;
 }
-inline void DiscoveryQueryRequest::set_allocated_namespace_name(std::string* namespace_name) {
-  if (namespace_name != nullptr) {
+inline void DiscoveryQueryRequest::set_allocated_app_name(std::string* app_name) {
+  if (app_name != nullptr) {
     _impl_._has_bits_[0] |= 0x00000004u;
   } else {
     _impl_._has_bits_[0] &= ~0x00000004u;
   }
-  _impl_.namespace_name_.SetAllocated(namespace_name, GetArenaForAllocation());
+  _impl_.app_name_.SetAllocated(app_name, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.DiscoveryQueryRequest.namespace_name)
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.DiscoveryQueryRequest.app_name)
 }
 
 // optional string config_name = 5;
@@ -7947,44 +7012,44 @@ DiscoveryQueryResponse::user_privilege() const {
   return _impl_.user_privilege_;
 }
 
-// repeated .sirius.proto.NameSpaceInfo namespace_infos = 5;
-inline int DiscoveryQueryResponse::_internal_namespace_infos_size() const {
-  return _impl_.namespace_infos_.size();
+// repeated .sirius.proto.AppInfo app_infos = 5;
+inline int DiscoveryQueryResponse::_internal_app_infos_size() const {
+  return _impl_.app_infos_.size();
 }
-inline int DiscoveryQueryResponse::namespace_infos_size() const {
-  return _internal_namespace_infos_size();
+inline int DiscoveryQueryResponse::app_infos_size() const {
+  return _internal_app_infos_size();
 }
-inline void DiscoveryQueryResponse::clear_namespace_infos() {
-  _impl_.namespace_infos_.Clear();
+inline void DiscoveryQueryResponse::clear_app_infos() {
+  _impl_.app_infos_.Clear();
 }
-inline ::sirius::proto::NameSpaceInfo* DiscoveryQueryResponse::mutable_namespace_infos(int index) {
-  // @@protoc_insertion_point(field_mutable:sirius.proto.DiscoveryQueryResponse.namespace_infos)
-  return _impl_.namespace_infos_.Mutable(index);
+inline ::sirius::proto::AppInfo* DiscoveryQueryResponse::mutable_app_infos(int index) {
+  // @@protoc_insertion_point(field_mutable:sirius.proto.DiscoveryQueryResponse.app_infos)
+  return _impl_.app_infos_.Mutable(index);
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::NameSpaceInfo >*
-DiscoveryQueryResponse::mutable_namespace_infos() {
-  // @@protoc_insertion_point(field_mutable_list:sirius.proto.DiscoveryQueryResponse.namespace_infos)
-  return &_impl_.namespace_infos_;
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::AppInfo >*
+DiscoveryQueryResponse::mutable_app_infos() {
+  // @@protoc_insertion_point(field_mutable_list:sirius.proto.DiscoveryQueryResponse.app_infos)
+  return &_impl_.app_infos_;
 }
-inline const ::sirius::proto::NameSpaceInfo& DiscoveryQueryResponse::_internal_namespace_infos(int index) const {
-  return _impl_.namespace_infos_.Get(index);
+inline const ::sirius::proto::AppInfo& DiscoveryQueryResponse::_internal_app_infos(int index) const {
+  return _impl_.app_infos_.Get(index);
 }
-inline const ::sirius::proto::NameSpaceInfo& DiscoveryQueryResponse::namespace_infos(int index) const {
-  // @@protoc_insertion_point(field_get:sirius.proto.DiscoveryQueryResponse.namespace_infos)
-  return _internal_namespace_infos(index);
+inline const ::sirius::proto::AppInfo& DiscoveryQueryResponse::app_infos(int index) const {
+  // @@protoc_insertion_point(field_get:sirius.proto.DiscoveryQueryResponse.app_infos)
+  return _internal_app_infos(index);
 }
-inline ::sirius::proto::NameSpaceInfo* DiscoveryQueryResponse::_internal_add_namespace_infos() {
-  return _impl_.namespace_infos_.Add();
+inline ::sirius::proto::AppInfo* DiscoveryQueryResponse::_internal_add_app_infos() {
+  return _impl_.app_infos_.Add();
 }
-inline ::sirius::proto::NameSpaceInfo* DiscoveryQueryResponse::add_namespace_infos() {
-  ::sirius::proto::NameSpaceInfo* _add = _internal_add_namespace_infos();
-  // @@protoc_insertion_point(field_add:sirius.proto.DiscoveryQueryResponse.namespace_infos)
+inline ::sirius::proto::AppInfo* DiscoveryQueryResponse::add_app_infos() {
+  ::sirius::proto::AppInfo* _add = _internal_add_app_infos();
+  // @@protoc_insertion_point(field_add:sirius.proto.DiscoveryQueryResponse.app_infos)
   return _add;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::NameSpaceInfo >&
-DiscoveryQueryResponse::namespace_infos() const {
-  // @@protoc_insertion_point(field_list:sirius.proto.DiscoveryQueryResponse.namespace_infos)
-  return _impl_.namespace_infos_;
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::AppInfo >&
+DiscoveryQueryResponse::app_infos() const {
+  // @@protoc_insertion_point(field_list:sirius.proto.DiscoveryQueryResponse.app_infos)
+  return _impl_.app_infos_;
 }
 
 // repeated .sirius.proto.QueryInstance flatten_instances = 6;
@@ -8231,46 +7296,6 @@ DiscoveryQueryResponse::config_infos() const {
   return _impl_.config_infos_;
 }
 
-// repeated .sirius.proto.ServletInstance instance = 12;
-inline int DiscoveryQueryResponse::_internal_instance_size() const {
-  return _impl_.instance_.size();
-}
-inline int DiscoveryQueryResponse::instance_size() const {
-  return _internal_instance_size();
-}
-inline void DiscoveryQueryResponse::clear_instance() {
-  _impl_.instance_.Clear();
-}
-inline ::sirius::proto::ServletInstance* DiscoveryQueryResponse::mutable_instance(int index) {
-  // @@protoc_insertion_point(field_mutable:sirius.proto.DiscoveryQueryResponse.instance)
-  return _impl_.instance_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ServletInstance >*
-DiscoveryQueryResponse::mutable_instance() {
-  // @@protoc_insertion_point(field_mutable_list:sirius.proto.DiscoveryQueryResponse.instance)
-  return &_impl_.instance_;
-}
-inline const ::sirius::proto::ServletInstance& DiscoveryQueryResponse::_internal_instance(int index) const {
-  return _impl_.instance_.Get(index);
-}
-inline const ::sirius::proto::ServletInstance& DiscoveryQueryResponse::instance(int index) const {
-  // @@protoc_insertion_point(field_get:sirius.proto.DiscoveryQueryResponse.instance)
-  return _internal_instance(index);
-}
-inline ::sirius::proto::ServletInstance* DiscoveryQueryResponse::_internal_add_instance() {
-  return _impl_.instance_.Add();
-}
-inline ::sirius::proto::ServletInstance* DiscoveryQueryResponse::add_instance() {
-  ::sirius::proto::ServletInstance* _add = _internal_add_instance();
-  // @@protoc_insertion_point(field_add:sirius.proto.DiscoveryQueryResponse.instance)
-  return _add;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::sirius::proto::ServletInstance >&
-DiscoveryQueryResponse::instance() const {
-  // @@protoc_insertion_point(field_list:sirius.proto.DiscoveryQueryResponse.instance)
-  return _impl_.instance_;
-}
-
 // -------------------------------------------------------------------
 
 // QueryUserPrivilege
@@ -8343,72 +7368,72 @@ inline void QueryUserPrivilege::set_allocated_username(std::string* username) {
   // @@protoc_insertion_point(field_set_allocated:sirius.proto.QueryUserPrivilege.username)
 }
 
-// required string namespace_name = 2;
-inline bool QueryUserPrivilege::_internal_has_namespace_name() const {
+// required string app_name = 2;
+inline bool QueryUserPrivilege::_internal_has_app_name() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
-inline bool QueryUserPrivilege::has_namespace_name() const {
-  return _internal_has_namespace_name();
+inline bool QueryUserPrivilege::has_app_name() const {
+  return _internal_has_app_name();
 }
-inline void QueryUserPrivilege::clear_namespace_name() {
-  _impl_.namespace_name_.ClearToEmpty();
+inline void QueryUserPrivilege::clear_app_name() {
+  _impl_.app_name_.ClearToEmpty();
   _impl_._has_bits_[0] &= ~0x00000002u;
 }
-inline const std::string& QueryUserPrivilege::namespace_name() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.QueryUserPrivilege.namespace_name)
-  return _internal_namespace_name();
+inline const std::string& QueryUserPrivilege::app_name() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.QueryUserPrivilege.app_name)
+  return _internal_app_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void QueryUserPrivilege::set_namespace_name(ArgT0&& arg0, ArgT... args) {
+void QueryUserPrivilege::set_app_name(ArgT0&& arg0, ArgT... args) {
  _impl_._has_bits_[0] |= 0x00000002u;
- _impl_.namespace_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.QueryUserPrivilege.namespace_name)
+ _impl_.app_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:sirius.proto.QueryUserPrivilege.app_name)
 }
-inline std::string* QueryUserPrivilege::mutable_namespace_name() {
-  std::string* _s = _internal_mutable_namespace_name();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.QueryUserPrivilege.namespace_name)
+inline std::string* QueryUserPrivilege::mutable_app_name() {
+  std::string* _s = _internal_mutable_app_name();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.QueryUserPrivilege.app_name)
   return _s;
 }
-inline const std::string& QueryUserPrivilege::_internal_namespace_name() const {
-  return _impl_.namespace_name_.Get();
+inline const std::string& QueryUserPrivilege::_internal_app_name() const {
+  return _impl_.app_name_.Get();
 }
-inline void QueryUserPrivilege::_internal_set_namespace_name(const std::string& value) {
+inline void QueryUserPrivilege::_internal_set_app_name(const std::string& value) {
   _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.namespace_name_.Set(value, GetArenaForAllocation());
+  _impl_.app_name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* QueryUserPrivilege::_internal_mutable_namespace_name() {
+inline std::string* QueryUserPrivilege::_internal_mutable_app_name() {
   _impl_._has_bits_[0] |= 0x00000002u;
-  return _impl_.namespace_name_.Mutable(GetArenaForAllocation());
+  return _impl_.app_name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* QueryUserPrivilege::release_namespace_name() {
-  // @@protoc_insertion_point(field_release:sirius.proto.QueryUserPrivilege.namespace_name)
-  if (!_internal_has_namespace_name()) {
+inline std::string* QueryUserPrivilege::release_app_name() {
+  // @@protoc_insertion_point(field_release:sirius.proto.QueryUserPrivilege.app_name)
+  if (!_internal_has_app_name()) {
     return nullptr;
   }
   _impl_._has_bits_[0] &= ~0x00000002u;
-  auto* p = _impl_.namespace_name_.Release();
+  auto* p = _impl_.app_name_.Release();
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   return p;
 }
-inline void QueryUserPrivilege::set_allocated_namespace_name(std::string* namespace_name) {
-  if (namespace_name != nullptr) {
+inline void QueryUserPrivilege::set_allocated_app_name(std::string* app_name) {
+  if (app_name != nullptr) {
     _impl_._has_bits_[0] |= 0x00000002u;
   } else {
     _impl_._has_bits_[0] &= ~0x00000002u;
   }
-  _impl_.namespace_name_.SetAllocated(namespace_name, GetArenaForAllocation());
+  _impl_.app_name_.SetAllocated(app_name, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.QueryUserPrivilege.namespace_name)
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.QueryUserPrivilege.app_name)
 }
 
 // required string privilege = 3;
@@ -8648,72 +7673,72 @@ inline void QueryInstance::set_allocated_address(std::string* address) {
   // @@protoc_insertion_point(field_set_allocated:sirius.proto.QueryInstance.address)
 }
 
-// optional string namespace_name = 2;
-inline bool QueryInstance::_internal_has_namespace_name() const {
+// optional string app_name = 2;
+inline bool QueryInstance::_internal_has_app_name() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
-inline bool QueryInstance::has_namespace_name() const {
-  return _internal_has_namespace_name();
+inline bool QueryInstance::has_app_name() const {
+  return _internal_has_app_name();
 }
-inline void QueryInstance::clear_namespace_name() {
-  _impl_.namespace_name_.ClearToEmpty();
+inline void QueryInstance::clear_app_name() {
+  _impl_.app_name_.ClearToEmpty();
   _impl_._has_bits_[0] &= ~0x00000002u;
 }
-inline const std::string& QueryInstance::namespace_name() const {
-  // @@protoc_insertion_point(field_get:sirius.proto.QueryInstance.namespace_name)
-  return _internal_namespace_name();
+inline const std::string& QueryInstance::app_name() const {
+  // @@protoc_insertion_point(field_get:sirius.proto.QueryInstance.app_name)
+  return _internal_app_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void QueryInstance::set_namespace_name(ArgT0&& arg0, ArgT... args) {
+void QueryInstance::set_app_name(ArgT0&& arg0, ArgT... args) {
  _impl_._has_bits_[0] |= 0x00000002u;
- _impl_.namespace_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:sirius.proto.QueryInstance.namespace_name)
+ _impl_.app_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:sirius.proto.QueryInstance.app_name)
 }
-inline std::string* QueryInstance::mutable_namespace_name() {
-  std::string* _s = _internal_mutable_namespace_name();
-  // @@protoc_insertion_point(field_mutable:sirius.proto.QueryInstance.namespace_name)
+inline std::string* QueryInstance::mutable_app_name() {
+  std::string* _s = _internal_mutable_app_name();
+  // @@protoc_insertion_point(field_mutable:sirius.proto.QueryInstance.app_name)
   return _s;
 }
-inline const std::string& QueryInstance::_internal_namespace_name() const {
-  return _impl_.namespace_name_.Get();
+inline const std::string& QueryInstance::_internal_app_name() const {
+  return _impl_.app_name_.Get();
 }
-inline void QueryInstance::_internal_set_namespace_name(const std::string& value) {
+inline void QueryInstance::_internal_set_app_name(const std::string& value) {
   _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.namespace_name_.Set(value, GetArenaForAllocation());
+  _impl_.app_name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* QueryInstance::_internal_mutable_namespace_name() {
+inline std::string* QueryInstance::_internal_mutable_app_name() {
   _impl_._has_bits_[0] |= 0x00000002u;
-  return _impl_.namespace_name_.Mutable(GetArenaForAllocation());
+  return _impl_.app_name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* QueryInstance::release_namespace_name() {
-  // @@protoc_insertion_point(field_release:sirius.proto.QueryInstance.namespace_name)
-  if (!_internal_has_namespace_name()) {
+inline std::string* QueryInstance::release_app_name() {
+  // @@protoc_insertion_point(field_release:sirius.proto.QueryInstance.app_name)
+  if (!_internal_has_app_name()) {
     return nullptr;
   }
   _impl_._has_bits_[0] &= ~0x00000002u;
-  auto* p = _impl_.namespace_name_.Release();
+  auto* p = _impl_.app_name_.Release();
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   return p;
 }
-inline void QueryInstance::set_allocated_namespace_name(std::string* namespace_name) {
-  if (namespace_name != nullptr) {
+inline void QueryInstance::set_allocated_app_name(std::string* app_name) {
+  if (app_name != nullptr) {
     _impl_._has_bits_[0] |= 0x00000002u;
   } else {
     _impl_._has_bits_[0] &= ~0x00000002u;
   }
-  _impl_.namespace_name_.SetAllocated(namespace_name, GetArenaForAllocation());
+  _impl_.app_name_.SetAllocated(app_name, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.namespace_name_.IsDefault()) {
-    _impl_.namespace_name_.Set("", GetArenaForAllocation());
+  if (_impl_.app_name_.IsDefault()) {
+    _impl_.app_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:sirius.proto.QueryInstance.namespace_name)
+  // @@protoc_insertion_point(field_set_allocated:sirius.proto.QueryInstance.app_name)
 }
 
 // optional string zone_name = 3;
@@ -9048,6 +8073,8 @@ inline void QueryInstance::set_status(::sirius::proto::Status value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

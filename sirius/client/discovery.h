@@ -330,22 +330,22 @@ namespace sirius::client {
         remove_config_all_version(const std::string &config_name, int *retry_time = nullptr);
 
         /**
-         * @brief create_namespace is used to create a namespace by NameSpaceInfo, it is a synchronous call.
-         * @param info [input] is the NameSpaceInfo to create.
+         * @brief create_app is used to create a app by AppInfo, it is a synchronous call.
+         * @param info [input] is the AppInfo to create.
          * @param retry_time [input] is the retry times of the create namespace.
          * @return Status::OK if the namespace was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_namespace(sirius::proto::NameSpaceInfo &info, int *retry_time = nullptr);
+        collie::Status create_app(sirius::proto::AppInfo &info, int *retry_time = nullptr);
 
    
         /**
-         * @brief create_namespace is used to create a namespace by parameters, it is a synchronous call.
+         * @brief create_app is used to create a namespace by parameters, it is a synchronous call.
          * @param ns [input] is the name of the namespace to create.
          * @param quota [input] is the quota of the namespace to create.
          * @param retry_time [input] is the retry times of the create namespace.
          * @return Status::OK if the namespace was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_namespace(const std::string &ns, int64_t quota = 0, int *retry_time = nullptr);
+        collie::Status create_app(const std::string &ns, int64_t quota = 0, int *retry_time = nullptr);
 
         /**
          * @brief create_namespace_by_json is used to create a namespace by json string, it is a synchronous call.
@@ -372,12 +372,12 @@ namespace sirius::client {
         collie::Status remove_namespace(const std::string &ns, int *retry_time = nullptr);
 
         /**
-         * @brief modify_namespace is used to modify a namespace by parameters, it is a synchronous call.
-         * @param ns_info [input] is the NameSpaceInfo to modify.
+         * @brief modify_app is used to modify a namespace by parameters, it is a synchronous call.
+         * @param ns_info [input] is the AppInfo to modify.
          * @param retry_time [input] is the retry times of the modify namespace.
          * @return Status::OK if the namespace was modified successfully. Otherwise, an error status is returned. 
          */
-        collie::Status modify_namespace(sirius::proto::NameSpaceInfo &ns_info, int *retry_time = nullptr);
+        collie::Status modify_app(sirius::proto::AppInfo &ns_info, int *retry_time = nullptr);
 
         /**
          * @brief modify_namespace_by_json is used to modify a namespace by json string, it is a synchronous call.
@@ -409,7 +409,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list namespace.
          * @return Status::OK if the namespace names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_namespace(std::vector<sirius::proto::NameSpaceInfo> &ns_list, int *retry_time = nullptr);
+        collie::Status list_namespace(std::vector<sirius::proto::AppInfo> &ns_list, int *retry_time = nullptr);
 
         /**
          * @brief list_namespace_to_json is used to list all namespace names from the meta server, it is a synchronous call.
@@ -435,7 +435,7 @@ namespace sirius::client {
          * @return Status::OK if the namespace was received successfully. Otherwise, an error status is returned. 
          */
         collie::Status
-        get_namespace(const std::string &ns_name, sirius::proto::NameSpaceInfo &ns_pb, int *retry_time = nullptr);
+        get_namespace(const std::string &ns_name, sirius::proto::AppInfo &ns_pb, int *retry_time = nullptr);
 
         /**
          * @brief get_namespace is used to get a namespace from the meta server, it is a synchronous call.
