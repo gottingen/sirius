@@ -25,7 +25,7 @@
 
 #include <turbo/container/flat_hash_map.h>
 #include <map>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <collie/module/semver.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <functional>
@@ -84,7 +84,7 @@ namespace sirius::client {
          * @brief init is used to initialize the ConfigClient. It must be called before using the ConfigClient.
          * @return Status::OK if the ConfigClient was initialized successfully. Otherwise, an error status is returned. 
          */
-        collie::Status init();
+        turbo::Status init();
 
         /**
          * @brief start is used to start the ConfigClient.
@@ -108,7 +108,7 @@ namespace sirius::client {
          * @param type [out] if not null, it is the type of the config received from the meta server.
          * @return Status::OK if the config was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         get_config(const std::string &config_name, const std::string &version, std::string &content,
                    std::string *type = nullptr);
 
@@ -120,7 +120,7 @@ namespace sirius::client {
          * @param type [out] if not null, it is the type of the config received from the meta server and added to the ConfigCache.
          * @return Status::OK if the config was received successfully. Otherwise, an error status is returned. 
          */ 
-        collie::Status get_config(const std::string &config_name, std::string &content, std::string *version = nullptr,
+        turbo::Status get_config(const std::string &config_name, std::string &content, std::string *version = nullptr,
                                  std::string *type = nullptr);
 
         /**
@@ -129,21 +129,21 @@ namespace sirius::client {
          * @param listener [input] is the callback function to call when the config is updated.
          * @return Status::OK if the config was watched successfully. Otherwise, an error status is returned. 
          */
-        collie::Status watch_config(const std::string &config_name, const ConfigEventListener &listener);
+        turbo::Status watch_config(const std::string &config_name, const ConfigEventListener &listener);
 
         /**
          * @brief unwatch_config is used to unwatch a config.
          * @param config_name [input] is the name of the config to unwatch. it can not be empty.
          * @return Status::OK if the config was unwatched successfully. Otherwise, an error status is returned. 
          */
-        collie::Status unwatch_config(const std::string &config_name);
+        turbo::Status unwatch_config(const std::string &config_name);
 
         /**
          * @brief remove_config is used to remove a config from config cache.
          * @param config_name [input] is the name of the config to remove. it can not be empty.
          * @return Status::OK if the config was removed successfully. Otherwise, an error status is returned. 
          */ 
-        collie::Status remove_config(const std::string &config_name);
+        turbo::Status remove_config(const std::string &config_name);
 
 
         /**
@@ -152,7 +152,7 @@ namespace sirius::client {
          * @param version [input] is the version of the config to remove. it can not be empty.
          * @return Status::OK if the config was removed successfully. Otherwise, an error status is returned. 
          */
-        collie::Status remove_config(const std::string &config_name, const std::string &version);
+        turbo::Status remove_config(const std::string &config_name, const std::string &version);
 
         /**
          * @brief apply is used to apply a config to the application.
@@ -160,7 +160,7 @@ namespace sirius::client {
          * @param version [input] is the version of the config to apply. it can not be empty.
          * @return Status::OK if the config was applied successfully. Otherwise, an error status is returned. 
          */
-        collie::Status apply(const std::string &config_name, const collie::ModuleVersion &version);
+        turbo::Status apply(const std::string &config_name, const collie::ModuleVersion &version);
 
         /**
          * @brief apply is used to apply a config to the application.
@@ -168,14 +168,14 @@ namespace sirius::client {
          * @param version [input] is the version of the config to apply. it can not be empty.
          * @return Status::OK if the config was applied successfully. Otherwise, an error status is returned. 
          */
-        collie::Status apply(const std::string &config_name, const std::string &version);
+        turbo::Status apply(const std::string &config_name, const std::string &version);
 
         /**
          * @brief unapply is used to unapply a config from the application.
          * @param config_name [input] is the name of the config to unapply. it can not be empty.
          * @return Status::OK if the config was unapplied successfully. Otherwise, an error status is returned. 
          */
-        collie::Status unapply(const std::string &config_name);
+        turbo::Status unapply(const std::string &config_name);
 
     private:
         ///
@@ -187,21 +187,21 @@ namespace sirius::client {
          * @param version
          * @return
          */
-        collie::Status do_apply(const std::string &config_name, const collie::ModuleVersion &version);
+        turbo::Status do_apply(const std::string &config_name, const collie::ModuleVersion &version);
 
         /**
          *
          * @param config_name
          * @return
          */
-        collie::Status do_unapply(const std::string &config_name);
+        turbo::Status do_unapply(const std::string &config_name);
 
         /**
          *
          * @param config_name
          * @return
          */
-        collie::Status do_unwatch_config(const std::string &config_name);
+        turbo::Status do_unwatch_config(const std::string &config_name);
     private:
         turbo::flat_hash_map<std::string, collie::ModuleVersion> _apply_version TURBO_GUARDED_BY(_watch_mutex);
         std::mutex _watch_mutex;

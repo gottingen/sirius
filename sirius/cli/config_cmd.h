@@ -21,7 +21,7 @@
 
 #include <collie/cli/cli.h>
 #include <sirius/proto/discovery.interface.pb.h>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <collie/table/table.h>
 #include <string>
 #include <sirius/client/config_client.h>
@@ -68,19 +68,19 @@ namespace sirius::cli {
 
         static void run_config_watch_cmd();
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_example_config_dump(sirius::proto::ConfigInfo *req);
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_config_list(sirius::proto::DiscoveryQueryRequest *req);
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_config_list_version(sirius::proto::DiscoveryQueryRequest *req);
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_config_get(sirius::proto::DiscoveryQueryRequest *req);
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_config_remove(sirius::proto::DiscoveryManagerRequest *req);
 
 
@@ -89,11 +89,11 @@ namespace sirius::cli {
         static collie::table::Table show_query_ops_config_list_version_response(const sirius::proto::DiscoveryQueryResponse &res);
 
         static collie::table::Table
-        show_query_ops_config_get_response(const sirius::proto::DiscoveryQueryResponse &res, const collie::Status &save_status);
+        show_query_ops_config_get_response(const sirius::proto::DiscoveryQueryResponse &res, const turbo::Status &save_status);
 
-        static collie::Status save_config_to_file(const std::string &path, const sirius::proto::DiscoveryQueryResponse &res);
+        static turbo::Status save_config_to_file(const std::string &path, const sirius::proto::DiscoveryQueryResponse &res);
 
-        static collie::Status save_config_to_file(const std::string &basedir, const sirius::client::ConfigCallbackData &data);
+        static turbo::Status save_config_to_file(const std::string &basedir, const sirius::client::ConfigCallbackData &data);
     };
 
 }  // namespace sirius::cli

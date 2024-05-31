@@ -35,7 +35,7 @@ namespace sirius::discovery {
             return &ins;
         }
 
-        collie::Status init(const std::string &discovery_peers);
+        turbo::Status init(const std::string &discovery_peers);
 
         ~RouterServiceImpl()  = default;
 
@@ -64,7 +64,7 @@ namespace melon {
             return &ins;
         }
 
-        collie::Status init(const std::string &discovery_peers);
+        turbo::Status init(const std::string &discovery_peers);
 
         void registry(::google::protobuf::RpcController* controller,
                       const ::melon::SnsPeer* request,

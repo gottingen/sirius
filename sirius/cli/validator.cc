@@ -15,6 +15,7 @@
 
 #include <sirius/cli/validator.h>
 #include <turbo/container/flat_hash_set.h>
+#include <collie/strings/format.h>
 
 namespace sirius::cli {
     static turbo::flat_hash_set<char> AllowChar{'a', 'b', 'c', 'd', 'e', 'f', 'g',
@@ -29,14 +30,14 @@ namespace sirius::cli {
                                                 'U', 'V', 'Q', 'X', 'Y', 'Z',
     };
 
-    collie::Status check_valid_name_type(std::string_view ns) {
+    turbo::Status check_valid_name_type(std::string_view ns) {
         int i = 0;
         for(auto c : ns) {
             if(AllowChar.find(c) == AllowChar.end()) {
-                return collie::Status::invalid_argument("the {} char {} of {} is not allow used in name the valid set is[a-z,A-Z,0-9,_]", i, c, ns);
+                return turbo::invalid_argument_error(collie::format("the {} char {} of {} is not allow used in name the valid set is[a-z,A-Z,0-9,_]", i, c, ns));
             }
             ++i;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 }  // namespace sirius::cli

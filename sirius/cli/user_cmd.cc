@@ -20,7 +20,7 @@
 #include <sirius/cli/show_help.h>
 #include <collie/strings/str_split.h>
 #include <sirius/cli/validator.h>
-
+#include <collie/strings/format.h>
 namespace sirius::cli {
     /// Set up a subcommand and capture a shared_ptr to a struct that holds all its options.
     /// The variables of the struct are bound to the CLI options.
@@ -283,7 +283,7 @@ namespace sirius::cli {
         return summary;
     }
 
-    collie::Status make_user_create(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_user_create(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::UserPrivilege *user_req = req->mutable_user_privilege();
         req->set_op_type(sirius::proto::OP_CREATE_USER);
         auto rs = check_valid_name_type(UserOptionContext::get_instance()->app_name);
@@ -297,10 +297,10 @@ namespace sirius::cli {
         user_req->set_app_name(UserOptionContext::get_instance()->app_name);
         user_req->set_username(UserOptionContext::get_instance()->user_name);
         user_req->set_password(UserOptionContext::get_instance()->user_passwd);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_user_remove(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_user_remove(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::UserPrivilege *user_req = req->mutable_user_privilege();
         req->set_op_type(sirius::proto::OP_DROP_USER);
         auto rs = check_valid_name_type(UserOptionContext::get_instance()->app_name);
@@ -314,10 +314,10 @@ namespace sirius::cli {
         user_req->set_app_name(UserOptionContext::get_instance()->app_name);
         user_req->set_username(UserOptionContext::get_instance()->user_name);
         user_req->set_password(UserOptionContext::get_instance()->user_passwd);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_user_add_privilege(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_user_add_privilege(sirius::proto::DiscoveryManagerRequest *req) {
         req->set_op_type(sirius::proto::OP_ADD_PRIVILEGE);
         auto opt = UserOptionContext::get_instance();
         sirius::proto::UserPrivilege *pri_req = req->mutable_user_privilege();
@@ -369,7 +369,7 @@ namespace sirius::cli {
             sirius::proto::PrivilegeServlet ps;
             std::vector<std::string> names = collie::str_split(write_servlet, ".", collie::SkipEmpty());
             if (names.size() != 2) {
-                return collie::Status::invalid_argument("bad format of {} should be zone.servlet", write_servlet);
+                return turbo::invalid_argument_error(collie::format("bad format of {} should be zone.servlet", write_servlet));
             }
             ps.set_zone(names[0]);
             ps.set_servlet_name(names[1]);
@@ -382,7 +382,7 @@ namespace sirius::cli {
             sirius::proto::PrivilegeServlet ps;
             std::vector<std::string> names = collie::str_split(read_servlet, ".", collie::SkipEmpty());
             if (names.size() != 2) {
-                return collie::Status::invalid_argument("bad format of {} should be zone.servlet", read_servlet);
+                return turbo::invalid_argument_error(collie::format("bad format of {} should be zone.servlet", read_servlet));
             }
             ps.set_zone(names[0]);
             ps.set_servlet_name(names[1]);
@@ -390,10 +390,10 @@ namespace sirius::cli {
             ps.set_force(opt->force);
             *pri_req->add_privilege_servlet() = ps;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_user_remove_privilege(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_user_remove_privilege(sirius::proto::DiscoveryManagerRequest *req) {
         req->set_op_type(sirius::proto::OP_DROP_PRIVILEGE);
         auto opt = UserOptionContext::get_instance();
         sirius::proto::UserPrivilege *pri_req = req->mutable_user_privilege();
@@ -445,7 +445,7 @@ namespace sirius::cli {
             sirius::proto::PrivilegeServlet ps;
             std::vector<std::string> names = collie::str_split(write_servlet, ".", collie::SkipEmpty());
             if (names.size() != 2) {
-                return collie::Status::invalid_argument("bad format of {} should be zone.servlet", write_servlet);
+                return turbo::invalid_argument_error(collie::format("bad format of {} should be zone.servlet", write_servlet));
             }
             ps.set_zone(names[0]);
             ps.set_servlet_name(names[1]);
@@ -458,7 +458,7 @@ namespace sirius::cli {
             sirius::proto::PrivilegeServlet ps;
             std::vector<std::string> names = collie::str_split(read_servlet, ".", collie::SkipEmpty());
             if (names.size() != 2) {
-                return collie::Status::invalid_argument("bad format of {} should be zone.servlet", read_servlet);
+                return turbo::invalid_argument_error(collie::format("bad format of {} should be zone.servlet", read_servlet));
             }
             ps.set_zone(names[0]);
             ps.set_servlet_name(names[1]);
@@ -467,21 +467,21 @@ namespace sirius::cli {
             *pri_req->add_privilege_servlet() = ps;
         }
 
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_user_list(sirius::proto::DiscoveryQueryRequest *req) {
+    turbo::Status make_user_list(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_USER_PRIVILEGE);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_user_flat(sirius::proto::DiscoveryQueryRequest *req) {
+    turbo::Status make_user_flat(sirius::proto::DiscoveryQueryRequest *req) {
             req->set_op_type(sirius::proto::QUERY_PRIVILEGE_FLATTEN);
 
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_user_info(sirius::proto::DiscoveryQueryRequest *req) {
+    turbo::Status make_user_info(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_USER_PRIVILEGE);
         auto rs = check_valid_name_type(UserOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
@@ -493,7 +493,7 @@ namespace sirius::cli {
         }
         req->set_app_name(UserOptionContext::get_instance()->app_name);
         req->set_user_name(UserOptionContext::get_instance()->user_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
 }  // namespace sirius::cli

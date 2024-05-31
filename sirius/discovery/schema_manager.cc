@@ -39,7 +39,7 @@ namespace sirius::discovery {
                 response->set_errmsg("not leader");
                 response->set_leader(mutil::endpoint2str(_discovery_state_machine->get_leader()).c_str());
             }
-            SS_LOG(WARN) << "discovery state machine is not leader, request: " << request->ShortDebugString();
+            LOG(WARNING) << "discovery state machine is not leader, request: " << request->ShortDebugString();
             return;
         }
         uint64_t log_id = 0;
@@ -54,7 +54,7 @@ namespace sirius::discovery {
             if (response != nullptr && response->errcode() != sirius::proto::SUCCESS) {
                 const auto &remote_side_tmp = mutil::endpoint2str(cntl->remote_side());
                 const char *remote_side = remote_side_tmp.c_str();
-                SS_LOG(WARN) << "response error, remote_side:" << remote_side << ", log_id:" << log_id;
+                LOG(WARNING) << "response error, remote_side:" << remote_side << ", log_id:" << log_id;
             }
         }));
         switch (request->op_type()) {
@@ -105,7 +105,7 @@ namespace sirius::discovery {
         std::string app_name = user_privilege.app_name();
         int64_t app_id = AppManager::get_instance()->get_app_id(app_name);
         if (app_id == 0) {
-            SS_LOG(ERROR) << "namespace not exist, namespace:" << app_name
+            LOG(ERROR) << "namespace not exist, namespace:" << app_name
                           << ", request:" << user_privilege.ShortDebugString();
             return -1;
         }
@@ -115,7 +115,7 @@ namespace sirius::discovery {
             std::string base_name = ZoneManager::make_zone_key(app_name, pri_zone.zone());
             int64_t zone_id = ZoneManager::get_instance()->get_zone_id(base_name);
             if (zone_id == 0) {
-                SS_LOG(ERROR) << "zone not exist, zone:" << base_name
+                LOG(ERROR) << "zone not exist, zone:" << base_name
                               << ", namespace:" << app_name
                               << ", request:" << user_privilege.ShortDebugString();
                 return -1;
@@ -127,13 +127,13 @@ namespace sirius::discovery {
             std::string servlet_name = ServletManager::make_servlet_key(base_name, pri_servlet.servlet_name());
             int64_t zone_id = ZoneManager::get_instance()->get_zone_id(base_name);
             if (zone_id == 0) {
-                SS_LOG(ERROR) << "zone: " << base_name << " not exist, namespace: " << app_name
+                LOG(ERROR) << "zone: " << base_name << " not exist, namespace: " << app_name
                               << ", request: " << user_privilege.ShortDebugString();
                 return -1;
             }
             int64_t servlet_id = ServletManager::get_instance()->get_servlet_id(servlet_name);
             if (servlet_id == 0) {
-                SS_LOG(ERROR) << "table_name: " << servlet_name << " not exist, zone: " << base_name
+                LOG(ERROR) << "table_name: " << servlet_name << " not exist, zone: " << base_name
                               << ", namespace: " << app_name
                               << ", request: " << user_privilege.ShortDebugString();
                 return -1;
@@ -145,7 +145,7 @@ namespace sirius::discovery {
     }
 
     int SchemaManager::load_snapshot() {
-        SS_LOG(INFO) << "SchemaManager start load_snapshot";
+        LOG(INFO) << "SchemaManager start load_snapshot";
         AppManager::get_instance()->clear();
         ZoneManager::get_instance()->clear();
         ServletManager::get_instance()->clear();
@@ -182,15 +182,15 @@ namespace sirius::discovery {
             } else if (iter->key().starts_with(max_id_prefix)) {
                 ret = load_max_id_snapshot(max_id_prefix, iter->key().ToString(), iter->value().ToString());
             } else {
-                SS_LOG(ERROR) << "unknown schema info when load snapshot, key:" << iter->key().data();
+                LOG(ERROR) << "unknown schema info when load snapshot, key:" << iter->key().data();
             }
             if (ret != 0) {
-                SS_LOG(ERROR) << "load snapshot fail, key:" << iter->key().data()
+                LOG(ERROR) << "load snapshot fail, key:" << iter->key().data()
                               << ", value:" << iter->value().data();
                 return -1;
             }
         }
-        SS_LOG(INFO) << "SchemaManager load_snapshot done...";
+        LOG(INFO) << "SchemaManager load_snapshot done...";
         return 0;
     }
 
@@ -202,17 +202,17 @@ namespace sirius::discovery {
         int64_t *max_id = (int64_t *) (value.c_str());
         if (max_key == DiscoveryConstants::MAX_APP_ID_KEY) {
             AppManager::get_instance()->set_max_app_id(*max_id);
-            SS_LOG(WARN) << "max_app_id:" << *max_id;
+            LOG(WARNING) << "max_app_id:" << *max_id;
             return 0;
         }
         if (max_key == DiscoveryConstants::MAX_ZONE_ID_KEY) {
             ZoneManager::get_instance()->set_max_zone_id(*max_id);;
-            SS_LOG(WARN) << "max_zone_id:" << *max_id;
+            LOG(WARNING) << "max_zone_id:" << *max_id;
             return 0;
         }
         if (max_key == DiscoveryConstants::MAX_SERVLET_ID_KEY) {
             ServletManager::get_instance()->set_max_servlet_id(*max_id);
-            SS_LOG(WARN) << "max_servlet_id:" << *max_id;
+            LOG(WARNING) << "max_servlet_id:" << *max_id;
             return 0;
         }
         return 0;

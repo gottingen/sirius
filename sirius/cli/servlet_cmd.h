@@ -18,7 +18,7 @@
 #include <collie/cli/cli.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <collie/table/table.h>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <string>
 
 namespace sirius::cli {
@@ -53,19 +53,19 @@ namespace sirius::cli {
 
     void run_servlet_info_cmd();
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_servlet_create(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_servlet_remove(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_servlet_modify(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_servlet_list(sirius::proto::DiscoveryQueryRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_servlet_info(sirius::proto::DiscoveryQueryRequest *req);
 
     collie::table::Table show_discovery_query_servlet_response(const sirius::proto::DiscoveryQueryResponse &res);

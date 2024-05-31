@@ -22,9 +22,9 @@
 
 namespace sirius::client {
 
-    collie::Status RouterSender::init(const std::string &server) {
+    turbo::Status RouterSender::init(const std::string &server) {
         _server = server;
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
     RouterSender &RouterSender::set_server(const std::string &server) {
@@ -58,47 +58,47 @@ namespace sirius::client {
         return *this;
     }
 
-    collie::Status RouterSender::discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+    turbo::Status RouterSender::discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                              sirius::proto::DiscoveryManagerResponse &response, int retry_times) {
         return send_request("discovery_manager", request, response, retry_times);
     }
 
-    collie::Status RouterSender::discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+    turbo::Status RouterSender::discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                              sirius::proto::DiscoveryManagerResponse &response) {
         return send_request("discovery_manager", request, response, _retry_times);
     }
 
-    collie::Status RouterSender::discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+    turbo::Status RouterSender::discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                            sirius::proto::DiscoveryQueryResponse &response, int retry_times) {
         return send_request("discovery_query", request, response, retry_times);
     }
 
-    collie::Status RouterSender::discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+    turbo::Status RouterSender::discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                            sirius::proto::DiscoveryQueryResponse &response) {
         return send_request("discovery_query", request, response, _retry_times);
     }
 
-    collie::Status RouterSender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
+    turbo::Status RouterSender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
                                     sirius::proto::ServletNamingResponse &response, int retry_time) {
         return send_request("naming", request, response, retry_time);
     }
 
-    collie::Status RouterSender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
+    turbo::Status RouterSender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
                                     sirius::proto::ServletNamingResponse &response) {
         return send_request("naming", request, response, _retry_times);
     }
 
-    collie::Status RouterSender::discovery_register(const sirius::proto::ServletInfo &info,
+    turbo::Status RouterSender::discovery_register(const sirius::proto::ServletInfo &info,
                                       sirius::proto::DiscoveryRegisterResponse &response, int retry_time) {
         return send_request("registry", info, response, retry_time);
     }
 
-    collie::Status RouterSender::discovery_update(const sirius::proto::ServletInfo &info,
+    turbo::Status RouterSender::discovery_update(const sirius::proto::ServletInfo &info,
                                     sirius::proto::DiscoveryRegisterResponse &response, int retry_time) {
         return send_request("update", info, response, retry_time);
     }
 
-    collie::Status RouterSender::discovery_cancel(const sirius::proto::ServletInfo &info,
+    turbo::Status RouterSender::discovery_cancel(const sirius::proto::ServletInfo &info,
                                     sirius::proto::DiscoveryRegisterResponse &response, int retry_time) {
         return send_request("cancel", info, response, retry_time);
     }

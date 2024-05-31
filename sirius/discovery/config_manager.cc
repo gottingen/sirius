@@ -24,7 +24,7 @@
 
 namespace sirius::discovery {
 
-    turbo::ModuleVersion ConfigManager::kDefaultVersion(0,0,1);
+    collie::ModuleVersion ConfigManager::kDefaultVersion(0,0,1);
 
     void ConfigManager::process_schema_info(google::protobuf::RpcController *controller,
                              const sirius::proto::DiscoveryManagerRequest *request,
@@ -37,7 +37,7 @@ namespace sirius::discovery {
                 response->set_errmsg("not leader");
                 response->set_leader(mutil::endpoint2str(_discovery_state_machine->get_leader()).c_str());
             }
-            SS_LOG(WARN) << "discovery state machine is not leader, request: " << request->ShortDebugString();
+            LOG(WARNING) << "discovery state machine is not leader, request: " << request->ShortDebugString();
             return;
         }
         uint64_t log_id = 0;
@@ -52,7 +52,7 @@ namespace sirius::discovery {
             if (response != nullptr && response->errcode() != sirius::proto::SUCCESS) {
                 const auto &remote_side_tmp = mutil::endpoint2str(cntl->remote_side());
                 const char *remote_side = remote_side_tmp.c_str();
-                SS_LOG(WARN) << "response error, remote_side:" << remote_side << ", log_id:" << log_id;
+                LOG(WARNING) << "response error, remote_side:" << remote_side << ", log_id:" << log_id;
             }
         }));
 
@@ -76,29 +76,29 @@ namespace sirius::discovery {
     void ConfigManager::create_config(const ::sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
         auto &create_request = request.config_info();
         auto &name = create_request.name();
-        turbo::ModuleVersion version = kDefaultVersion;
+        collie::ModuleVersion version = kDefaultVersion;
 
         if(create_request.has_version()) {
-            version = turbo::ModuleVersion(create_request.version().major(), create_request.version().minor(),
+            version = collie::ModuleVersion(create_request.version().major(), create_request.version().minor(),
                     create_request.version().patch());
         }
 
 
         MELON_SCOPED_LOCK(_config_mutex);
         if (_configs.find(name) == _configs.end()) {
-            _configs[name] = std::map<turbo::ModuleVersion, sirius::proto::ConfigInfo>();
+            _configs[name] = std::map<collie::ModuleVersion, sirius::proto::ConfigInfo>();
         }
         auto it = _configs.find(name);
         // do not rewrite.
         if (it->second.find(version) != it->second.end()) {
             /// already exists
-            SS_LOG(INFO) << "config : " << name << " version: " << version.to_string() << " exist";
+            LOG(INFO) << "config : " << name << " version: " << version.to_string() << " exist";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "config already exist");
             return;
         }
         if(!it->second.empty() && it->second.rbegin()->first >= version) {
             /// Version numbers must increase monotonically
-            SS_LOG(INFO) << "config : " << name << " version: " << version.to_string() << " must be larger than current: " << it->second.rbegin()->first.to_string();
+            LOG(INFO) << "config : " << name << " version: " << version.to_string() << " must be larger than current: " << it->second.rbegin()->first.to_string();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "Version numbers must increase monotonically");
             return;
         }
@@ -115,7 +115,7 @@ namespace sirius::discovery {
             return;
         }
         it->second[version] = create_request;
-        SS_LOG(INFO) << "config : " << name << " version: " << version.to_string() << " create";
+        LOG(INFO) << "config : " << name << " version: " << version.to_string() << " create";
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
     }
 
@@ -134,12 +134,12 @@ namespace sirius::discovery {
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "config not exist");
             return;
         }
-        turbo::ModuleVersion version(remove_request.version().major(), remove_request.version().minor(),
+        collie::ModuleVersion version(remove_request.version().major(), remove_request.version().minor(),
                                      remove_request.version().patch());
 
         if (it->second.find(version) == it->second.end()) {
             /// not exists
-            SS_LOG(INFO) << "config : " << name << " version: " << version.to_string() << " not exist";
+            LOG(INFO) << "config : " << name << " version: " << version.to_string() << " not exist";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "config not exist");
         }
 
@@ -182,7 +182,7 @@ namespace sirius::discovery {
 
     int ConfigManager::load_snapshot() {
         MELON_SCOPED_LOCK( ConfigManager::get_instance()->_config_mutex);
-        SS_LOG(INFO) << "start to load config snapshot";
+        LOG(INFO) << "start to load config snapshot";
         _configs.clear();
         std::string config_prefix = DiscoveryConstants::CONFIG_IDENTIFY;
         rocksdb::ReadOptions read_options;
@@ -197,28 +197,28 @@ namespace sirius::discovery {
                 return -1;
             }
         }
-        SS_LOG(INFO) << "load config snapshot done";
+        LOG(INFO) << "load config snapshot done";
         return 0;
     }
 
     int ConfigManager::load_config_snapshot(const std::string &value) {
         sirius::proto::ConfigInfo config_pb;
         if (!config_pb.ParseFromString(value)) {
-            SS_LOG(ERROR) << "parse from pb fail when load config snapshot, key:" << value;
+            LOG(ERROR) << "parse from pb fail when load config snapshot, key:" << value;
             return -1;
         }
         ///TLOG_INFO("load config:{}", config_pb.name());
         if(_configs.find(config_pb.name()) == _configs.end()) {
-            _configs[config_pb.name()] = std::map<turbo::ModuleVersion, sirius::proto::ConfigInfo>();
+            _configs[config_pb.name()] = std::map<collie::ModuleVersion, sirius::proto::ConfigInfo>();
         }
         auto it = _configs.find(config_pb.name());
-        turbo::ModuleVersion version(config_pb.version().major(), config_pb.version().minor(),
+        collie::ModuleVersion version(config_pb.version().major(), config_pb.version().minor(),
                                      config_pb.version().patch());
         it->second[version] = config_pb;
         return 0;
     }
 
-    std::string ConfigManager::make_config_key(const std::string &name, const turbo::ModuleVersion &version) {
+    std::string ConfigManager::make_config_key(const std::string &name, const collie::ModuleVersion &version) {
         return DiscoveryConstants::CONFIG_IDENTIFY + name + version.to_string();
     }
 

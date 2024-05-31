@@ -25,16 +25,16 @@
 #include <sirius/proto/discovery.interface.pb.h>
 #include <turbo/container/flat_hash_map.h>
 #include <sirius/discovery/discovery_state_machine.h>
-#include "turbo/module/module_version.h"
 #include <sirius/discovery/discovery_server.h>
 #include <melon/raft/raft.h>
 #include <melon/fiber/mutex.h>
+#include <collie/module/semver.h>
 
 namespace sirius::discovery {
 
     class ConfigManager {
     public:
-        static turbo::ModuleVersion kDefaultVersion;
+        static collie::ModuleVersion kDefaultVersion;
         static ConfigManager *get_instance() {
             static ConfigManager ins;
             return &ins;
@@ -71,7 +71,7 @@ namespace sirius::discovery {
         /// \param name
         /// \param version
         /// \return
-        static std::string make_config_key(const std::string &name, const turbo::ModuleVersion &version);
+        static std::string make_config_key(const std::string &name, const collie::ModuleVersion &version);
 
         ///
         /// \param machine
@@ -95,7 +95,7 @@ namespace sirius::discovery {
     private:
         DiscoveryStateMachine *_discovery_state_machine;
         fiber_mutex_t _config_mutex;
-        turbo::flat_hash_map<std::string, std::map<turbo::ModuleVersion, sirius::proto::ConfigInfo>> _configs;
+        turbo::flat_hash_map<std::string, std::map<collie::ModuleVersion, sirius::proto::ConfigInfo>> _configs;
 
     };
 

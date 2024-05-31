@@ -38,7 +38,7 @@ namespace sirius::discovery {
     int DiscoveryServer::init(const std::vector<melon::raft::PeerId> &peers) {
         auto ret = DiscoveryRocksdb::get_instance()->init();
         if (ret < 0) {
-            SS_LOG(ERROR) << "rocksdb init fail";
+            LOG(ERROR) << "rocksdb init fail";
             return -1;
         }
         mutil::EndPoint addr;
@@ -48,40 +48,40 @@ namespace sirius::discovery {
         melon::raft::PeerId peer_id(addr, 0);
         _discovery_state_machine = new(std::nothrow)DiscoveryStateMachine(peer_id);
         if (_discovery_state_machine == nullptr) {
-            SS_LOG(ERROR) << "new discovery_state_machine fail";
+            LOG(ERROR) << "new discovery_state_machine fail";
             return -1;
         }
         //state_machine初始化
         ret = _discovery_state_machine->init(peers);
         if (ret != 0) {
-            SS_LOG(ERROR) << "discovery state machine init fail";
+            LOG(ERROR) << "discovery state machine init fail";
             return -1;
         }
-        SS_LOG(WARN) << "discovery state machine init success";
+        LOG(WARNING) << "discovery state machine init success";
 
         _auto_incr_state_machine = new(std::nothrow)AutoIncrStateMachine(peer_id);
         if (_auto_incr_state_machine == nullptr) {
-            SS_LOG(ERROR) << "new auot_incr_state_machine fail";
+            LOG(ERROR) << "new auot_incr_state_machine fail";
             return -1;
         }
         ret = _auto_incr_state_machine->init(peers);
         if (ret != 0) {
-            SS_LOG(ERROR) << "auot_incr_state_machine init fail";
+            LOG(ERROR) << "auot_incr_state_machine init fail";
             return -1;
         }
-        SS_LOG(WARN) << "auot_incr_state_machine init success";
+        LOG(WARNING) << "auot_incr_state_machine init success";
 
         _tso_state_machine = new(std::nothrow)TSOStateMachine(peer_id);
         if (_tso_state_machine == nullptr) {
-            SS_LOG(ERROR) << "new _tso_state_machine fail";
+            LOG(ERROR) << "new _tso_state_machine fail";
             return -1;
         }
         ret = _tso_state_machine->init(peers);
         if (ret != 0) {
-            SS_LOG(ERROR) << " _tso_state_machine init fail";
+            LOG(ERROR) << " _tso_state_machine init fail";
             return -1;
         }
-        SS_LOG(INFO) << " tso state machine init success";
+        LOG(INFO) << " tso state machine init success";
 
         SchemaManager::get_instance()->set_discovery_state_machine(_discovery_state_machine);
         ConfigManager::get_instance()->set_discovery_state_machine(_discovery_state_machine);
@@ -101,11 +101,11 @@ namespace sirius::discovery {
             rocksdb::FlushOptions flush_options;
             auto status = rocksdb->flush(flush_options, rocksdb->get_meta_info_handle());
             if (!status.ok()) {
-                SS_LOG(WARN) << "flush discovery info to rocksdb fail, err_msg:" << status.ToString();
+                LOG(WARNING) << "flush discovery info to rocksdb fail, err_msg:" << status.ToString();
             }
             status = rocksdb->flush(flush_options, rocksdb->get_raft_log_handle());
             if (!status.ok()) {
-                SS_LOG(WARN) << "flush log_cf to rocksdb fail, err_msg:" << status.ToString();
+                LOG(WARNING) << "flush log_cf to rocksdb fail, err_msg:" << status.ToString();
             }
         }
     }
@@ -170,7 +170,7 @@ namespace sirius::discovery {
         }
 
 
-        SS_LOG(ERROR) << "request has wrong op_type:" << request->op_type() << ", log_id:" << log_id;
+        LOG(ERROR) << "request has wrong op_type:" << request->op_type() << ", log_id:" << log_id;
         response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
         response->set_errmsg("invalid op_type");
         response->set_op_type(request->op_type());
@@ -229,12 +229,12 @@ namespace sirius::discovery {
             }
 
             default: {
-                SS_LOG(WARN) << "invalid op_type, request: " << request->ShortDebugString() << ", log_id: " << log_id;
+                LOG(WARNING) << "invalid op_type, request: " << request->ShortDebugString() << ", log_id: " << log_id;
                 response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
                 response->set_errmsg("invalid op_type");
             }
         }
-        SS_LOG(INFO) << "query op_type_name:" << sirius::proto::QueryOpType_Name(request->op_type())
+        LOG(INFO) << "query op_type_name:" << sirius::proto::QueryOpType_Name(request->op_type())
                      << ", time_cost:" << time_cost.get_time() << ", log_id:" << log_id
                      << ", ip:" << remote_side << ", request: " << request->ShortDebugString();
     }
@@ -277,7 +277,7 @@ namespace sirius::discovery {
         response->set_region_id(request->region_id());
         response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
         response->set_errmsg("unmatch region id");
-        SS_LOG(ERROR) << "unmatch region_id in discovery server, request: " << request->ShortDebugString();
+        LOG(ERROR) << "unmatch region_id in discovery server, request: " << request->ShortDebugString();
     }
 
 
@@ -319,7 +319,7 @@ namespace sirius::discovery {
 
     void DiscoveryServer::close() {
         _flush_bth.join();
-        SS_LOG(INFO) << "DiscoveryServer flush joined";
+        LOG(INFO) << "DiscoveryServer flush joined";
     }
 
 }  // namespace sirius::discovery

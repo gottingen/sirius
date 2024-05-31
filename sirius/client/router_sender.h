@@ -16,7 +16,7 @@
 #pragma once
 
 #include <melon/rpc/channel.h>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <sirius/base/log.h>
 #include <melon/utility/endpoint.h>
 #include <melon/rpc/channel.h>
@@ -25,6 +25,7 @@
 #include <google/protobuf/descriptor.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <sirius/client/base_message_sender.h>
+#include <turbo/strings/substitute.h>
 
 namespace sirius::client {
 
@@ -74,7 +75,7 @@ namespace sirius::client {
          * @param server [input] are the addresses of the meta servers, separated by commas.
          * @return Status::OK if the RouterSender was initialized successfully. Otherwise, an error status is returned. 
          */
-        collie::Status init(const std::string &server);
+        turbo::Status init(const std::string &server);
 
         /**
          * @brief set_server is used to set the addresses of the meta servers, must be called before using the RouterSender.
@@ -127,7 +128,7 @@ namespace sirius::client {
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
         template<typename Request, typename Response>
-        collie::Status send_request(const std::string &service_name,
+        turbo::Status send_request(const std::string &service_name,
                                    const Request &request,
                                    Response &response, int retry_times);
 
@@ -138,7 +139,7 @@ namespace sirius::client {
          * @param retry_time [input] is the number of times to retry sending the request.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        collie::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+        turbo::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                    sirius::proto::DiscoveryManagerResponse &response, int retry_time) override;
 
         /**
@@ -147,7 +148,7 @@ namespace sirius::client {
          * @param response [output] is the MetaManagerResponse received from the meta server.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        collie::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+        turbo::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                    sirius::proto::DiscoveryManagerResponse &response) override;
 
         /**
@@ -157,7 +158,7 @@ namespace sirius::client {
          * @param retry_time [input] is the number of times to retry sending the request.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        collie::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+        turbo::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                  sirius::proto::DiscoveryQueryResponse &response, int retry_time) override;
 
         /**
@@ -166,22 +167,22 @@ namespace sirius::client {
          * @param response [output] is the DiscoveryQueryResponse received from the meta server.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        collie::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+        turbo::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                  sirius::proto::DiscoveryQueryResponse &response) override;
 
-        collie::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+        turbo::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
                                         sirius::proto::ServletNamingResponse &response, int retry_time) override;
 
-        collie::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+        turbo::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
                                         sirius::proto::ServletNamingResponse &response) override;
 
-        collie::Status discovery_register(const sirius::proto::ServletInfo &info,
+        turbo::Status discovery_register(const sirius::proto::ServletInfo &info,
                                           sirius::proto::DiscoveryRegisterResponse &response, int retry_time = kRetryTimes);
 
-        collie::Status discovery_update(const sirius::proto::ServletInfo &info,
+        turbo::Status discovery_update(const sirius::proto::ServletInfo &info,
                                           sirius::proto::DiscoveryRegisterResponse &response, int retry_time = kRetryTimes);
 
-        collie::Status discovery_cancel(const sirius::proto::ServletInfo &info,
+        turbo::Status discovery_cancel(const sirius::proto::ServletInfo &info,
                                         sirius::proto::DiscoveryRegisterResponse &response, int retry_time = kRetryTimes);
 
     private:
@@ -195,15 +196,15 @@ namespace sirius::client {
     };
 
     template<typename Request, typename Response>
-    collie::Status RouterSender::send_request(const std::string &service_name,
+    turbo::Status RouterSender::send_request(const std::string &service_name,
                                              const Request &request,
                                              Response &response, int retry_times) {
         const ::google::protobuf::ServiceDescriptor *service_desc = sirius::proto::DiscoveryRouterService::descriptor();
         const ::google::protobuf::MethodDescriptor *method =
                 service_desc->FindMethodByName(service_name);
         if (method == nullptr) {
-            SS_LOG_IF(ERROR, _verbose) << "service name not exist, service:" << service_name;
-            return collie::Status::invalid_argument("service name not exist, service:{}", service_name);
+            LOG_IF(ERROR, _verbose) << "service name not exist, service:" << service_name;
+            return turbo::invalid_argument_error(turbo::substitute("service name not exist, service:$0", service_name));
         }
         int retry_time = 0;
         uint64_t log_id = mutil::fast_rand();
@@ -219,32 +220,32 @@ namespace sirius::client {
             channel_opt.connect_timeout_ms = _connect_timeout_ms;
             melon::Channel short_channel;
             if (short_channel.Init(_server.c_str(), &channel_opt) != 0) {
-                SS_LOG_IF(WARN, _verbose) << "connect with router server fail. channel Init fail, leader_addr:" << _server;
+                LOG_IF(WARNING, _verbose) << "connect with router server fail. channel Init fail, leader_addr:" << _server;
                 ++retry_time;
                 continue;
             }
             short_channel.CallMethod(method, &cntl, &request, &response, nullptr);
-            SS_LOG_IF(TRACE, _verbose) << "router_req[" << request.ShortDebugString() << "], router_resp["
+            LOG_IF(INFO, _verbose) << "router_req[" << request.ShortDebugString() << "], router_resp["
                                       << response.ShortDebugString() << "]";
             if (cntl.Failed()) {
-                SS_LOG_IF(WARN, _verbose) << "connect with router server fail. send request fail, error:" << cntl.ErrorText() << ", log_id:" << cntl.log_id();
+                LOG_IF(WARNING, _verbose) << "connect with router server fail. send request fail, error:" << cntl.ErrorText() << ", log_id:" << cntl.log_id();
                 ++retry_time;
                 continue;
             }
-            return collie::Status::ok_status();
+            return turbo::OkStatus();
             /*
             if (response.errcode() != sirius::proto::SUCCESS) {
                 TLOG_WARN_IF(_verbose, "send meta server fail, log_id:{}, response:{}", cntl.log_id(),
                              response.ShortDebugString());
                 //return turbo::UnavailableError("send meta server fail, log_id:{}, response:{}", cntl.log_id(),
                 //                               response.ShortDebugString());
-                return collie::Status::ok_status();
+                return turbo::OkStatus();
             } else {
-                return collie::Status::ok_status();
+                return turbo::OkStatus();
             }*/
         } while (retry_time < retry_times);
-        return collie::Status::deadline_exceeded("try times {} reach max_try {} and can not get response.", retry_time,
-                                            retry_times);
+        return turbo::deadline_exceeded_error(turbo::substitute("try times $0 reach max_try $1 and can not get response.", retry_time,
+                                            retry_times));
 
     }
 

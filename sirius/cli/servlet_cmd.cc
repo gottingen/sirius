@@ -19,6 +19,7 @@
 #include <sirius/proto/discovery.interface.pb.h>
 #include <sirius/cli/show_help.h>
 #include <sirius/cli/validator.h>
+#include <collie/strings/format.h>
 
 namespace sirius::cli {
     /// Set up a subcommand and capture a shared_ptr to a struct that holds all its options.
@@ -165,7 +166,7 @@ namespace sirius::cli {
         return sumary;
     }
 
-    collie::Status make_servlet_create(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_servlet_create(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::ServletInfo *servlet_req = req->mutable_servlet_info();
         req->set_op_type(sirius::proto::OP_CREATE_SERVLET);
         auto rs = check_valid_name_type(ServletOptionContext::get_instance()->app_name);
@@ -183,10 +184,10 @@ namespace sirius::cli {
         servlet_req->set_app_name(ServletOptionContext::get_instance()->app_name);
         servlet_req->set_zone(ServletOptionContext::get_instance()->zone_name);
         servlet_req->set_servlet_name(ServletOptionContext::get_instance()->servlet_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_servlet_remove(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_servlet_remove(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::ServletInfo *servlet_req = req->mutable_servlet_info();
         req->set_op_type(sirius::proto::OP_DROP_SERVLET);
         auto rs = check_valid_name_type(ServletOptionContext::get_instance()->app_name);
@@ -204,10 +205,10 @@ namespace sirius::cli {
         servlet_req->set_app_name(ServletOptionContext::get_instance()->app_name);
         servlet_req->set_zone(ServletOptionContext::get_instance()->zone_name);
         servlet_req->set_servlet_name(ServletOptionContext::get_instance()->servlet_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_servlet_modify(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_servlet_modify(sirius::proto::DiscoveryManagerRequest *req) {
         req->set_op_type(sirius::proto::OP_MODIFY_SERVLET);
         sirius::proto::ServletInfo *servlet_req = req->mutable_servlet_info();
         auto rs = check_valid_name_type(ServletOptionContext::get_instance()->app_name);
@@ -225,15 +226,15 @@ namespace sirius::cli {
         servlet_req->set_app_name(ServletOptionContext::get_instance()->app_name);
         servlet_req->set_zone(ServletOptionContext::get_instance()->zone_name);
         servlet_req->set_servlet_name(ServletOptionContext::get_instance()->servlet_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_servlet_list(sirius::proto::DiscoveryQueryRequest *req) {
+    turbo::Status make_servlet_list(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_SERVLET);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_servlet_info(sirius::proto::DiscoveryQueryRequest *req) {
+    turbo::Status make_servlet_info(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_SERVLET);
         auto rs = check_valid_name_type(ServletOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
@@ -254,7 +255,7 @@ namespace sirius::cli {
         req->set_app_name(ServletOptionContext::get_instance()->app_name);
         req->set_zone(ServletOptionContext::get_instance()->zone_name);
 
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
 }  // namespace sirius::cli

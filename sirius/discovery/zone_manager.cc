@@ -31,12 +31,12 @@ namespace sirius::discovery {
         std::string zone_name = app_name + "\001" + zone_info.zone();
         int64_t app_id = AppManager::get_instance()->get_app_id(app_name);
         if (app_id == 0) {
-            SS_LOG(WARN) << "request app not exist, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request app not exist, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app not exist");
             return;
         }
         if (_zone_id_map.find(zone_name) != _zone_id_map.end()) {
-            SS_LOG(WARN) << "request zone already exist, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request zone already exist, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "zone already exist");
             return;
         }
@@ -52,7 +52,7 @@ namespace sirius::discovery {
 
         std::string zone_value;
         if (!zone_info.SerializeToString(&zone_value)) {
-            SS_LOG(WARN) << "request serializeToArray fail, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
@@ -75,7 +75,7 @@ namespace sirius::discovery {
         set_max_zone_id(tmp_zone_id);
         AppManager::get_instance()->add_zone_id(app_id, tmp_zone_id);
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(INFO) << "create zone success, request:" << request.ShortDebugString();
+        LOG(INFO) << "create zone success, request:" << request.ShortDebugString();
     }
 
     void ZoneManager::drop_zone(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
@@ -85,18 +85,18 @@ namespace sirius::discovery {
         std::string zone_name = app_name + "\001" + zone_info.zone();
         int64_t app_id = AppManager::get_instance()->get_app_id(app_name);
         if (app_id == 0) {
-            SS_LOG(WARN) << "request app not exist, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request app not exist, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app not exist");
             return;
         }
         if (_zone_id_map.find(zone_name) == _zone_id_map.end()) {
-            SS_LOG(WARN) << "request zone not exist, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request zone not exist, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "zone not exist");
             return;
         }
         int64_t zone_id = _zone_id_map[zone_name];
         if (!_servlet_ids[zone_id].empty()) {
-            SS_LOG(WARN) << "request zone has servlet, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request zone has servlet, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "zone has servlet");
             return;
         }
@@ -104,7 +104,7 @@ namespace sirius::discovery {
         int ret = DiscoveryRocksdb::get_instance()->remove_discovery_info(
                 std::vector<std::string>{construct_zone_key(zone_id)});
         if (ret < 0) {
-            SS_LOG(WARN) << "drop zone: " << zone_name << " to rocksdb fail";
+            LOG(WARNING) << "drop zone: " << zone_name << " to rocksdb fail";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "write db fail");
             return;
         }
@@ -113,7 +113,7 @@ namespace sirius::discovery {
         // update app memory info
         AppManager::get_instance()->delete_zone_id(app_id, zone_id);
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(INFO) << "drop zone success, request:" << request.ShortDebugString();
+        LOG(INFO) << "drop zone success, request:" << request.ShortDebugString();
     }
 
     void ZoneManager::modify_zone(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
@@ -122,12 +122,12 @@ namespace sirius::discovery {
         std::string zone_name = app_name + "\001" + zone_info.zone();
         int64_t app_id = AppManager::get_instance()->get_app_id(app_name);
         if (app_id == 0) {
-            SS_LOG(WARN) << "request app not exist, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request app not exist, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app not exist");
             return;
         }
         if (_zone_id_map.find(zone_name) == _zone_id_map.end()) {
-            SS_LOG(WARN) << "request zone not exist, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request zone not exist, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "zone not exist");
             return;
         }
@@ -140,7 +140,7 @@ namespace sirius::discovery {
         }
         std::string zone_value;
         if (!tmp_zone_info.SerializeToString(&zone_value)) {
-            SS_LOG(WARN) << "request serializeToArray fail, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
@@ -152,16 +152,16 @@ namespace sirius::discovery {
         // update zone values in memory
         set_zone_info(tmp_zone_info);
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(INFO) << "modify zone success, request:" << request.ShortDebugString();
+        LOG(INFO) << "modify zone success, request:" << request.ShortDebugString();
     }
 
     int ZoneManager::load_zone_snapshot(const std::string &value) {
         sirius::proto::ZoneInfo zone_pb;
         if (!zone_pb.ParseFromString(value)) {
-            SS_LOG(ERROR) << "parse from pb fail when load zone snapshot, key:" << value;
+            LOG(ERROR) << "parse from pb fail when load zone snapshot, key:" << value;
             return -1;
         }
-        SS_LOG(INFO) << "zone snapshot:" << zone_pb.ShortDebugString();
+        LOG(INFO) << "zone snapshot:" << zone_pb.ShortDebugString();
         set_zone_info(zone_pb);
         // update memory app values.
         AppManager::get_instance()->add_zone_id(

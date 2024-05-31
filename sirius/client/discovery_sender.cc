@@ -26,57 +26,57 @@
 namespace sirius::client {
 
 
-    collie::Status DiscoverySender::init(const std::string & raft_nodes) {
+    turbo::Status DiscoverySender::init(const std::string & raft_nodes) {
         _master_leader_address.ip = mutil::IP_ANY;
         std::vector<std::string> peers = collie::str_split(raft_nodes, collie::ByAnyChar(",;\t\n "));
         for (auto &peer : peers) {
             mutil::EndPoint end_point;
             if(mutil::str2endpoint(peer.c_str(), &end_point) != 0) {
-                return collie::Status::invalid_argument("invalid address {}", peer);
+                return turbo::invalid_argument_error("invalid address " + std::string(mutil::endpoint2str(end_point).c_str()));
             }
             _servlet_nodes.push_back(end_point);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
 
     std::string DiscoverySender::get_leader() const {
-        SS_LOG_IF(INFO, _verbose) << "get master address:" << mutil::endpoint2str(_master_leader_address).c_str();
+        LOG_IF(INFO, _verbose) << "get master address:" << mutil::endpoint2str(_master_leader_address).c_str();
         return mutil::endpoint2str(_master_leader_address).c_str();
     }
 
     void DiscoverySender::set_leader_address(const mutil::EndPoint &addr) {
         std::unique_lock<std::mutex> lock(_master_leader_mutex);
         _master_leader_address = addr;
-        SS_LOG_IF(INFO, _verbose) << "set master address:" << mutil::endpoint2str(_master_leader_address).c_str();
+        LOG_IF(INFO, _verbose) << "set master address:" << mutil::endpoint2str(_master_leader_address).c_str();
     }
 
-    collie::Status DiscoverySender::discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+    turbo::Status DiscoverySender::discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                            sirius::proto::DiscoveryManagerResponse &response, int retry_times) {
         return send_request("discovery_manager", request, response, retry_times);
     }
 
-    collie::Status DiscoverySender::discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+    turbo::Status DiscoverySender::discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                            sirius::proto::DiscoveryManagerResponse &response) {
         return send_request("discovery_manager", request, response, _retry_times);
     }
 
-    collie::Status DiscoverySender::discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+    turbo::Status DiscoverySender::discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                          sirius::proto::DiscoveryQueryResponse &response, int retry_times) {
         return send_request("discovery_query", request, response, retry_times);
     }
 
-    collie::Status DiscoverySender::discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+    turbo::Status DiscoverySender::discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                          sirius::proto::DiscoveryQueryResponse &response) {
         return send_request("discovery_query", request, response, _retry_times);
     }
 
-    collie::Status DiscoverySender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
+    turbo::Status DiscoverySender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
                                     sirius::proto::ServletNamingResponse &response, int retry_time) {
         return send_request("naming", request, response, retry_time);
     }
 
-    collie::Status DiscoverySender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
+    turbo::Status DiscoverySender::discovery_naming(const sirius::proto::ServletNamingRequest &request,
                                                      sirius::proto::ServletNamingResponse &response) {
         return send_request("naming", request, response, _retry_times);
     }

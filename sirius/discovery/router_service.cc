@@ -18,9 +18,9 @@
 
 namespace sirius::discovery {
 
-    collie::Status RouterServiceImpl::init(const std::string &discovery_peers) {
+    turbo::Status RouterServiceImpl::init(const std::string &discovery_peers) {
         if(_is_init) {
-            return  collie::Status::ok_status();
+            return  turbo::OkStatus();
         }
         auto rs = _manager_sender.init(discovery_peers);
         if(!rs.ok()) {
@@ -31,7 +31,7 @@ namespace sirius::discovery {
             return rs;
         }
         _is_init = true;
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
     void RouterServiceImpl::discovery_manager(::google::protobuf::RpcController* controller,
                       const ::sirius::proto::DiscoveryManagerRequest* request,
@@ -42,7 +42,7 @@ namespace sirius::discovery {
             melon::ClosureGuard done_guard(done);
             auto ret = _manager_sender.discovery_manager(*request, *response, 2);
             if(!ret.ok()) {
-                SS_LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
+                LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
             }
         };
         Fiber bth;
@@ -58,7 +58,7 @@ namespace sirius::discovery {
             melon::ClosureGuard done_guard(done);
             auto ret = _query_sender.discovery_query(*request, *response, 2);
             if(!ret.ok()) {
-                SS_LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
+                LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
             }
         };
         Fiber bth;
@@ -96,9 +96,9 @@ namespace melon {
         info->set_deleted(peer.deleted());
     }
 
-    collie::Status SnsServiceImpl::init(const std::string &discovery_peers) {
+    turbo::Status SnsServiceImpl::init(const std::string &discovery_peers) {
         if(_is_init) {
-            return  collie::Status::ok_status();
+            return  turbo::OkStatus();
         }
         auto rs = _manager_sender.init(discovery_peers);
         if(!rs.ok()) {
@@ -109,7 +109,7 @@ namespace melon {
             return rs;
         }
         _is_init = true;
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
     void SnsServiceImpl::registry(::google::protobuf::RpcController* controller,
@@ -126,8 +126,27 @@ namespace melon {
             auto ret = _manager_sender.discovery_manager(request, response, 2);
             res->set_errmsg(response.errmsg());
             if(!ret.ok()) {
-                res->set_errcode(melon::Errno::OK);
-                SS_LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
+                res->set_errcode(static_cast<melon::Errno>(ret.code()));
+                LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
+            }
+            switch (response.errcode()) {
+                case sirius::proto::SUCCESS:
+                    res->set_errcode(melon::Errno::OK);
+                    break;
+                case sirius::proto::INPUT_PARAM_ERROR:
+                    res->set_errcode(melon::Errno::InvalidArgument);
+                    break;
+                case sirius::proto::SERVLET_EXISTS:
+                    res->set_errcode(melon::Errno::AlreadyExists);
+                    break;
+                case sirius::proto::SERVLET_NO_APP:
+                case sirius::proto::SERVLET_NO_ZONE:
+                    res->set_errcode(melon::Errno::NotFound);
+                case sirius::proto::PARSE_TO_PB_FAIL:
+                    res->set_errcode(melon::Errno::DataLoss);
+                    break;
+                default:
+                    res->set_errcode(melon::Errno::IOError);
             }
             res->set_errcode(melon::Errno::OK);
         };
@@ -151,7 +170,7 @@ namespace melon {
             res->set_errmsg(response.errmsg());
             if(!ret.ok()) {
                 res->set_errcode(melon::Errno::Internal);
-                SS_LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
+                LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
             }
             res->set_errcode(melon::Errno::OK);
         };
@@ -174,7 +193,7 @@ namespace melon {
             res->set_errmsg(response.errmsg());
             if(!ret.ok()) {
                 res->set_errcode(melon::Errno::Internal);
-                SS_LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
+                LOG(ERROR) << "rpc to discovery server:discovery_manager error:" << controller->ErrorText();
             }
             res->set_errcode(melon::Errno::OK);
         };
@@ -197,9 +216,9 @@ namespace melon {
             request.mutable_color()->CopyFrom(req->color());
             auto ret = _query_sender.discovery_naming(request, response, 2);
             if(!ret.ok()) {
-                SS_LOG(ERROR) << "rpc to discovery server:naming error:" << controller->ErrorText();
+                LOG(ERROR) << "rpc to discovery server:naming error:" << controller->ErrorText();
                 res->set_errcode(static_cast<melon::Errno>(ret.code()));
-                res->set_errmsg(ret.message());
+                res->set_errmsg(ret.to_string());
             }
             res->set_errcode(melon::Errno::OK);
             res->set_errmsg("ok");

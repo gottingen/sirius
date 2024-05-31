@@ -54,8 +54,6 @@ namespace sirius::discovery {
         }
         std::vector<int64_t> query_zone_id;
         zone_manager->get_zone_ids(request->app_name(), zone_names, query_zone_id);
-        SS_LOG(INFO)<< "query_zone name: " << zone_names;
-        SS_LOG(INFO)<< "query_zone_id: " << query_zone_id;
         std::set<int64_t> query_zone_ids;
         for (auto &id: query_zone_id) {
             if (zone_ids.find(id) != zone_ids.end()) {
@@ -84,7 +82,7 @@ namespace sirius::discovery {
         env_set.insert(request->env().begin(), request->env().end());
         std::set<std::string> color_set;
         color_set.insert(request->color().begin(), request->color().end());
-        auto tnow = turbo::Time::time_now().to_time_t();
+        auto tnow = turbo::Time::to_time_t(turbo::Time::current_time());
         auto *servlet_manager = ServletManager::get_instance();
         int time_out = 50;
         for(auto &server_id: server_ids) {
@@ -92,7 +90,7 @@ namespace sirius::discovery {
             if (servlet_manager->get_servlet_info(server_id, servlet_info) != 0) {
                 continue;
             }
-            SS_LOG(INFO) << "server_id: " << server_id<< " env: " << servlet_info.env() << " color: " << servlet_info.color() << " mtime: " << servlet_info.mtime() << " tnow: " << tnow;
+            LOG(INFO) << "server_id: " << server_id<< " env: " << servlet_info.env() << " color: " << servlet_info.color() << " mtime: " << servlet_info.mtime() << " tnow: " << tnow;
             if (env_set.find(servlet_info.env()) == env_set.end()) {
                 continue;
             }
@@ -122,7 +120,7 @@ namespace sirius::discovery {
             } else {
                 response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
                 response->set_errmsg("app not exist");
-                SS_LOG(ERROR)<< "namespace: " << namespace_name << " not exist";
+                LOG(ERROR)<< "namespace: " << namespace_name << " not exist";
             }
         }
     }

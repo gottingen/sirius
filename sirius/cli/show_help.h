@@ -15,7 +15,7 @@
 
 #pragma once
 
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <collie/table/table.h>
 #include <sirius/cli/proto_help.h>
@@ -43,18 +43,18 @@ namespace sirius::cli {
         static collie::table::Table show_response(sirius::proto::ErrCode code, sirius::proto::RaftControlOp qt,
                                           const std::string &msg);
 
-        static collie::table::Table rpc_error_status(const collie::Status &s, sirius::proto::OpType qt);
+        static collie::table::Table rpc_error_status(const turbo::Status &s, sirius::proto::OpType qt);
 
-        static collie::table::Table rpc_error_status(const collie::Status &s, sirius::proto::QueryOpType qt);
+        static collie::table::Table rpc_error_status(const turbo::Status &s, sirius::proto::QueryOpType qt);
 
-        static collie::table::Table rpc_error_status(const collie::Status &s, sirius::proto::RaftControlOp qt);
+        static collie::table::Table rpc_error_status(const turbo::Status &s, sirius::proto::RaftControlOp qt);
 
-        static collie::table::Table pre_send_error(const collie::Status &s, const sirius::proto::DiscoveryManagerRequest &req);
+        static collie::table::Table pre_send_error(const turbo::Status &s, const sirius::proto::DiscoveryManagerRequest &req);
 
 
-        static collie::table::Table pre_send_error(const collie::Status &s, const sirius::proto::DiscoveryQueryRequest &req);
+        static collie::table::Table pre_send_error(const turbo::Status &s, const sirius::proto::DiscoveryQueryRequest &req);
 
-        static collie::table::Table pre_send_error(const collie::Status &s, const sirius::proto::RaftControlRequest &req);
+        static collie::table::Table pre_send_error(const turbo::Status &s, const sirius::proto::RaftControlRequest &req);
 
         static std::string json_format(const std::string &json_str);
 
@@ -66,7 +66,7 @@ namespace sirius::cli {
         static collie::table::Table
         show_response_impl(sirius::proto::ErrCode code, int qt, const std::string &qts, const std::string &msg);
 
-        static collie::table::Table rpc_error_status_impl(const collie::Status &s, int qt, const std::string &qts);
+        static collie::table::Table rpc_error_status_impl(const turbo::Status &s, int qt, const std::string &qts);
 
         static std::string get_level_str(int level);
     private:
@@ -110,15 +110,15 @@ namespace sirius::cli {
         return show_response_impl(server, code, static_cast<int>(qt), get_op_string(qt), msg);
     }
 
-    inline collie::table::Table ShowHelper::rpc_error_status(const collie::Status &s, sirius::proto::OpType qt) {
+    inline collie::table::Table ShowHelper::rpc_error_status(const turbo::Status &s, sirius::proto::OpType qt) {
         return rpc_error_status_impl(s, static_cast<int>(qt), get_op_string(qt));
     }
 
-    inline collie::table::Table ShowHelper::rpc_error_status(const collie::Status &s, sirius::proto::QueryOpType qt) {
+    inline collie::table::Table ShowHelper::rpc_error_status(const turbo::Status &s, sirius::proto::QueryOpType qt) {
         return rpc_error_status_impl(s, static_cast<int>(qt), get_op_string(qt));
     }
 
-    inline collie::table::Table ShowHelper::rpc_error_status(const collie::Status &s, sirius::proto::RaftControlOp qt) {
+    inline collie::table::Table ShowHelper::rpc_error_status(const turbo::Status &s, sirius::proto::RaftControlOp qt) {
         return rpc_error_status_impl(s, static_cast<int>(qt), get_op_string(qt));
     }
 
@@ -135,7 +135,7 @@ namespace sirius::cli {
 
         void add_table(const std::string &stage, const std::string &msg, bool ok);
 
-        void prepare(const collie::Status &status);
+        void prepare(const turbo::Status &status);
 
         std::vector<collie::table::Table> tables;
         collie::table::Table result_table;

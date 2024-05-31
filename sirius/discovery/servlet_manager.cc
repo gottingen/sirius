@@ -31,20 +31,20 @@ namespace sirius::discovery {
         std::string servlet_name = zone_name + "\001" + servlet_info.servlet_name();
         int64_t app_id = AppManager::get_instance()->get_app_id(app_name);
         if (app_id == 0) {
-            SS_LOG(WARN) << "request namespace not exist, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "namespace not exist");
+            LOG(WARNING) << "request app not exist, request:" << request.ShortDebugString();
+            IF_DONE_SET_RESPONSE(done, sirius::proto::SERVLET_NO_APP, "app not exist");
             return;
         }
         int64_t zone_id = ZoneManager::get_instance()->get_zone_id(zone_name);
         if (zone_id == 0) {
-            SS_LOG(WARN) << "request zone not exist, request:" << zone_name;
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "zone not exist");
+            LOG(WARNING) << "request zone not exist, request:" << zone_name;
+            IF_DONE_SET_RESPONSE(done, sirius::proto::SERVLET_NO_ZONE, "zone not exist");
             return;
         }
 
         if (_servlet_id_map.find(servlet_name) != _servlet_id_map.end()) {
-            SS_LOG(WARN) << "request zone: " << servlet_name << " already exist";
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "servlet already exist");
+            LOG(WARNING) << "request zone: " << servlet_name << " already exist";
+            IF_DONE_SET_RESPONSE(done, sirius::proto::SERVLET_EXISTS, "servlet already exist");
             return;
         }
 
@@ -56,13 +56,13 @@ namespace sirius::discovery {
         servlet_info.set_servlet_id(tmp_servlet_id);
         servlet_info.set_zone_id(zone_id);
         servlet_info.set_app_id(app_id);
-        auto t = turbo::Time::time_now().to_time_t();
+        auto t = turbo::Time::current_seconds();
         servlet_info.set_ctime(t);
         servlet_info.set_mtime(t);
 
         std::string servlet_value;
         if (!servlet_info.SerializeToString(&servlet_value)) {
-            SS_LOG(WARN) << "request serializeToArray fail, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
@@ -85,7 +85,7 @@ namespace sirius::discovery {
         set_max_servlet_id(tmp_servlet_id);
         ZoneManager::get_instance()->add_servlet_id(app_id, tmp_servlet_id);
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(WARN) << "create zone success, request:" << request.ShortDebugString();
+        LOG(WARNING) << "create zone success, request:" << request.ShortDebugString();
     }
 
     void ServletManager::drop_servlet(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
@@ -96,18 +96,18 @@ namespace sirius::discovery {
         std::string servlet_name = zone_name + "\001" + servlet_info.servlet_name();
         int64_t app_id = AppManager::get_instance()->get_app_id(app_name);
         if (app_id == 0) {
-            SS_LOG(WARN) << "request namespace: " << app_name << " not exist";
+            LOG(WARNING) << "request namespace: " << app_name << " not exist";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "namespace not exist");
             return;
         }
         int64_t zone_id = ZoneManager::get_instance()->get_zone_id(zone_name);
         if (zone_id == 0) {
-            SS_LOG(WARN) << "request zone: " << zone_name << " not exist";
+            LOG(WARNING) << "request zone: " << zone_name << " not exist";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "namespace not exist");
             return;
         }
         if (_servlet_id_map.find(zone_name) == _servlet_id_map.end()) {
-            SS_LOG(WARN) << "request zone: " << zone_name << " not exist";
+            LOG(WARNING) << "request zone: " << zone_name << " not exist";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "zone not exist");
             return;
         }
@@ -118,7 +118,7 @@ namespace sirius::discovery {
         int ret = DiscoveryRocksdb::get_instance()->remove_discovery_info(
                 std::vector<std::string>{construct_servlet_key(zone_id)});
         if (ret < 0) {
-            SS_LOG(WARN) << "drop zone: " << zone_name << " to rocksdb fail";
+            LOG(WARNING) << "drop zone: " << zone_name << " to rocksdb fail";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "write db fail");
             return;
         }
@@ -127,7 +127,7 @@ namespace sirius::discovery {
         // update namespace memory info
         ZoneManager::get_instance()->delete_servlet_id(zone_id, servlet_id);
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(WARN) << "drop zone success, request:" << request.ShortDebugString();
+        LOG(WARNING) << "drop zone success, request:" << request.ShortDebugString();
     }
 
     void ServletManager::modify_servlet(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
@@ -137,19 +137,19 @@ namespace sirius::discovery {
         std::string servlet_name = zone_name + "\001" + servlet_info.servlet_name();
         int64_t app_id = AppManager::get_instance()->get_app_id(app_name);
         if (app_id == 0) {
-            SS_LOG(WARN) << "request app: " << app_name << " not exist";
+            LOG(WARNING) << "request app: " << app_name << " not exist";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app not exist");
             return;
         }
         int64_t zone_id = ZoneManager::get_instance()->get_zone_id(zone_name);
         if (zone_id == 0) {
-            SS_LOG(WARN) << "request zone: " << zone_name << " not exist";
+            LOG(WARNING) << "request zone: " << zone_name << " not exist";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "zone not exist");
             return;
         }
 
         if (_servlet_id_map.find(servlet_name) == _servlet_id_map.end()) {
-            SS_LOG(WARN) << "request servlet_name: " << servlet_name << " not exist";
+            LOG(WARNING) << "request servlet_name: " << servlet_name << " not exist";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "servlet not exist");
             return;
         }
@@ -170,11 +170,11 @@ namespace sirius::discovery {
 
         tmp_servlet_info.set_env(servlet_info.env());
         tmp_servlet_info.set_address(servlet_info.address());
-        tmp_servlet_info.set_mtime(turbo::Time::time_now().to_time_t());
+        tmp_servlet_info.set_mtime(turbo::Time::current_seconds());
 
         std::string servlet_value;
         if (!tmp_servlet_info.SerializeToString(&servlet_value)) {
-            SS_LOG(ERROR) << "request serializeToArray fail, request:" << request.ShortDebugString();
+            LOG(ERROR) << "request serializeToArray fail, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
@@ -186,16 +186,16 @@ namespace sirius::discovery {
         // update zone values in memory
         set_servlet_info(tmp_servlet_info);
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(INFO) << "modify zone success, request:" << tmp_servlet_info.ShortDebugString();
+        LOG(INFO) << "modify zone success, request:" << tmp_servlet_info.ShortDebugString();
     }
 
     int ServletManager::load_servlet_snapshot(const std::string &value) {
         sirius::proto::ServletInfo servlet_pb;
         if (!servlet_pb.ParseFromString(value)) {
-            SS_LOG(WARN) << "parse from pb fail when load zone snapshot, key:" << value;
+            LOG(WARNING) << "parse from pb fail when load zone snapshot, key:" << value;
             return -1;
         }
-        SS_LOG(WARN) << "servlet snapshot:" << servlet_pb.ShortDebugString();
+        LOG(WARNING) << "servlet snapshot:" << servlet_pb.ShortDebugString();
         set_servlet_info(servlet_pb);
         // update memory namespace values.
         ZoneManager::get_instance()->add_servlet_id(

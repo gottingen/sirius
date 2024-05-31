@@ -15,7 +15,7 @@
 #pragma once
 
 #include <melon/rpc/channel.h>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <sirius/base/log.h>
 #include <melon/utility/endpoint.h>
 #include <melon/rpc/channel.h>
@@ -24,7 +24,7 @@
 #include <google/protobuf/descriptor.h>
 #include <sirius/cli/option_context.h>
 #include <sirius/proto/discovery.interface.pb.h>
-
+#include <turbo/strings/substitute.h>
 namespace sirius::cli {
 
     class RouterInteract {
@@ -35,7 +35,7 @@ namespace sirius::cli {
         }
 
         template<typename Request, typename Response>
-        collie::Status send_request(const std::string &service_name,
+        turbo::Status send_request(const std::string &service_name,
                                    const Request &request,
                                    Response &response) {
             const ::google::protobuf::ServiceDescriptor *service_desc = sirius::proto::DiscoveryService::descriptor();
@@ -43,8 +43,8 @@ namespace sirius::cli {
                     service_desc->FindMethodByName(service_name);
             auto verbose =  OptionContext::get_instance()->verbose;
             if (method == nullptr) {
-                SS_LOG_IF(ERROR, verbose) << "service name not exist, service: "<<service_name;
-                return collie::Status::invalid_argument("service name not exist, service:{}", service_name);
+                LOG_IF(ERROR, verbose) << "service name not exist, service: "<<service_name;
+                return turbo::invalid_argument_error(turbo::substitute("service name not exist, service: $0", service_name));
             }
             int retry_time = 0;
             uint64_t log_id = mutil::fast_rand();
@@ -60,29 +60,29 @@ namespace sirius::cli {
                 channel_opt.connect_timeout_ms = OptionContext::get_instance()->connect_timeout_ms;
                 melon::Channel short_channel;
                 if (short_channel.Init(OptionContext::get_instance()->router_server.c_str(), &channel_opt) != 0) {
-                    SS_LOG_IF(WARN, verbose) << "connect with router server fail. channel Init fail, leader_addr:" << OptionContext::get_instance()->router_server;
+                    LOG_IF(WARNING, verbose) << "connect with router server fail. channel Init fail, leader_addr:" << OptionContext::get_instance()->router_server;
                     ++retry_time;
                     continue;
                 }
                 short_channel.CallMethod(method, &cntl, &request, &response, nullptr);
 
-                SS_LOG_IF(INFO, verbose) << "router_req[" << request.ShortDebugString() << "], router_resp[" << response.ShortDebugString() << "]";
+                LOG_IF(INFO, verbose) << "router_req[" << request.ShortDebugString() << "], router_resp[" << response.ShortDebugString() << "]";
                 if (cntl.Failed()) {
-                    SS_LOG_IF(WARN, verbose) << "connect with router server fail. send request fail, error:" << cntl.ErrorText() << ", log_id:" << cntl.log_id();
+                    LOG_IF(WARNING, verbose) << "connect with router server fail. send request fail, error:" << cntl.ErrorText() << ", log_id:" << cntl.log_id();
                     ++retry_time;
                     continue;
                 }
 
                 if (response.errcode() != sirius::proto::SUCCESS) {
-                    SS_LOG_IF(WARN, verbose) << "send discovery router server fail, log_id:" << cntl.log_id() << ", response:" << response.ShortDebugString();
+                    LOG_IF(WARNING, verbose) << "send discovery router server fail, log_id:" << cntl.log_id() << ", response:" << response.ShortDebugString();
                     //return turbo::UnavailableError("send discovery router server fail, log_id:{}, response:{}", cntl.log_id(),
                     //                               response.ShortDebugString());
-                    return collie::Status::ok_status();
+                    return turbo::OkStatus();
                 } else {
-                    return collie::Status::ok_status();
+                    return turbo::OkStatus();
                 }
             } while (retry_time < OptionContext::get_instance()->max_retry);
-            return collie::Status::deadline_exceeded("try times {} reach max_try {} and can not get response.", retry_time, OptionContext::get_instance()->max_retry);
+            return turbo::deadline_exceeded_error(turbo::substitute("try times $0 reach max_try $1 and can not get response.", retry_time, OptionContext::get_instance()->max_retry));
 
         }
 

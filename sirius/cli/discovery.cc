@@ -29,7 +29,6 @@
 #include <sirius/cli/validator.h>
 #include <sirius/client/discovery_sender.h>
 #include <sirius/client/router_sender.h>
-#include <sirius/client/naming.h>
 #include <sirius/client/dumper.h>
 #include <sirius/client/loader.h>
 #include <sirius/client/servlet_instance_builder.h>
@@ -42,6 +41,7 @@
 #include <turbo/strings/numbers.h>
 #include <melon/naming/sns_naming_service.h>
 #include <gflags/gflags.h>
+#include <collie/strings/format.h>
 
 
 namespace sirius::cli {
@@ -169,8 +169,7 @@ namespace sirius::cli {
 
     static void* run_mock(bool& stop) {
         auto ctx = DiscoveryOptionContext::get_instance();
-        std::string sns_server = "list://" + OptionContext::get_instance()->router_server;
-        google::SetCommandLineOption("sns_server", sns_server.c_str());
+
         melon::SnsPeer instance;
         instance.set_app_name(ctx->app_name);
         instance.set_zone(ctx->zone_name);
@@ -201,11 +200,25 @@ namespace sirius::cli {
     void DiscoveryCmd::run_mock_instance_cmd() {
         bool stop = false;
         auto ctx = DiscoveryOptionContext::get_instance();
-        std::vector<sirius::Fiber> fibers(ctx->fibers);
-        for (auto &fiber: fibers) {
-            fiber.run([&stop]() {
-                run_mock(stop);
-            });
+        std::string sns_server = "list://" + OptionContext::get_instance()->router_server;
+        google::SetCommandLineOption("sns_server", sns_server.c_str());
+        std::vector< melon::SnsPeer> instances(ctx->fibers);
+        std::vector<std::unique_ptr<melon::naming::SnsNamingClient>> clients(ctx->fibers);
+        for (size_t i = 0; i < ctx->fibers; i++) {
+            auto &instance = instances[i];
+            instance.set_app_name(ctx->app_name);
+            instance.set_zone(ctx->zone_name);
+            instance.set_servlet_name(ctx->servlet_name + collie::to_str(i));
+            instance.set_env(ctx->env);
+            instance.set_color(ctx->color);
+            instance.set_status(melon::PeerStatus::NORMAL);
+            instance.set_address(ctx->address);
+            clients[i] = std::make_unique<melon::naming::SnsNamingClient>();
+            auto rs = clients[i]->register_peer(instance);
+            if (rs != 0) {
+                collie::println("register server error");
+                return;
+            }
         }
         size_t n = 1000;
         while (n > 0) {
@@ -213,8 +226,8 @@ namespace sirius::cli {
             n--;
         }
         stop = true;
-        for (auto &fiber: fibers) {
-            fiber.join();
+        for (auto &client: clients) {
+            client.reset();
         }
     }
 
@@ -289,8 +302,9 @@ namespace sirius::cli {
         auto &ins = response.servlets();
         collie::println("instance num:{}", ins.size());
         collie::println("message:{}", response.errmsg());
+        int cnt = 1;
         for (auto &instance: ins) {
-            collie::println("{}.{}.{}#{} {} {} {} {}",
+            collie::println("[cnt: {}] {}.{}.{}#{} {} {} {} {}",cnt++,
                             instance.app_name(), instance.zone(),
                             instance.servlet_name(), instance.address(),
                             instance.env(), instance.color(),
@@ -311,7 +325,7 @@ namespace sirius::cli {
          */
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     DiscoveryCmd::make_discovery_add_instance(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::ServletInfo *instance_req = req->mutable_servlet_info();
         req->set_op_type(sirius::proto::OP_CREATE_SERVLET);
@@ -341,12 +355,12 @@ namespace sirius::cli {
         instance_req->set_servlet_name(DiscoveryOptionContext::get_instance()->servlet_name);
         instance_req->set_color(DiscoveryOptionContext::get_instance()->color);
         instance_req->set_env(DiscoveryOptionContext::get_instance()->env);
-        instance_req->set_status(status.value_or_die());
+        instance_req->set_status(status.value());
         instance_req->set_address(DiscoveryOptionContext::get_instance()->address);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     DiscoveryCmd::make_discovery_remove_instance(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::ServletInfo *instance_req = req->mutable_servlet_info();
         req->set_op_type(sirius::proto::OP_DROP_SERVLET);
@@ -373,10 +387,10 @@ namespace sirius::cli {
         instance_req->set_servlet_name(DiscoveryOptionContext::get_instance()->servlet_name);
         instance_req->set_address(DiscoveryOptionContext::get_instance()->address);
 
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     DiscoveryCmd::make_discovery_update_instance(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::ServletInfo *instance_req = req->mutable_servlet_info();
         req->set_op_type(sirius::proto::OP_MODIFY_SERVLET);
@@ -406,9 +420,9 @@ namespace sirius::cli {
         instance_req->set_servlet_name(DiscoveryOptionContext::get_instance()->servlet_name);
         instance_req->set_color(DiscoveryOptionContext::get_instance()->color);
         instance_req->set_env(DiscoveryOptionContext::get_instance()->env);
-        instance_req->set_status(status.value_or_die());
+        instance_req->set_status(status.value());
         instance_req->set_address(DiscoveryOptionContext::get_instance()->address);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
     void DiscoveryCmd::run_discovery_dump_cmd() {
@@ -439,26 +453,26 @@ namespace sirius::cli {
 
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     DiscoveryCmd::make_discovery_list_instance(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_SERVLET);
         auto opt = DiscoveryOptionContext::get_instance();
         if (opt->app_name.empty()) {
-            return collie::Status::ok_status();
+            return turbo::OkStatus();
         }
         req->set_app_name(opt->app_name);
         if (opt->zone_name.empty()) {
-            return collie::Status::ok_status();
+            return turbo::OkStatus();
         }
         req->set_zone(opt->zone_name);
         if (opt->servlet_name.empty()) {
-            return collie::Status::ok_status();
+            return turbo::OkStatus();
         }
         req->set_servlet(opt->servlet_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     DiscoveryCmd::make_discovery_info_instance(melon::SnsRequest *req) {
         auto opt = DiscoveryOptionContext::get_instance();
         req->set_app_name(opt->app_name);
@@ -471,13 +485,13 @@ namespace sirius::cli {
         for(auto &color: opt->colors) {
             req->add_color(color);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Result<int> DiscoveryCmd::string_to_status(const std::string &status) {
+    [[nodiscard]] turbo::Result<int> DiscoveryCmd::string_to_status(const std::string &status) {
         int s;
         if(!turbo::simple_atoi(status, &s) ){
-            return collie::Status::invalid_argument("unknown status");
+            return turbo::invalid_argument_error("unknown status");
         }
         return s;
     }

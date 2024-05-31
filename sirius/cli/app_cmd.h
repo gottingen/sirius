@@ -18,7 +18,7 @@
 #include <collie/cli/cli.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <collie/table/table.h>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <string>
 
 namespace sirius::cli {
@@ -51,16 +51,16 @@ namespace sirius::cli {
 
     void run_ns_info_cmd();
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_namespace_create(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_namespace_remove(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_namespace_modify(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_namespace_query(sirius::proto::DiscoveryQueryRequest *req);
 
     collie::table::Table show_discovery_query_ns_response(const sirius::proto::DiscoveryQueryResponse &res);

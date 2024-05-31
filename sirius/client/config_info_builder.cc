@@ -33,27 +33,27 @@ namespace sirius::client {
         _info->Clear();
     }
 
-    collie::Status ConfigInfoBuilder::build_from_json(const std::string &json_str) {
+    turbo::Status ConfigInfoBuilder::build_from_json(const std::string &json_str) {
         auto rs = Loader::load_proto(json_str, *_info);
         if (!rs.ok()) {
             return rs;
         }
         /// check field
         if (!_info->has_name() || _info->name().empty()) {
-            return collie::Status::data_loss("miss required field name");
+            return turbo::data_loss_error("miss required field name");
         }
         if (!_info->has_version() ||
             (_info->version().major() == 0 && _info->version().minor() == 0 && _info->version().patch() == 0)) {
-            return collie::Status::data_loss("miss field version");
+            return turbo::data_loss_error("miss field version");
         }
 
         if (!_info->has_content() || _info->content().empty()) {
-            return collie::Status::data_loss("miss required field name");
+            return turbo::data_loss_error("miss required field name");
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status ConfigInfoBuilder::build_from_json_file(const std::string &json_path) {
+    turbo::Status ConfigInfoBuilder::build_from_json_file(const std::string &json_path) {
         alkaid::SequentialReadFile file;
         auto rs = file.open(json_path);
         if (!rs.ok()) {
@@ -67,7 +67,7 @@ namespace sirius::client {
         return build_from_json(content);
     }
 
-    collie::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
+    turbo::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
                                                      const sirius::proto::Version &version,
                                                      const sirius::proto::ConfigType &type) {
         alkaid::SequentialReadFile file;
@@ -84,7 +84,7 @@ namespace sirius::client {
         return build_from_content(name, content, version, type);
     }
 
-    collie::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
+    turbo::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
                                                      const sirius::proto::Version &version,
                                                      const std::string &type) {
         alkaid::SequentialReadFile file;
@@ -102,10 +102,10 @@ namespace sirius::client {
             return rt.status();
         }
 
-        return build_from_content(name, content, version, rt.value_or_die());
+        return build_from_content(name, content, version, rt.value());
     }
 
-    collie::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
+    turbo::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
                                                      const std::string &version,
                                                      const sirius::proto::ConfigType &type) {
         alkaid::SequentialReadFile file;
@@ -128,7 +128,7 @@ namespace sirius::client {
         return build_from_content(name, content, tmp_version, type);
     }
 
-    collie::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
+    turbo::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
                                                      const std::string &version,
                                                      const std::string &type) {
         alkaid::SequentialReadFile file;
@@ -153,30 +153,30 @@ namespace sirius::client {
             return rs;
         }
 
-        return build_from_content(name, content, tmp_version, rt.value_or_die());
+        return build_from_content(name, content, tmp_version, rt.value());
     }
 
-    collie::Status ConfigInfoBuilder::build_from_content(const std::string &name, const std::string &content,
+    turbo::Status ConfigInfoBuilder::build_from_content(const std::string &name, const std::string &content,
                                                         const sirius::proto::Version &version,
                                                         const sirius::proto::ConfigType &type) {
         _info->set_name(name);
         _info->set_content(content);
         *_info->mutable_version() = version;
         _info->set_type(type);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status ConfigInfoBuilder::build_from_content(const std::string &name, const std::string &content,
+    turbo::Status ConfigInfoBuilder::build_from_content(const std::string &name, const std::string &content,
                                                         const sirius::proto::Version &version,
                                                         const std::string &type) {
         auto rt = string_to_config_type(type);
         if (!rt.ok()) {
             return rt.status();
         }
-        return build_from_content(name, content, version, rt.value_or_die());
+        return build_from_content(name, content, version, rt.value());
     }
 
-    collie::Status ConfigInfoBuilder::build_from_content(const std::string &name, const std::string &content,
+    turbo::Status ConfigInfoBuilder::build_from_content(const std::string &name, const std::string &content,
                                                         const std::string &version,
                                                         const sirius::proto::ConfigType &type) {
         sirius::proto::Version tmp_version;
@@ -187,7 +187,7 @@ namespace sirius::client {
         return build_from_content(name, content, tmp_version, type);
     }
 
-    collie::Status
+    turbo::Status
     ConfigInfoBuilder::build_from_content(const std::string &name, const std::string &content,
                                           const std::string &version,
                                           const std::string &type) {
@@ -200,7 +200,7 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return build_from_content(name, content, tmp_version, rt.value_or_die());
+        return build_from_content(name, content, tmp_version, rt.value());
 
     }
 

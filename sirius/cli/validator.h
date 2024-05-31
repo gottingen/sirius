@@ -16,10 +16,10 @@
 #pragma once
 
 #include <string>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 
 namespace sirius::cli {
 
-    [[nodiscard]] collie::Status check_valid_name_type(std::string_view ns);
+    [[nodiscard]] turbo::Status check_valid_name_type(std::string_view ns);
 
 }  // namespace sirius::cli

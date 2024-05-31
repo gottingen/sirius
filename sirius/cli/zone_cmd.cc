@@ -165,7 +165,7 @@ namespace sirius::cli {
         return summary;
     }
 
-    collie::Status make_zone_create(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_zone_create(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::ZoneInfo *zone_req = req->mutable_zone_info();
         req->set_op_type(sirius::proto::OP_CREATE_ZONE);
         auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->app_name);
@@ -178,10 +178,10 @@ namespace sirius::cli {
         }
         zone_req->set_app_name(ZoneOptionContext::get_instance()->app_name);
         zone_req->set_zone(ZoneOptionContext::get_instance()->zone_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_zone_remove(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_zone_remove(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::ZoneInfo *zone_req = req->mutable_zone_info();
         req->set_op_type(sirius::proto::OP_DROP_ZONE);
         auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->app_name);
@@ -194,10 +194,10 @@ namespace sirius::cli {
         }
         zone_req->set_app_name(ZoneOptionContext::get_instance()->app_name);
         zone_req->set_zone(ZoneOptionContext::get_instance()->zone_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_zone_modify(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_zone_modify(sirius::proto::DiscoveryManagerRequest *req) {
         req->set_op_type(sirius::proto::OP_MODIFY_ZONE);
         sirius::proto::ZoneInfo *zone_req = req->mutable_zone_info();
         auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->app_name);
@@ -210,15 +210,15 @@ namespace sirius::cli {
         }
         zone_req->set_app_name(ZoneOptionContext::get_instance()->app_name);
         zone_req->set_zone(ZoneOptionContext::get_instance()->zone_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_zone_list(sirius::proto::DiscoveryQueryRequest *req) {
+    turbo::Status make_zone_list(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_ZONE);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_zone_info(sirius::proto::DiscoveryQueryRequest *req) {
+    turbo::Status make_zone_info(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_ZONE);
         auto rs = check_valid_name_type(ZoneOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
@@ -230,7 +230,7 @@ namespace sirius::cli {
         }
         req->set_app_name(ZoneOptionContext::get_instance()->app_name);
         req->set_zone(ZoneOptionContext::get_instance()->zone_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
 }  // namespace sirius::cli

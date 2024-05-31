@@ -25,7 +25,7 @@
 #include <collie/cli/cli.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <collie/table/table.h>
-#include <collie/utility/result.h>
+#include <turbo/status/result.h>
 #include <sirius/client/discovery_sender.h>
 #include <string>
 
@@ -68,7 +68,7 @@ namespace sirius::cli {
 
         static void run_trans_cmd();
 
-        static collie::Result<int> to_region_id();
+        static turbo::Result<int> to_region_id();
 
         static collie::table::Table show_raft_result(sirius::proto::RaftControlResponse &res);
     };

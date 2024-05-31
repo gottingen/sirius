@@ -24,13 +24,13 @@
 
 namespace sirius::client {
 
-    collie::Status ConfigClient::init() {
+    turbo::Status ConfigClient::init() {
         if(_init) {
-            return collie::Status::ok_status();
+            return turbo::OkStatus();
         }
         auto rs = ConfigCache::get_instance()->init();
         if (!rs.ok()) {
-            SS_LOG(ERROR) << "config cache init error:" << rs.message();
+            LOG(ERROR) << "config cache init error:" << rs.message();
             return rs;
         }
 
@@ -39,7 +39,7 @@ namespace sirius::client {
             period_check();
         });
         _init = true;
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
     void ConfigClient::stop() {
@@ -51,7 +51,7 @@ namespace sirius::client {
         _bth.join();
     }
 
-    collie::Status
+    turbo::Status
     ConfigClient::get_config(const std::string &config_name, const std::string &version, std::string &content,
                              std::string *type) {
         collie::ModuleVersion mv;
@@ -66,7 +66,7 @@ namespace sirius::client {
             if (type) {
                 *type = config_type_to_string(config_pb.type());
             }
-            return collie::Status::ok_status();
+            return turbo::OkStatus();
         }
 
         rs = DiscoveryClient::get_instance()->get_config(config_name, version, config_pb);
@@ -78,10 +78,10 @@ namespace sirius::client {
             *type = config_type_to_string(config_pb.type());
         }
         rs = ConfigCache::get_instance()->add_config(config_pb);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status ConfigClient::get_config(const std::string &config_name, std::string &content, std::string *version,
+    turbo::Status ConfigClient::get_config(const std::string &config_name, std::string &content, std::string *version,
                                            std::string *type) {
         collie::ModuleVersion mv;
         sirius::proto::ConfigInfo config_pb;
@@ -94,7 +94,7 @@ namespace sirius::client {
             if (version) {
                 *version = version_to_string(config_pb.version());
             }
-            return collie::Status::ok_status();
+            return turbo::OkStatus();
         }
 
         rs = DiscoveryClient::get_instance()->get_config_latest(config_name, config_pb);
@@ -112,38 +112,38 @@ namespace sirius::client {
         return rs;
     }
 
-    collie::Status ConfigClient::watch_config(const std::string &config_name, const ConfigEventListener &listener) {
+    turbo::Status ConfigClient::watch_config(const std::string &config_name, const ConfigEventListener &listener) {
         collie::ModuleVersion module_version;
         std::unique_lock lock(_watch_mutex);
         if (_watches.find(config_name) != _watches.end()) {
-            return collie::Status::already_exists("");
+            return turbo::already_exists_error("");
         }
         auto ait = _apply_version.find(config_name);
         if (ait != _apply_version.end()) {
             module_version = ait->second;
         }
         _watches[config_name] = ConfigWatchEntity{module_version, listener};
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status ConfigClient::unwatch_config(const std::string &config_name) {
+    turbo::Status ConfigClient::unwatch_config(const std::string &config_name) {
         std::unique_lock lock(_watch_mutex);
         return do_unwatch_config(config_name);
     }
 
-    collie::Status ConfigClient::do_unwatch_config(const std::string &config_name) {
+    turbo::Status ConfigClient::do_unwatch_config(const std::string &config_name) {
         if (_watches.find(config_name) == _watches.end()) {
-            return collie::Status::not_found("");
+            return turbo::not_found_error("");
         }
         _watches.erase(config_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status ConfigClient::remove_config(const std::string &config_name) {
+    turbo::Status ConfigClient::remove_config(const std::string &config_name) {
         return ConfigCache::get_instance()->remove_config(config_name);
     }
 
-    collie::Status ConfigClient::remove_config(const std::string &config_name, const std::string &version) {
+    turbo::Status ConfigClient::remove_config(const std::string &config_name, const std::string &version) {
         collie::ModuleVersion module_version;
         auto rs = string_to_module_version(version, &module_version);
         if (!rs.ok()) {
@@ -152,12 +152,12 @@ namespace sirius::client {
         return ConfigCache::get_instance()->remove_config(config_name, module_version);
     }
 
-    collie::Status ConfigClient::apply(const std::string &config_name, const collie::ModuleVersion &version) {
+    turbo::Status ConfigClient::apply(const std::string &config_name, const collie::ModuleVersion &version) {
         std::unique_lock lock(_watch_mutex);
         return do_apply(config_name, version);
     }
 
-    collie::Status ConfigClient::apply(const std::string &config_name, const std::string &version) {
+    turbo::Status ConfigClient::apply(const std::string &config_name, const std::string &version) {
         collie::ModuleVersion mv;
         auto rs = string_to_module_version(version, &mv);
         if (!rs.ok()) {
@@ -166,25 +166,25 @@ namespace sirius::client {
         return apply(config_name, mv);
     }
 
-    collie::Status ConfigClient::unapply(const std::string &config_name) {
+    turbo::Status ConfigClient::unapply(const std::string &config_name) {
         std::unique_lock lock(_watch_mutex);
         auto rs = do_unwatch_config(config_name);
-        TURBO_UNUSED(rs);
+        (void)(rs);
         return do_unapply(config_name);
     }
 
-    collie::Status ConfigClient::do_unapply(const std::string &config_name) {
+    turbo::Status ConfigClient::do_unapply(const std::string &config_name) {
         auto it = _apply_version.find(config_name);
         if (it == _apply_version.end()) {
-            return collie::Status::not_found("not found config:{}", config_name);
+            return turbo::not_found_error("not found config: " + config_name);
         }
         _apply_version.erase(config_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status ConfigClient::do_apply(const std::string &config_name, const collie::ModuleVersion &version) {
+    turbo::Status ConfigClient::do_apply(const std::string &config_name, const collie::ModuleVersion &version) {
         _apply_version[config_name] = version;
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
     void ConfigClient::period_check() {
@@ -193,7 +193,7 @@ namespace sirius::client {
         turbo::flat_hash_map<std::string, ConfigWatchEntity> watches;
         int sleep_step_us = FLAGS_config_watch_interval_ms * 1000;
         int sleep_round = FLAGS_config_watch_interval_round_s * 1000 * 1000;
-        SS_LOG(INFO) << "start config watch background";
+        LOG(INFO) << "start config watch background";
         while(!_shutdown) {
             updates.clear();
             watches.clear();
@@ -201,37 +201,37 @@ namespace sirius::client {
                 std::unique_lock lock(_watch_mutex);
                 watches = _watches;
             }
-            SS_LOG(INFO) << "new round watch size:" << watches.size();
+            LOG(INFO) << "new round watch size:" << watches.size();
             for(auto &it : watches) {
                 sirius::proto::ConfigInfo info;
                 collie::ModuleVersion current_version = it.second.notice_version;
                 auto rs = DiscoveryClient::get_instance()->get_config_latest(it.first, info);
                 if(!rs.ok()) {
-                    SS_LOG_IF(WARN,kZero == it.second.notice_version) << "get config fail:" << rs.message();
+                    LOG_IF(WARNING,kZero == it.second.notice_version) << "get config fail:" << rs.message();
                     continue;
                 }
-                SS_LOG(INFO) << "get config " << info.name() << " version:" << info.version().major() << "."
+                LOG(INFO) << "get config " << info.name() << " version:" << info.version().major() << "."
                              << info.version().minor() << "." << info.version().patch();
                 rs = ConfigCache::get_instance()->add_config(info);
-                if(!rs.ok() && !rs.is_already_exists()) {
-                    SS_LOG(WARN) << "add config to cache fail:" << rs.message();
+                if(!rs.ok() && !turbo::is_already_exists(rs)) {
+                    LOG(WARNING) << "add config to cache fail:" << rs.message();
                 }
                 collie::ModuleVersion new_view(info.version().major(), info.version().minor(), info.version().patch());
                 if(current_version == kZero) {
                     if(it.second.listener.on_new_config) {
-                        SS_LOG(INFO) << "call new config callback:{}" << info.name();
+                        LOG(INFO) << "call new config callback:{}" << info.name();
                         ConfigCallbackData data{info.name(), kZero,new_view,info.content(), config_type_to_string(info.type())};
                         it.second.listener.on_new_config(data);
                     } else {
-                        SS_LOG(INFO) << "call new config callback:{} but no call backer",info.name();
+                        LOG(INFO) << "call new config callback:{} but no call backer",info.name();
                     }
                 } else if(current_version < new_view) {
                     if(it.second.listener.on_new_version) {
-                        SS_LOG(INFO) << "call new config version, callback:{}" << info.name();
+                        LOG(INFO) << "call new config version, callback:{}" << info.name();
                         ConfigCallbackData data{info.name(), kZero,new_view, info.content(), config_type_to_string(info.type())};
                         it.second.listener.on_new_version(data);
                     } else {
-                        SS_LOG(INFO) << "call new config callback:{} but no call backer",info.name();
+                        LOG(INFO) << "call new config callback:{} but no call backer",info.name();
                     }
                 }
                 updates.emplace_back(info.name(), new_view);
@@ -251,7 +251,7 @@ namespace sirius::client {
             fiber_usleep(sleep_round);
 
         }
-        SS_LOG(INFO) << "config watch background stop...";
+        LOG(INFO) << "config watch background stop...";
     }
 }  // namespace sirius::client
 

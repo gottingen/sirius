@@ -26,6 +26,7 @@
 #include <sirius/storage/transaction_db_bthread_mutex.h>
 #include <turbo/strings/numbers.h>
 #include <sirius/base/fiber.h>
+#include <alkaid/ghc/filesystem.hpp>
 
 
 namespace sirius {
@@ -47,13 +48,13 @@ namespace sirius {
         if (_is_init) {
             return 0;
         }
-        collie::filesystem::path dir_path = collie::filesystem::path(path).parent_path();
+        ghc::filesystem::path dir_path = ghc::filesystem::path(path).parent_path();
         std::error_code ec;
-        if(!collie::filesystem::exists(dir_path, ec)) {
+        if(!ghc::filesystem::exists(dir_path, ec)) {
             if(ec) {
                 return -1;
             }
-            collie::filesystem::create_directories(dir_path, ec);
+            ghc::filesystem::create_directories(dir_path, ec);
             if(ec) {
                 return -1;
             }
@@ -117,7 +118,7 @@ namespace sirius {
         db_options.env->SetBackgroundThreads(2, rocksdb::Env::HIGH);
         db_options.listeners.emplace_back(my_listener);
         rocksdb::TransactionDBOptions txn_db_options;
-        SS_LOG(INFO) << "FLAGS_rocks_transaction_lock_timeout_ms:" << FLAGS_rocks_transaction_lock_timeout_ms
+        LOG(INFO) << "FLAGS_rocks_transaction_lock_timeout_ms:" << FLAGS_rocks_transaction_lock_timeout_ms
                      << " FLAGS_rocks_default_lock_timeout_ms:" << FLAGS_rocks_default_lock_timeout_ms;
         txn_db_options.transaction_lock_timeout = FLAGS_rocks_transaction_lock_timeout_ms;
         txn_db_options.default_lock_timeout = FLAGS_rocks_default_lock_timeout_ms;
@@ -227,22 +228,22 @@ namespace sirius {
                                              &handles,
                                              &_txn_db);
             if (s.ok()) {
-                SS_LOG(INFO)<< "reopen db:" << path << " success";
+                LOG(INFO)<< "reopen db:" << path << " success";
                 for (auto &handle: handles) {
                     _column_families[handle->GetName()] = handle;
-                    SS_LOG(INFO) << "open column family:" << handle->GetName();
+                    LOG(INFO) << "open column family:" << handle->GetName();
                 }
             } else {
-                SS_LOG(ERROR)<< "reopen db:" << path << " fail, err_message:" << s.ToString();
+                LOG(ERROR)<< "reopen db:" << path << " fail, err_message:" << s.ToString();
                 return -1;
             }
         } else {
             // new db
             s = rocksdb::TransactionDB::Open(db_options, txn_db_options, path, &_txn_db);
             if (s.ok()) {
-                SS_LOG(INFO) << "open db:" << path << " success";
+                LOG(INFO) << "open db:" << path << " success";
             } else {
-                SS_LOG(ERROR) << "open db:" << path << " fail, err_message:" << s.ToString();
+                LOG(ERROR) << "open db:" << path << " fail, err_message:" << s.ToString();
                 return -1;
             }
         }
@@ -252,10 +253,10 @@ namespace sirius {
             rocksdb::ColumnFamilyHandle *raft_log_handle;
             s = _txn_db->CreateColumnFamily(_log_cf_option, RAFT_LOG_CF, &raft_log_handle);
             if (s.ok()) {
-                SS_LOG(INFO) << "create column family success, column family: " << RAFT_LOG_CF;
+                LOG(INFO) << "create column family success, column family: " << RAFT_LOG_CF;
                 _column_families[RAFT_LOG_CF] = raft_log_handle;
             } else {
-                SS_LOG(ERROR) << "create column family fail, column family: " << RAFT_LOG_CF << " err_message: " << s.ToString();
+                LOG(ERROR) << "create column family fail, column family: " << RAFT_LOG_CF << " err_message: " << s.ToString();
                 return -1;
             }
         }
@@ -264,10 +265,10 @@ namespace sirius {
             rocksdb::ColumnFamilyHandle *data_handle;
             s = _txn_db->CreateColumnFamily(_data_cf_option, DATA_CF, &data_handle);
             if (s.ok()) {
-                SS_LOG(INFO) << "create column family success, column family: " << DATA_CF;
+                LOG(INFO) << "create column family success, column family: " << DATA_CF;
                 _column_families[DATA_CF] = data_handle;
             } else {
-                SS_LOG(ERROR) << "create column family fail, column family: " << DATA_CF << " err_message: " << s.ToString();
+                LOG(ERROR) << "create column family fail, column family: " << DATA_CF << " err_message: " << s.ToString();
                 return -1;
             }
         }
@@ -275,16 +276,16 @@ namespace sirius {
             rocksdb::ColumnFamilyHandle *metainfo_handle;
             s = _txn_db->CreateColumnFamily(_meta_info_option, META_INFO_CF, &metainfo_handle);
             if (s.ok()) {
-                SS_LOG(INFO) << "create column family success, column family: " << META_INFO_CF;
+                LOG(INFO) << "create column family success, column family: " << META_INFO_CF;
                 _column_families[META_INFO_CF] = metainfo_handle;
             } else {
-                SS_LOG(ERROR) << "create column family fail, column family: " << META_INFO_CF << " err_message: " << s.ToString();
+                LOG(ERROR) << "create column family fail, column family: " << META_INFO_CF << " err_message: " << s.ToString();
                 return -1;
             }
         }
         _is_init = true;
         collect_rocks_options();
-        SS_LOG(INFO) << "rocksdb init success";
+        LOG(INFO) << "rocksdb init success";
         return 0;
     }
 
@@ -340,18 +341,18 @@ namespace sirius {
 
     int32_t RocksStorage::delete_column_family(std::string cf_name) {
         if (_column_families.count(cf_name) == 0) {
-            SS_LOG(ERROR) << "column_family: " << cf_name << " not exist";
+            LOG(ERROR) << "column_family: " << cf_name << " not exist";
             return -1;
         }
         rocksdb::ColumnFamilyHandle *cf_handler = _column_families[cf_name];
         auto res = _txn_db->DropColumnFamily(cf_handler);
         if (!res.ok()) {
-            SS_LOG(ERROR) << "drop column_family: " << cf_name << " fail, err_message: " << res.ToString();
+            LOG(ERROR) << "drop column_family: " << cf_name << " fail, err_message: " << res.ToString();
             return -1;
         }
         res = _txn_db->DestroyColumnFamilyHandle(cf_handler);
         if (!res.ok()) {
-            SS_LOG(ERROR) << "destroy column_family: " << cf_name << " fail, err_message: " << res.ToString();
+            LOG(ERROR) << "destroy column_family: " << cf_name << " fail, err_message: " << res.ToString();
             return -1;
         }
         _column_families.erase(cf_name);
@@ -360,16 +361,16 @@ namespace sirius {
 
     int32_t RocksStorage::create_column_family(std::string cf_name) {
         if (_column_families.count(cf_name) != 0) {
-            SS_LOG(ERROR) << "column_family: " << cf_name << " already exist";
+            LOG(ERROR) << "column_family: " << cf_name << " already exist";
             return -1;
         }
         rocksdb::ColumnFamilyHandle *cf_handler = nullptr;
         auto s = _txn_db->CreateColumnFamily(_data_cf_option, cf_name, &cf_handler);
         if (s.ok()) {
-            SS_LOG(WARN) << "create column family: " << cf_name << " success";
+            LOG(WARNING) << "create column family: " << cf_name << " success";
             _column_families[cf_name] = cf_handler;
         } else {
-            SS_LOG(ERROR) << "create column family: " << cf_name << " fail, err_message: " << s.ToString();
+            LOG(ERROR) << "create column family: " << cf_name << " fail, err_message: " << s.ToString();
             return -1;
         }
         _column_families[cf_name] = cf_handler;
@@ -378,11 +379,11 @@ namespace sirius {
 
     rocksdb::ColumnFamilyHandle *RocksStorage::get_raft_log_handle() {
         if (!_is_init) {
-            SS_LOG(ERROR) << "rocksdb has not been inited";
+            LOG(ERROR) << "rocksdb has not been inited";
             return nullptr;
         }
         if (0 == _column_families.count(RAFT_LOG_CF)) {
-            SS_LOG(ERROR) << "rocksdb has no raft log cf";
+            LOG(ERROR) << "rocksdb has no raft log cf";
             return nullptr;
         }
         return _column_families[RAFT_LOG_CF];
@@ -390,11 +391,11 @@ namespace sirius {
 
     rocksdb::ColumnFamilyHandle *RocksStorage::get_data_handle() {
         if (!_is_init) {
-            SS_LOG(ERROR) << "rocksdb has not been inited";
+            LOG(ERROR) << "rocksdb has not been inited";
             return nullptr;
         }
         if (0 == _column_families.count(DATA_CF)) {
-            SS_LOG(ERROR) << "rocksdb has no data column family";
+            LOG(ERROR) << "rocksdb has no data column family";
             return nullptr;
         }
         return _column_families[DATA_CF];
@@ -402,11 +403,11 @@ namespace sirius {
 
     rocksdb::ColumnFamilyHandle *RocksStorage::get_meta_info_handle() {
         if (!_is_init) {
-            SS_LOG(ERROR) << "rocksdb has not been inited";
+            LOG(ERROR) << "rocksdb has not been inited";
             return nullptr;
         }
         if (0 == _column_families.count(META_INFO_CF)) {
-            SS_LOG(ERROR) << "rocksdb has no meta info column family";
+            LOG(ERROR) << "rocksdb has no meta info column family";
             return nullptr;
         }
         return _column_families[META_INFO_CF];

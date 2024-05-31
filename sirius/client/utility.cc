@@ -22,7 +22,7 @@
 #include <collie/strings/format.h>
 #include <turbo/container/flat_hash_set.h>
 #include <turbo/strings/numbers.h>
-
+#include <turbo/strings/substitute.h>
 namespace sirius::client {
 
     std::string config_type_to_string(sirius::proto::ConfigType type) {
@@ -46,7 +46,7 @@ namespace sirius::client {
         }
     }
 
-    collie::Result<sirius::proto::ConfigType> string_to_config_type(const std::string &str) {
+    turbo::Result<sirius::proto::ConfigType> string_to_config_type(const std::string &str) {
         auto lc = collie::str_to_lower(str);
         if (lc == "json") {
             return sirius::proto::CF_JSON;
@@ -63,56 +63,56 @@ namespace sirius::client {
         } else if (lc == "toml") {
             return sirius::proto::CF_TOML;
         }
-        return collie::Status::invalid_argument("unknown format '{}'", str);
+        return turbo::invalid_argument_error("unknown format " + str);
     }
 
-    collie::Status string_to_version(const std::string &str, sirius::proto::Version *v) {
+    turbo::Status string_to_version(const std::string &str, sirius::proto::Version *v) {
         std::vector<std::string> vs = collie::str_split(str, ".");
         if (vs.size() != 3)
-            return collie::Status::invalid_argument("version error, should be like 1.2.3");
+            return turbo::invalid_argument_error("version error, should be like 1.2.3");
         int64_t m;
         if (!turbo::simple_atoi(vs[0], &m)) {
-            return collie::Status::invalid_argument("version error, should be like 1.2.3");
+            return turbo::invalid_argument_error("version error, should be like 1.2.3");
         }
         v->set_major(m);
         if (!turbo::simple_atoi(vs[1], &m)) {
-            return collie::Status::invalid_argument("version error, should be like 1.2.3");
+            return turbo::invalid_argument_error("version error, should be like 1.2.3");
         }
         v->set_minor(m);
         if (!turbo::simple_atoi(vs[2], &m)) {
-            return collie::Status::invalid_argument("version error, should be like 1.2.3");
+            return turbo::invalid_argument_error("version error, should be like 1.2.3");
         }
         v->set_patch(m);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status string_to_module_version(const std::string &str, collie::ModuleVersion *v) {
+    turbo::Status string_to_module_version(const std::string &str, collie::ModuleVersion *v) {
 
         std::vector<std::string> vs = collie::str_split(str, ".");
         if (vs.size() != 3)
-            return collie::Status::invalid_argument("version error, should be like 1.2.3");
+            return turbo::invalid_argument_error("version error, should be like 1.2.3");
         int64_t ma;
         if (!turbo::simple_atoi(vs[0], &ma)) {
-            return collie::Status::invalid_argument("version error, should be like 1.2.3");
+            return turbo::invalid_argument_error("version error, should be like 1.2.3");
         }
         int64_t mi;
         if (!turbo::simple_atoi(vs[1], &mi)) {
-            return collie::Status::invalid_argument("version error, should be like 1.2.3");
+            return turbo::invalid_argument_error("version error, should be like 1.2.3");
         }
         int64_t pa;
         if (!turbo::simple_atoi(vs[2], &pa)) {
-            return collie::Status::invalid_argument("version error, should be like 1.2.3");
+            return turbo::invalid_argument_error("version error, should be like 1.2.3");
         }
         *v = collie::ModuleVersion(ma, mi, pa);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
     std::string version_to_string(const sirius::proto::Version &v) {
-        return turbo::format("{}.{}.{}", v.major(), v.minor(), v.patch());
+        return turbo::substitute("$0.$1.$2", v.major(), v.minor(), v.patch());
     }
 
     std::string module_version_to_string(const collie::ModuleVersion &v) {
-        return turbo::format("{}.{}.{}", v.major, v.minor, v.patch);
+        return turbo::substitute("$0.$1.$2", v.major, v.minor, v.patch);
     }
 
     static turbo::flat_hash_set<char> AllowChar{'a', 'b', 'c', 'd', 'e', 'f', 'g',
@@ -127,15 +127,15 @@ namespace sirius::client {
                                                 'U', 'V', 'Q', 'X', 'Y', 'Z',
     };
 
-    collie::Status check_valid_name_type(std::string_view ns) {
+    turbo::Status check_valid_name_type(std::string_view ns) {
         int i = 0;
         for (auto c: ns) {
             if (AllowChar.find(c) == AllowChar.end()) {
-                return collie::Status::invalid_argument("the {} char {} of {} is not allow used in name the valid set is[a-z,A-Z,0-9,_]", i, c, ns);
+                return turbo::invalid_argument_error(turbo::substitute("the $0 char $1 of $2 is not allow used in name the valid set is[a-z,A-Z,0-9,_]", i, c, ns));
             }
             ++i;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
 }  // namespace sirius::client

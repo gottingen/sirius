@@ -92,7 +92,7 @@ namespace sirius::client {
          * @param raft_nodes [input] is the raft nodes of the meta server.
          * @return Status::OK if the DiscoverySender was initialized successfully. Otherwise, an error status is returned.
          */
-        collie::Status init(const std::string &raft_nodes);
+        turbo::Status init(const std::string &raft_nodes);
 
         /**
          * @brief init is used to initialize the DiscoverySender. It can be called any time.
@@ -143,7 +143,7 @@ namespace sirius::client {
          * @param retry_time [input] is the number of times to retry sending the request.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        collie::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+        turbo::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                    sirius::proto::DiscoveryManagerResponse &response, int retry_time) override;
 
         /**
@@ -152,7 +152,7 @@ namespace sirius::client {
          * @param response [output] is the MetaManagerResponse received from the meta server.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        collie::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+        turbo::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                    sirius::proto::DiscoveryManagerResponse &response) override;
 
         /**
@@ -162,7 +162,7 @@ namespace sirius::client {
          * @param retry_time [input] is the number of times to retry sending the request.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        collie::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+        turbo::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                  sirius::proto::DiscoveryQueryResponse &response, int retry_time) override;
 
 
@@ -172,13 +172,13 @@ namespace sirius::client {
          * @param response [output] is the DiscoveryQueryResponse received from the meta server.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        collie::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+        turbo::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                  sirius::proto::DiscoveryQueryResponse &response) override;
 
-        collie::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+        turbo::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
                                   sirius::proto::ServletNamingResponse &response, int retry_time) override;
 
-        collie::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+        turbo::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
                                         sirius::proto::ServletNamingResponse &response) override;
 
         /**
@@ -190,7 +190,7 @@ namespace sirius::client {
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
         template<typename Request, typename Response>
-        collie::Status send_request(const std::string &service_name,
+        turbo::Status send_request(const std::string &service_name,
                                    const Request &request,
                                    Response &response, int retry_times);
 
@@ -217,15 +217,15 @@ namespace sirius::client {
     };
 
     template<typename Request, typename Response>
-    inline collie::Status DiscoverySender::send_request(const std::string &service_name,
+    inline turbo::Status DiscoverySender::send_request(const std::string &service_name,
                                                   const Request &request,
                                                   Response &response, int retry_times) {
         const ::google::protobuf::ServiceDescriptor *service_desc = sirius::proto::DiscoveryService::descriptor();
         const ::google::protobuf::MethodDescriptor *method =
                 service_desc->FindMethodByName(service_name);
         if (method == nullptr) {
-            SS_LOG_IF(ERROR, _verbose)<< "service name not exist, service:"<<service_name;
-            return collie::Status::unavailable("service name not exist, service:{}", service_name);
+            LOG(ERROR)<< "service name not exist, service:"<<service_name;
+            return turbo::unavailable_error("service name not exist, service:");
         }
         int retry_time = 0;
         bool is_select_leader{false};
@@ -246,36 +246,36 @@ namespace sirius::client {
             is_select_leader = leader_address.ip == mutil::IP_ANY;
             //store has leader address
             if (is_select_leader) {
-                SS_LOG_IF(INFO, _verbose) << "master address null, select leader first";
+                LOG_IF(INFO, _verbose) << "master address null, select leader first";
                 auto seed = mutil::fast_rand() % _servlet_nodes.size();
                 leader_address = _servlet_nodes[seed];
             }
-            SS_LOG_IF(INFO, _verbose & is_select_leader) << "select leader address:" << mutil::endpoint2str(leader_address).c_str();
+            LOG_IF(INFO, _verbose & is_select_leader) << "select leader address:" << mutil::endpoint2str(leader_address).c_str();
             if (short_channel.Init(leader_address, &channel_opt) != 0) {
-                SS_LOG_IF(ERROR, _verbose) << "connect with meta server fail. channel Init fail, leader_addr:"
+                LOG(ERROR) << "connect with meta server fail. channel Init fail, leader_addr:"
                                            << mutil::endpoint2str(leader_address).c_str();
                 set_leader_address(mutil::EndPoint());
                 ++retry_time;
                 continue;
             }
             short_channel.CallMethod(method, &cntl, &request, &response, nullptr);
-            SS_LOG_IF(INFO, _verbose) << "meta_req[" << request.ShortDebugString() << "], meta_resp["
+            LOG_IF(INFO, _verbose) << "meta_req[" << request.ShortDebugString() << "], meta_resp["
                                       << response.ShortDebugString() << "]";
             if (cntl.Failed()) {
-                SS_LOG_IF(WARN, _verbose) << "connect with server fail. send request fail, error:" << cntl.ErrorText()
+                LOG(ERROR) << "connect with server fail. send request fail, error:" << cntl.ErrorText()
                                           << ", log_id:" << cntl.log_id();
                 set_leader_address(mutil::EndPoint());
                 ++retry_time;
                 continue;
             }
             if (response.errcode() == sirius::proto::HAVE_NOT_INIT) {
-                SS_LOG_IF(WARN, _verbose) << "connect with server fail. HAVE_NOT_INIT  log_id:" << cntl.log_id();
+                LOG_IF(WARNING, _verbose) << "connect with server fail. HAVE_NOT_INIT  log_id:" << cntl.log_id();
                 set_leader_address(mutil::EndPoint());
                 ++retry_time;
                 continue;
             }
             if (response.errcode() == sirius::proto::NOT_LEADER) {
-                SS_LOG_IF(WARN, _verbose) << "connect with server fail. not leader, redirect to :"
+                LOG_IF(WARNING, _verbose) << "connect with server fail. not leader, redirect to :"
                                           << response.leader() << ", log_id:" << cntl.log_id();
                 mutil::EndPoint leader_addr;
                 mutil::str2endpoint(response.leader().c_str(), &leader_addr);
@@ -286,12 +286,12 @@ namespace sirius::client {
             }
             /// success, The node being tried happens to be leader
             if (_master_leader_address.ip == mutil::IP_ANY && leader_address.ip != mutil::IP_ANY) {
-                SS_LOG_IF(INFO, _verbose) << "set leader ip:" << mutil::endpoint2str(leader_address).c_str();
+                LOG_IF(INFO, _verbose) << "set leader ip:" << mutil::endpoint2str(leader_address).c_str();
                 set_leader_address(leader_address);
             }
-            return collie::Status::ok_status();
+            return turbo::OkStatus();
         } while (retry_time < retry_times);
-        return collie::Status::unavailable("can not connect server after {} times try", retry_times);
+        return turbo::unavailable_error("can not connect server after times try");
     }
 
 

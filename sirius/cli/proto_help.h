@@ -19,13 +19,13 @@
 #pragma once
 
 #include <sirius/proto/discovery.interface.pb.h>
-#include <collie/utility/result.h>
+#include <turbo/status/result.h>
 
 namespace sirius::cli {
 
     std::string config_type_to_string(sirius::proto::ConfigType type);
 
-    collie::Result<sirius::proto::ConfigType> string_to_config_type(const std::string &str);
+    turbo::Result<sirius::proto::ConfigType> string_to_config_type(const std::string &str);
 
     std::string get_op_string(sirius::proto::OpType type);
 
@@ -33,7 +33,7 @@ namespace sirius::cli {
 
     std::string get_op_string(sirius::proto::QueryOpType type);
 
-    collie::Status string_to_version(const std::string &str, sirius::proto::Version*v);
+    turbo::Status string_to_version(const std::string &str, sirius::proto::Version*v);
 
     std::string version_to_string(const sirius::proto::Version &v);
 

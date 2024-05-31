@@ -18,6 +18,7 @@
 #include <sirius/cli/router_interact.h>
 #include <sirius/cli/show_help.h>
 #include <sirius/cli/validator.h>
+#include <collie/strings/format.h>
 
 namespace sirius::cli {
     /// Set up a subcommand and capture a shared_ptr to a struct that holds all its options.
@@ -171,7 +172,7 @@ namespace sirius::cli {
         return result;
     }
 
-    collie::Status
+    turbo::Status
     make_namespace_create(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::AppInfo *ns_req = req->mutable_app_info();
         auto rs = check_valid_name_type(AppOptionContext::get_instance()->app_name);
@@ -181,10 +182,10 @@ namespace sirius::cli {
         ns_req->set_app_name(AppOptionContext::get_instance()->app_name);
         ns_req->set_quota(AppOptionContext::get_instance()->app_quota);
         req->set_op_type(sirius::proto::OP_CREATE_NAMESPACE);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     make_namespace_remove(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::AppInfo *ns_req = req->mutable_app_info();
         auto rs = check_valid_name_type(AppOptionContext::get_instance()->app_name);
@@ -193,10 +194,10 @@ namespace sirius::cli {
         }
         ns_req->set_app_name(AppOptionContext::get_instance()->app_name);
         req->set_op_type(sirius::proto::OP_DROP_NAMESPACE);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     make_namespace_modify(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::AppInfo *ns_req = req->mutable_app_info();
         auto rs = check_valid_name_type(AppOptionContext::get_instance()->app_name);
@@ -206,10 +207,10 @@ namespace sirius::cli {
         ns_req->set_app_name(AppOptionContext::get_instance()->app_name);
         ns_req->set_quota(AppOptionContext::get_instance()->app_quota);
         req->set_op_type(sirius::proto::OP_MODIFY_NAMESPACE);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_namespace_query(sirius::proto::DiscoveryQueryRequest *req) {
+    turbo::Status make_namespace_query(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_APP);
         if (!AppOptionContext::get_instance()->app_name.empty()) {
             req->set_app_name(AppOptionContext::get_instance()->app_name);
@@ -218,7 +219,7 @@ namespace sirius::cli {
                 return rs;
             }
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
 }  // namespace sirius::cli

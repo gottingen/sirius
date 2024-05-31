@@ -37,41 +37,41 @@ namespace sirius::client {
         _instance->Clear();
     }
 
-    collie::Status ServletInstanceBuilder::build_from_json(const std::string &json_str) {
+    turbo::Status ServletInstanceBuilder::build_from_json(const std::string &json_str) {
         auto rs = Loader::load_proto(json_str, *_instance);
         if (!rs.ok()) {
             return rs;
         }
         /// check field
         if (!_instance->has_app_name() || _instance->app_name().empty()) {
-            return collie::Status::data_loss("miss required field app_name");
+            return turbo::data_loss_error("miss required field app_name");
         }
 
         if (!_instance->has_zone() || _instance->zone().empty()) {
-            return collie::Status::data_loss("miss required field zone_name");
+            return turbo::data_loss_error("miss required field zone_name");
         }
 
         if (!_instance->has_servlet_name() || _instance->servlet_name().empty()) {
-            return collie::Status::data_loss("miss required field servlet_name");
+            return turbo::data_loss_error("miss required field servlet_name");
         }
 
         if (!_instance->has_address() || _instance->address().empty()) {
-            return collie::Status::data_loss("miss required field address");
+            return turbo::data_loss_error("miss required field address");
         }
 
         if (!_instance->has_env() || _instance->env().empty()) {
-            return collie::Status::data_loss("miss required field address");
+            return turbo::data_loss_error("miss required field address");
         }
 
         mutil::EndPoint peer;
         if (mutil::str2endpoint(_instance->address().c_str(), &peer) != 0) {
-            return collie::Status::invalid_argument("bad address");
+            return turbo::invalid_argument_error("bad address");
         }
 
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status ServletInstanceBuilder::build_from_json_file(const std::string &json_path) {
+    turbo::Status ServletInstanceBuilder::build_from_json_file(const std::string &json_path) {
         alkaid::SequentialReadFile file;
         auto rs = file.open(json_path);
         if (!rs.ok()) {

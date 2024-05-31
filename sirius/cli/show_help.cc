@@ -19,6 +19,7 @@
 #include <sirius/cli/option_context.h>
 #include <sirius/client/discovery_sender.h>
 #include <collie/meta/reflect.h>
+#include <collie/strings/format.h>
 
 namespace sirius::cli {
     using Row_t = collie::table::Table::Row_t;
@@ -91,7 +92,7 @@ namespace sirius::cli {
         return response_result;
     }
 
-    collie::table::Table ShowHelper::rpc_error_status_impl(const collie::Status &s, int qt, const std::string &qts) {
+    collie::table::Table ShowHelper::rpc_error_status_impl(const turbo::Status &s, int qt, const std::string &qts) {
         collie::table::Table result;
         result.add_row(Row_t{"status", "op code", "op string", "error code", "error message"});
         auto last = result.size() - 1;
@@ -120,7 +121,7 @@ namespace sirius::cli {
         return result;
     }
 
-    collie::table::Table ShowHelper::pre_send_error(const collie::Status &s, const sirius::proto::DiscoveryManagerRequest &req) {
+    collie::table::Table ShowHelper::pre_send_error(const turbo::Status &s, const sirius::proto::DiscoveryManagerRequest &req) {
         collie::table::Table result;
         result.add_row(Row_t{"status", "op code", "op string", "error message"});
         result[0].format().font_color(collie::Color::green).font_style({collie::FontStyle::bold}).font_align(
@@ -151,7 +152,7 @@ namespace sirius::cli {
         return result;
     }
 
-    collie::table::Table ShowHelper::pre_send_error(const collie::Status &s, const sirius::proto::DiscoveryQueryRequest &req) {
+    collie::table::Table ShowHelper::pre_send_error(const turbo::Status &s, const sirius::proto::DiscoveryQueryRequest &req) {
         collie::table::Table result;
         result.add_row(Row_t{"status", "op code", "op string", "error message"});
         result[0].format().font_color(collie::Color::green).font_style({collie::FontStyle::bold}).font_align(
@@ -184,7 +185,7 @@ namespace sirius::cli {
         return result;
     }
 
-    collie::table::Table ShowHelper::pre_send_error(const collie::Status &s, const sirius::proto::RaftControlRequest &req) {
+    collie::table::Table ShowHelper::pre_send_error(const turbo::Status &s, const sirius::proto::RaftControlRequest &req) {
         collie::table::Table result;
         result.add_row(Row_t{"status", "op code", "op string", "error message"});
         result[0].format().font_color(collie::Color::green).font_style({collie::FontStyle::bold}).font_align(
@@ -267,7 +268,7 @@ namespace sirius::cli {
         }
     }
 
-    void ScopeShower::prepare(const collie::Status &status) {
+    void ScopeShower::prepare(const turbo::Status &status) {
         if(status.ok()) {
             result_table.add_row({"prepare", collie::table::Table().add_row({"ok"})});
             result_table[2][1].format().font_color(collie::Color::green)

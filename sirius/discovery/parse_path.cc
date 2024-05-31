@@ -18,6 +18,7 @@
 
 #include <sirius/discovery/parse_path.h>
 #include <collie/strings/str_split.h>
+#include <melon/utility/file_util.h>
 
 namespace sirius::discovery {
     int64_t parse_snapshot_index_from_path(const std::string &snapshot_path, bool use_dirname) {

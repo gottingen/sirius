@@ -38,7 +38,7 @@ namespace sirius::discovery {
             } else {
                 response->set_errmsg("zone not exist");
                 response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
-                SS_LOG(ERROR) << "namespace: " << app_name << " zone: " << zone << " not exist";
+                LOG(ERROR) << "namespace: " << app_name << " zone: " << zone << " not exist";
             }
         }
     }

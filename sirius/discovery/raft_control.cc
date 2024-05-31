@@ -47,14 +47,14 @@ namespace sirius {
                 log_id = cntl->log_id();
             }
             if (status().ok()) {
-                SS_LOG(INFO)<< "node:" << _node->node_id().group_id
+                LOG(INFO)<< "node:" << _node->node_id().group_id
                             << " " << _node->node_id().peer_id.to_string()
                             << " raft control success, type:" << _request->op_type()
                             << " region_id:" << _request->region_id()
                             << " log_id:" << log_id;
                 _response->set_errcode(sirius::proto::SUCCESS);
             } else {
-                SS_LOG(WARN) << "node:" << _node->node_id().group_id
+                LOG(WARNING) << "node:" << _node->node_id().group_id
                              << " " << _node->node_id().peer_id.to_string()
                              << " raft control fail, status:" << status().error_code()
                              << " " << status().error_cstr()
@@ -132,7 +132,7 @@ namespace sirius {
                     response->set_errcode(sirius::proto::SUCCESS);
                     response->set_leader(mutil::endpoint2str(leader_addr).c_str());
                 } else {
-                    SS_LOG(ERROR) << "node:" << node->node_id().group_id
+                    LOG(ERROR) << "node:" << node->node_id().group_id
                                  << " " << node->node_id().peer_id.to_string()
                                  << " get leader fail, log_id:" << log_id;
                     response->set_errcode(sirius::proto::INTERNAL_ERROR);
@@ -147,7 +147,7 @@ namespace sirius {
                     std::vector<melon::raft::PeerId> peers;
                     auto s = node->list_peers(&peers);
                     if(!s.ok()) {
-                        SS_LOG(ERROR) << "node:" << node->node_id().group_id
+                        LOG(ERROR) << "node:" << node->node_id().group_id
                                      << " " << node->node_id().peer_id.to_string()
                                      << " list peers fail, log_id:" << log_id;
                         response->set_errcode(sirius::proto::INTERNAL_ERROR);
@@ -160,7 +160,7 @@ namespace sirius {
                     response->set_errcode(sirius::proto::SUCCESS);
                     return;
                 } else {
-                    SS_LOG(ERROR) << "node:" << node->node_id().group_id
+                    LOG(ERROR) << "node:" << node->node_id().group_id
                                  << " " << node->node_id().peer_id.to_string()
                                  << " get leader fail, log_id:" << log_id;
                     response->set_errcode(sirius::proto::INTERNAL_ERROR);
@@ -174,7 +174,7 @@ namespace sirius {
                 return;
             }
             default:
-                SS_LOG(ERROR) << "node:" << node->node_id().group_id
+                LOG(ERROR) << "node:" << node->node_id().group_id
                              << " " << node->node_id().peer_id.to_string()
                              << " unsupport request type:" << request->op_type()
                              << " log_id:" << log_id;
@@ -219,7 +219,7 @@ namespace sirius {
             melon::raft::Configuration new_conf(new_peers);
             auto status = node->reset_peers(new_conf);
             if (!status.ok()) {
-                SS_LOG(ERROR) << "node:" << node->node_id().group_id
+                LOG(ERROR) << "node:" << node->node_id().group_id
                              << " " << node->node_id().peer_id.to_string()
                              << " set peer fail, status:" << status.error_code()
                                 << " " << status.error_cstr()
@@ -237,7 +237,7 @@ namespace sirius {
         if (!status.ok() && status.error_code() == 1) {
             response->set_errcode(sirius::proto::NOT_LEADER);
             response->set_leader(mutil::endpoint2str(node->leader_id().addr).c_str());
-            SS_LOG(WARN) << "node:" << node->node_id().group_id
+            LOG(WARNING) << "node:" << node->node_id().group_id
                          << " " << node->node_id().peer_id.to_string()
                          << " list peers fail, not leader, status:" << status.error_code()
                          << " " << status.error_cstr()
@@ -247,7 +247,7 @@ namespace sirius {
         if (!status.ok()) {
             response->set_errcode(sirius::proto::PEER_NOT_EQUAL);
             response->set_errmsg("node list peer fail");
-            SS_LOG(WARN) << "node:" << node->node_id().group_id
+            LOG(WARNING) << "node:" << node->node_id().group_id
                          << " " << node->node_id().peer_id.to_string()
                          << " list peers fail, status:" << status.error_code()
                             << " " << status.error_cstr()
@@ -255,7 +255,7 @@ namespace sirius {
             return;
         }
         if (inner_peers.size() != old_peers.size()) {
-            SS_LOG(WARN) << "peer size is not equal when set peer, node:" << node->node_id().group_id
+            LOG(WARNING) << "peer size is not equal when set peer, node:" << node->node_id().group_id
                          << " " << node->node_id().peer_id.to_string()
                          << " inner_peer.size: " << inner_peers.size()
                          << " old_peer.size: " << old_peers.size()
@@ -268,7 +268,7 @@ namespace sirius {
         for (auto &inner_peer: inner_peers) {
             auto iter = std::find(old_peers.begin(), old_peers.end(), inner_peer);
             if (iter == old_peers.end()) {
-                SS_LOG(WARN) << "old_peer not equal to list peers, node:" << node->node_id().group_id
+                LOG(WARNING) << "old_peer not equal to list peers, node:" << node->node_id().group_id
                              << " " << node->node_id().peer_id.to_string()
                              << " inner_peer: " << mutil::endpoint2str(inner_peer.addr)
                              << " log_id:" << log_id;
@@ -287,7 +287,7 @@ namespace sirius {
             } else {
                 response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
                 response->set_errmsg("diff peer fail when add peer");
-                SS_LOG(ERROR) << "node:" << node->node_id().group_id
+                LOG(ERROR) << "node:" << node->node_id().group_id
                              << " " << node->node_id().peer_id.to_string()
                              << " set peer fail, log_id:" << log_id;
                 return;
@@ -306,7 +306,7 @@ namespace sirius {
                         }
                     } else {
                         if (iter.second.consecutive_error_times > melon::raft::FLAGS_raft_election_heartbeat_factor) {
-                            SS_LOG(WARN) << "node:" << node->node_id().group_id
+                            LOG(WARNING) << "node:" << node->node_id().group_id
                                          << " " << node->node_id().peer_id.to_string()
                                          << " peer:" << iter.first.to_string()
                                          << " is faulty, log_id:" << log_id;
@@ -321,7 +321,7 @@ namespace sirius {
                 } else {
                     response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
                     response->set_errmsg("other peer is faulty");
-                    SS_LOG(ERROR) << "node:" << node->node_id().group_id
+                    LOG(ERROR) << "node:" << node->node_id().group_id
                                  << " " << node->node_id().peer_id.to_string()
                                  << " set peer fail, log_id:" << log_id;
                     return;
@@ -329,7 +329,7 @@ namespace sirius {
             } else {
                 response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
                 response->set_errmsg("diff peer fail when remove peer");
-                SS_LOG(WARN) << "node:" << node->node_id().group_id
+                LOG(WARNING) << "node:" << node->node_id().group_id
                              << " " << node->node_id().peer_id.to_string()
                              << " set peer fail, log_id:" << log_id;
                 return;
@@ -337,7 +337,7 @@ namespace sirius {
         } else {
             response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
             response->set_errmsg("set peer fail");
-            SS_LOG(WARN) << "node:" << node->node_id().group_id
+            LOG(WARNING) << "node:" << node->node_id().group_id
                          << " " << node->node_id().peer_id.to_string()
                          << " set peer fail, log_id:" << log_id;
         }
@@ -366,7 +366,7 @@ namespace sirius {
         if (ret != 0) {
             response->set_errcode(sirius::proto::NOT_LEADER);
             response->set_leader(mutil::endpoint2str(node->leader_id().addr).c_str());
-            SS_LOG(WARN) << "node:" << node->node_id().group_id
+            LOG(WARNING) << "node:" << node->node_id().group_id
                          << " " << node->node_id().peer_id.to_string()
                          << " transfer leader fail, log_id:" << log_id;
             return;
@@ -374,7 +374,7 @@ namespace sirius {
         std::vector<melon::raft::PeerId> peers;
         auto s = node->list_peers(&peers);
         if(!s.ok()) {
-            SS_LOG(ERROR) << "node:" << node->node_id().group_id
+            LOG(ERROR) << "node:" << node->node_id().group_id
                           << " " << node->node_id().peer_id.to_string()
                           << " list peers fail, log_id:" << log_id;
             response->set_errcode(sirius::proto::INTERNAL_ERROR);

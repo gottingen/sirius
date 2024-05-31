@@ -34,7 +34,7 @@ endif (CARBIN_BUILD_TEST)
 if (CARBIN_BUILD_BENCHMARK)
     #include(require_benchmark)
 endif ()
-
+find_package(RocksDB REQUIRED)
 list(APPEND CMAKE_PREFIX_PATH "/opt/EA/inf")
 find_package(Threads REQUIRED)
 find_package(melon REQUIRED)
@@ -61,6 +61,7 @@ set(CARBIN_DEPS_LINK
         turbo::turbo_static
         alkaid::alkaid_static
         ${ROCKSDB_LIB}
+        ${THIRDPARTY_LIBS}
         ${MELON_DEPS_LIBS}
         ${CARBIN_SYSTEM_DYLINK}
         )

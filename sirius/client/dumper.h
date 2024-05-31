@@ -23,7 +23,7 @@
 #ifndef EA_CLIENT_DUMPER_H_
 #define EA_CLIENT_DUMPER_H_
 
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <string>
 #include <google/protobuf/descriptor.h>
 #include <sirius/proto/discovery.interface.pb.h>
@@ -76,7 +76,7 @@ namespace sirius::client {
          * @param message
          * @return status.ok() if success else return the reason of format fail.
          */
-        static collie::Status dump_proto_to_file(const std::string &path, const google::protobuf::Message &message);
+        static turbo::Status dump_proto_to_file(const std::string &path, const google::protobuf::Message &message);
 
         /**
          * @brief dump a pb object message to json format string
@@ -84,7 +84,7 @@ namespace sirius::client {
          * @param content [output] string to store json format result
          * @return status.ok() if success else return the reason of format fail.
          */
-        static collie::Status dump_proto(const google::protobuf::Message &message, std::string &content);
+        static turbo::Status dump_proto(const google::protobuf::Message &message, std::string &content);
     };
 }  // namespace sirius::client
 

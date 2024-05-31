@@ -24,7 +24,7 @@
 
 #include <collie/cli/cli.h>
 #include <sirius/proto/discovery.interface.pb.h>
-#include <collie/utility/result.h>
+#include <turbo/status/result.h>
 #include <collie/table/table.h>
 #include <string>
 #include <sirius/client/config_client.h>
@@ -75,22 +75,22 @@ namespace sirius::cli {
 
         static void run_discovery_dump_cmd();
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_discovery_add_instance(sirius::proto::DiscoveryManagerRequest *req);
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_discovery_remove_instance(sirius::proto::DiscoveryManagerRequest *req);
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_discovery_update_instance(sirius::proto::DiscoveryManagerRequest *req);
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_discovery_list_instance(sirius::proto::DiscoveryQueryRequest *req);
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_discovery_info_instance(melon::SnsRequest *req);
 
-        [[nodiscard]] static collie::Result<int> string_to_status(const std::string &status);
+        [[nodiscard]] static turbo::Result<int> string_to_status(const std::string &status);
 
         static collie::table::Table show_query_instance_list_response(const sirius::proto::DiscoveryQueryResponse &res);
         static collie::table::Table show_query_instance_info_response(const sirius::proto::DiscoveryQueryResponse &res);

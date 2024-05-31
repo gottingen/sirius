@@ -62,10 +62,10 @@ namespace sirius::discovery {
         options.snapshot_uri = FLAGS_discovery_snapshot_uri + _file_path;
         int ret = _node.init(options);
         if (ret < 0) {
-            SS_LOG(ERROR) << "raft node init fail";
+            LOG(ERROR) << "raft node init fail";
             return ret;
         }
-        SS_LOG(INFO) << "raft init success, meat state machine init success";
+        LOG(INFO) << "raft init success, meat state machine init success";
         return 0;
     }
 
@@ -78,7 +78,7 @@ namespace sirius::discovery {
             return;
         }
         if (!_is_healty) {
-            SS_LOG(ERROR) << "TSO has wrong status, retry later";
+            LOG(ERROR) << "TSO has wrong status, retry later";
             response->set_errcode(sirius::proto::RETRY_LATER);
             response->set_errmsg("timestamp not ok, retry later");
             return;
@@ -96,11 +96,11 @@ namespace sirius::discovery {
                         _tso_obj.current_timestamp.set_logical(new_logical);
                         need_retry = false;
                     } else {
-                        SS_LOG(WARN) << "logical part outside of max logical interval, retry later, please check ntp time";
+                        LOG(WARNING) << "logical part outside of max logical interval, retry later, please check ntp time";
                         need_retry = true;
                     }
                 } else {
-                    SS_LOG(WARN) << "timestamp not ok physical == 0, retry later";
+                    LOG(WARNING) << "timestamp not ok physical == 0, retry later";
                     need_retry = true;
                 }
             }
@@ -113,7 +113,7 @@ namespace sirius::discovery {
         if (need_retry) {
             response->set_errcode(sirius::proto::EXEC_FAIL);
             response->set_errmsg("gen tso failed");
-            SS_LOG(ERROR) << "gen tso failed";
+            LOG(ERROR) << "gen tso failed";
             return;
         }
         //TLOG_WARN("gen tso current: ({}, {})", current.physical(), current.logical());
@@ -151,7 +151,7 @@ namespace sirius::discovery {
             response->set_errmsg("not leader");
             response->set_op_type(request->op_type());
             response->set_leader(mutil::endpoint2str(_node.leader_id().addr).c_str());
-            SS_LOG(WARN) << "state machine not leader, request:" << request->ShortDebugString()
+            LOG(WARNING) << "state machine not leader, request:" << request->ShortDebugString()
                          << " remote_side:" << remote_side << " log_id:" << log_id;
             return;
         }
@@ -187,7 +187,7 @@ namespace sirius::discovery {
             mutil::IOBufAsZeroCopyInputStream wrapper(iter.data());
             sirius::proto::TsoRequest request;
             if (!request.ParseFromZeroCopyStream(&wrapper)) {
-                SS_LOG(ERROR) << "parse from protobuf fail when on_apply";
+                LOG(ERROR) << "parse from protobuf fail when on_apply";
                 if (done) {
                     if (((TsoClosure *) done)->response) {
                         ((TsoClosure *) done)->response->set_errcode(sirius::proto::PARSE_FROM_PB_FAIL);
@@ -210,7 +210,7 @@ namespace sirius::discovery {
                     break;
                 }
                 default: {
-                    SS_LOG(ERROR) << "unsupport request type, type:" << request.op_type();
+                    LOG(ERROR) << "unsupport request type, type:" << request.op_type();
                     IF_DONE_SET_RESPONSE(done, sirius::proto::UNKNOWN_REQ_TYPE, "unsupport request type");
                 }
             }
@@ -228,7 +228,7 @@ namespace sirius::discovery {
             if (physical < _tso_obj.last_save_physical
                 || current.physical() < _tso_obj.current_timestamp.physical()) {
                 if (!request.force()) {
-                    SS_LOG(WARN) << "time fallback save_physical:(" << physical << ", " << _tso_obj.last_save_physical
+                    LOG(WARNING) << "time fallback save_physical:(" << physical << ", " << _tso_obj.last_save_physical
                                  << ") current:(" << current.physical() << ", " << _tso_obj.current_timestamp.physical()
                                  << ", " << current.logical() << ", " << _tso_obj.current_timestamp.logical();
                     if (done && ((TsoClosure *) done)->response) {
@@ -243,7 +243,7 @@ namespace sirius::discovery {
                 }
             }
             _is_healty = true;
-            SS_LOG(WARN) << "reset tso save_physical: " << physical << " current: (" << current.physical()
+            LOG(WARNING) << "reset tso save_physical: " << physical << " current: (" << current.physical()
                          << ", " << current.logical() << ")";
             {
                 MELON_SCOPED_LOCK(_tso_mutex);
@@ -267,7 +267,7 @@ namespace sirius::discovery {
         sirius::proto::TsoTimestamp current = request.current_timestamp();
         if (physical < _tso_obj.last_save_physical
             || current.physical() < _tso_obj.current_timestamp.physical()) {
-            SS_LOG(WARN) << "time fallback save_physical:(" << physical << ", " << _tso_obj.last_save_physical
+            LOG(WARNING) << "time fallback save_physical:(" << physical << ", " << _tso_obj.last_save_physical
                          << ") current:(" << current.physical() << ", " << _tso_obj.current_timestamp.physical()
                          << ", " << current.logical() << ", " << _tso_obj.current_timestamp.logical() << ")";
             if (done && ((TsoClosure *) done)->response) {
@@ -301,7 +301,7 @@ namespace sirius::discovery {
         mutil::IOBuf data;
         mutil::IOBufAsZeroCopyOutputStream wrapper(&data);
         if (!request.SerializeToZeroCopyStream(&wrapper)) {
-            SS_LOG(WARN) << "Fail to serialize request";
+            LOG(WARNING) << "Fail to serialize request";
             return -1;
         }
         FiberCond sync_cond;
@@ -316,7 +316,7 @@ namespace sirius::discovery {
         _node.apply(task);
         sync_cond.wait();
         if (response.errcode() != sirius::proto::SUCCESS) {
-            SS_LOG(ERROR) << "sync timestamp failed, request:" << request.ShortDebugString()
+            LOG(ERROR) << "sync timestamp failed, request:" << request.ShortDebugString()
                           << " response:" << response.ShortDebugString();
             return -1;
         }
@@ -339,7 +339,7 @@ namespace sirius::discovery {
         }
         int64_t delta = now - prev_physical;
         if (delta < 0) {
-            SS_LOG(WARN)<< "physical time slow now:" << now << " prev:" << prev_physical;
+            LOG(WARNING)<< "physical time slow now:" << now << " prev:" << prev_physical;
         }
         int64_t next = now;
         if (delta > tso::update_timestamp_guard_ms) {
@@ -347,7 +347,7 @@ namespace sirius::discovery {
         } else if (prev_logical > tso::max_logical / 2) {
             next = now + tso::update_timestamp_guard_ms;
         } else {
-            SS_LOG(WARN) << "don't need update timestamp prev:" << prev_physical << " now:" << now << " save:" << last_save;
+            LOG(WARNING) << "don't need update timestamp prev:" << prev_physical << " now:" << now << " save:" << last_save;
             return;
         }
         int64_t save = last_save;
@@ -361,7 +361,7 @@ namespace sirius::discovery {
     }
 
     void TSOStateMachine::on_leader_start() {
-        SS_LOG(WARN) << "tso leader start";
+        LOG(WARNING) << "tso leader start";
         int64_t now = tso::clock_realtime_ms();
         sirius::proto::TsoTimestamp current;
         current.set_physical(now);
@@ -372,13 +372,13 @@ namespace sirius::discovery {
             last_save = now + tso::save_interval_ms;
         }
         auto func = [this, last_save, current]() {
-            SS_LOG(WARN) << "leader start current(phy:" << current.physical() << ",log:" << current.logical()
+            LOG(WARNING) << "leader start current(phy:" << current.physical() << ",log:" << current.logical()
                          << ") save:" << last_save;
             int ret = sync_timestamp(current, last_save);
             if (ret < 0) {
                 _is_healty = false;
             }
-            SS_LOG(WARN) << "sync timestamp ok";
+            LOG(WARNING) << "sync timestamp ok";
             _is_leader.store(true);
             _tso_update_timer.start();
         };
@@ -388,12 +388,12 @@ namespace sirius::discovery {
 
     void TSOStateMachine::on_leader_stop() {
         _tso_update_timer.stop();
-        SS_LOG(WARN) << "tso leader stop";
+        LOG(WARNING) << "tso leader stop";
         BaseStateMachine::on_leader_stop();
     }
 
     void TSOStateMachine::on_snapshot_save(melon::raft::SnapshotWriter *writer, melon::raft::Closure *done) {
-        SS_LOG(WARN) << "start on snapshot save";
+        LOG(WARNING) << "start on snapshot save";
         std::string sto_str = std::to_string(_tso_obj.last_save_physical);
         Fiber bth(&FIBER_ATTR_SMALL);
         std::function<void()> save_snapshot_function = [this, done, writer, sto_str]() {
@@ -414,22 +414,22 @@ namespace sirius::discovery {
         extra_fs.close();
         if (writer->add_file(SNAPSHOT_TSO_FILE_WITH_SLASH) != 0) {
             done->status().set_error(EINVAL, "Fail to add file");
-            SS_LOG(WARN) << "Error while adding file to writer";
+            LOG(WARNING) << "Error while adding file to writer";
             return;
         }
-        SS_LOG(WARN) << "save physical string:" << sto_str << " when snapshot";
+        LOG(WARNING) << "save physical string:" << sto_str << " when snapshot";
     }
 
     int TSOStateMachine::on_snapshot_load(melon::raft::SnapshotReader *reader) {
-        SS_LOG(WARN) << "start on snapshot load";
+        LOG(WARNING) << "start on snapshot load";
         std::vector<std::string> files;
         reader->list_files(&files);
         for (auto &file: files) {
-            SS_LOG(WARN) << "snapshot load file:" << file;
+            LOG(WARNING) << "snapshot load file:" << file;
             if (file == SNAPSHOT_TSO_FILE_WITH_SLASH) {
                 std::string tso_file = reader->get_path() + SNAPSHOT_TSO_FILE_WITH_SLASH;
                 if (load_tso(tso_file) != 0) {
-                    SS_LOG(WARN) << "load tso fail";
+                    LOG(WARNING) << "load tso fail";
                     return -1;
                 }
                 break;
@@ -446,15 +446,15 @@ namespace sirius::discovery {
         try {
             _tso_obj.last_save_physical = std::stol(extra);
         } catch (std::invalid_argument &) {
-            SS_LOG(WARN) << "Invalid_argument: " << extra;
+            LOG(WARNING) << "Invalid_argument: " << extra;
             return -1;
         }
         catch (std::out_of_range &) {
-            SS_LOG(WARN)<< "Out of range: " << extra;
+            LOG(WARNING)<< "Out of range: " << extra;
             return -1;
         }
         catch (...) {
-            SS_LOG(WARN) << "error happen: " << extra;
+            LOG(WARNING) << "error happen: " << extra;
             return -1;
         }
         return 0;

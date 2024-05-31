@@ -19,7 +19,7 @@
 #pragma once
 
 #include <sirius/proto/discovery.struct.pb.h>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 
 namespace sirius::client {
 
@@ -59,14 +59,14 @@ namespace sirius::client {
          * @param json_str json format string
          * @return
          */
-        collie::Status build_from_json(const std::string &json_str);
+        turbo::Status build_from_json(const std::string &json_str);
 
         /**
          * @brief load ConfigInfo from json format string that read from file.
          * @param json_path file path of json string
          * @return status.ok() if success else return the reason of parse fail.
          */
-        collie::Status build_from_json_file(const std::string &json_path);
+        turbo::Status build_from_json_file(const std::string &json_path);
 
         /**
          * @brief build ConfigInfo by parameters, the config store in the file
@@ -76,7 +76,7 @@ namespace sirius::client {
          * @param type [input] config type, can be any one of this [CF_JSON|CF_GFLAGS|CF_TEXT|CF_TOML|CF_XML|CF_YAML|CF_INI].
          * @return status.ok() if success else return the reason of parse fail.
          */
-        collie::Status build_from_file(const std::string &name, const std::string &file, const sirius::proto::Version &version,
+        turbo::Status build_from_file(const std::string &name, const std::string &file, const sirius::proto::Version &version,
                                       const sirius::proto::ConfigType &type = sirius::proto::CF_JSON);
 
         /**
@@ -87,7 +87,7 @@ namespace sirius::client {
          * @param type [input] config type, can be any one of this [json|toml|yaml|xml|gflags|text|ini].
          * @return status.ok() if success else return the reason of build fail.
          */
-        collie::Status build_from_file(const std::string &name, const std::string &file, const sirius::proto::Version &version,
+        turbo::Status build_from_file(const std::string &name, const std::string &file, const sirius::proto::Version &version,
                                       const std::string &type = "json");
 
         /**
@@ -98,7 +98,7 @@ namespace sirius::client {
          * @param type [input] config type, can be any one of this [CF_JSON|CF_GFLAGS|CF_TEXT|CF_TOML|CF_XML|CF_YAML|CF_INI].
          * @return status.ok() if success else return the reason of build fail.
          */
-        collie::Status build_from_file(const std::string &name, const std::string &file, const std::string &version,
+        turbo::Status build_from_file(const std::string &name, const std::string &file, const std::string &version,
                                       const sirius::proto::ConfigType &type = sirius::proto::CF_JSON);
 
         /**
@@ -109,7 +109,7 @@ namespace sirius::client {
          * @param type [input] config type, can be any one of this [json|toml|yaml|xml|gflags|text|ini].
          * @return status.ok() if success else return the reason of build fail.
          */
-        collie::Status build_from_file(const std::string &name, const std::string &file, const std::string &version,
+        turbo::Status build_from_file(const std::string &name, const std::string &file, const std::string &version,
                                       const std::string &type = "json");
 
         /**
@@ -120,7 +120,7 @@ namespace sirius::client {
          * @param type [input] config type, can be any one of this [CF_JSON|CF_GFLAGS|CF_TEXT|CF_TOML|CF_XML|CF_YAML|CF_INI].
          * @return status.ok() if success else return the reason of build fail.
          */
-        collie::Status build_from_content(const std::string &name, const std::string &content, const sirius::proto::Version &version,
+        turbo::Status build_from_content(const std::string &name, const std::string &content, const sirius::proto::Version &version,
                                          const sirius::proto::ConfigType &type = sirius::proto::CF_JSON);
         /**
          * @brief build ConfigInfo by parameters, the config store in content
@@ -130,7 +130,7 @@ namespace sirius::client {
          * @param type [input] config type, can be any one of this [json|toml|yaml|xml|gflags|text|ini].
          * @return status.ok() if success else return the reason of build fail.
          */
-        collie::Status build_from_content(const std::string &name, const std::string &content, const sirius::proto::Version &version,
+        turbo::Status build_from_content(const std::string &name, const std::string &content, const sirius::proto::Version &version,
                                          const std::string &type = "json");
         /**
          * @brief build ConfigInfo by parameters, the config store in content
@@ -140,7 +140,7 @@ namespace sirius::client {
          * @param type [input] config type, can be any one of this [CF_JSON|CF_GFLAGS|CF_TEXT|CF_TOML|CF_XML|CF_YAML|CF_INI].
          * @return status.ok() if success else return the reason of build fail.
          */
-        collie::Status build_from_content(const std::string &name, const std::string &content, const std::string &version,
+        turbo::Status build_from_content(const std::string &name, const std::string &content, const std::string &version,
                                          const sirius::proto::ConfigType &type = sirius::proto::CF_JSON);
         /**
          * @brief build ConfigInfo by parameters, the config store in content
@@ -150,7 +150,7 @@ namespace sirius::client {
          * @param type [input] config type, can be any one of this [json|toml|yaml|xml|gflags|text|ini].
          * @return status.ok() if success else return the reason of build fail.
          */
-        collie::Status
+        turbo::Status
         build_from_content(const std::string &name, const std::string &content, const std::string &version,
                            const std::string &type = "json");
 

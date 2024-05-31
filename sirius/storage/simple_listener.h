@@ -29,15 +29,15 @@ public:
     virtual ~SimpleListener() {}
     virtual void OnStallConditionsChanged(const rocksdb::WriteStallInfo& info) {
         bool is_stall = info.condition.cur != rocksdb::WriteStallCondition::kNormal;
-        SS_LOG(INFO) << "OnStallConditionsChanged, cf:" << info.cf_name << " is_stall:" << is_stall;
+        LOG(INFO) << "OnStallConditionsChanged, cf:" << info.cf_name << " is_stall:" << is_stall;
     }
     virtual void OnFlushCompleted(rocksdb::DB* /*db*/, const rocksdb::FlushJobInfo& info) {
         uint64_t file_number = info.file_number;
         RocksStorage::get_instance()->set_flush_file_number(info.cf_name, file_number);
-        SS_LOG(INFO) << "OnFlushCompleted, cf:" << info.cf_name << " file_number:" << file_number;
+        LOG(INFO) << "OnFlushCompleted, cf:" << info.cf_name << " file_number:" << file_number;
     }
     virtual void OnExternalFileIngested(rocksdb::DB* /*db*/, const rocksdb::ExternalFileIngestionInfo& info) {
-        SS_LOG(INFO) << "OnExternalFileIngested, cf:" << info.cf_name << " table_properties:" << info.table_properties.ToString();
+        LOG(INFO) << "OnExternalFileIngested, cf:" << info.cf_name << " table_properties:" << info.table_properties.ToString();
     }
 };
 }

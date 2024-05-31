@@ -18,7 +18,7 @@
 #include <collie/cli/cli.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <collie/table/table.h>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <string>
 
 namespace sirius::cli {
@@ -63,25 +63,25 @@ namespace sirius::cli {
 
     void run_user_info_cmd();
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_user_create(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_user_remove(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_user_add_privilege(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_user_remove_privilege(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_user_list(sirius::proto::DiscoveryQueryRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_user_flat(sirius::proto::DiscoveryQueryRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_user_info(sirius::proto::DiscoveryQueryRequest *req);
 
     collie::table::Table show_discovery_query_user_response(const sirius::proto::DiscoveryQueryResponse &res);

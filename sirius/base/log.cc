@@ -18,10 +18,11 @@
 //
 
 #include <sirius/base/log.h>
+#include <sirius/flags/log.h>
+#include <thread>
+#include <mutex>
 
 namespace sirius {
-
-    std::shared_ptr<collie::log::logger> ss_logger = collie::log::default_logger();
 
     std::once_flag log_init_flag;
 
@@ -31,47 +32,18 @@ namespace sirius {
         if (init_result) {
             return;
         }
-        if (!collie::filesystem::exists(FLAGS_log_root)) {
-            if (!collie::filesystem::create_directories(FLAGS_log_root)) {
-                init_result =  false;
-            }
-        }
-        collie::filesystem::path lpath(FLAGS_log_root);
-        lpath /= FLAGS_log_base_name;
-        collie::log::sink_ptr file_sink = std::make_shared<collie::log::sinks::daily_file_sink_mt>(lpath.string(),
-                                                                                                   FLAGS_log_rotation_hour,
-                                                                                                   FLAGS_log_rotation_minute,
-                                                                                                   false,
-                                                                                                   FLAGS_log_save_days);
-        file_sink->set_level(collie::log::level::info);
-
-
-        if (!FLAGS_enable_console_log) {
-            ss_logger = std::make_shared<collie::log::logger>("sirius-logger", file_sink);
-            ss_logger->set_level(collie::log::level::info);
+        if (FLAGS_enable_console_log) {
+            turbo::setup_color_stderr_sink();
         } else {
-            collie::log::sink_ptr console_sink = std::make_shared<collie::log::sinks::stdout_color_sink_mt>();
-            ss_logger = std::make_shared<collie::log::logger>("sirius-logger",
-                                                              collie::log::sinks_init_list{file_sink,
-                                                                                           console_sink});
-            ss_logger->set_level(collie::log::level::info);
+            std::string base_log_name = FLAGS_log_root + "/" + FLAGS_log_base_name;
+            turbo::setup_daily_file_sink(base_log_name, FLAGS_log_rotation_hour, FLAGS_log_rotation_minute,
+                                          FLAGS_log_save_days);
         }
         init_result = true;
     }
+
     bool initialize_log() {
         std::call_once(log_init_flag, log_init_func);
         return init_result;
-    }
-
-    std::once_flag warn_once_flag;
-    void warn_once() {
-        if(ss_logger == collie::log::default_logger()) {
-            SS_LOG(WARN) << "Please call init_tlog() before using SS_LOG";
-        }
-    }
-
-    collie::log::logger *get_logger() {
-        std::call_once(warn_once_flag, warn_once);
-        return ss_logger.get();
     }
 }  // namespace sirius

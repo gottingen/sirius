@@ -26,7 +26,7 @@
 
 namespace sirius::client {
 
-    collie::Status Dumper::dump_proto_to_file(const std::string &path, const google::protobuf::Message &message) {
+    turbo::Status Dumper::dump_proto_to_file(const std::string &path, const google::protobuf::Message &message) {
         std::string content;
         auto rs = dump_proto(message, content);
         if (!rs.ok()) {
@@ -43,16 +43,16 @@ namespace sirius::client {
             return rs;
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status Dumper::dump_proto(const google::protobuf::Message &message, std::string &content) {
+    turbo::Status Dumper::dump_proto(const google::protobuf::Message &message, std::string &content) {
         std::string err;
         content.clear();
         if (!json2pb::ProtoMessageToJson(message, &content, &err)) {
-            return collie::Status::data_loss(err);
+            return turbo::data_loss_error(err);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
 }  // namespace sirius::client

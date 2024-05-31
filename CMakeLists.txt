@@ -71,7 +71,6 @@ include(sirius_deps)
 include(sirius_cxx_config)
 include(sirius_test)
 
-find_package(Protobuf REQUIRED)
 include(CompileProto)
 set(PROTO_FILES
         sirius/proto/config.struct.proto

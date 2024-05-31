@@ -25,21 +25,21 @@ namespace sirius {
     class TimeCost {
     public:
         TimeCost() {
-            _start = turbo::Time::time_now().to_microseconds();
+            _start = turbo::Time::current_microseconds();
         }
 
         ~TimeCost() {}
 
         void reset() {
-            _start = turbo::Time::time_now().to_microseconds();
+            _start = turbo::Time::current_microseconds();
         }
 
         int64_t get_time() const {
-            return turbo::Time::time_now().to_microseconds() - _start;
+            return turbo::Time::current_microseconds() - _start;
         }
 
         int64_t get_time_s() const {
-            return (turbo::Time::time_now().to_microseconds() - _start) / 1000000;
+            return (turbo::Time::current_microseconds() - _start) / 1000000;
         }
 
     private:

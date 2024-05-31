@@ -24,7 +24,7 @@
 #define EA_CLIENT_SERVLET_INSTANCE_BUILDER_H_
 
 #include <sirius/proto/discovery.struct.pb.h>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 
 namespace sirius::client {
 
@@ -66,14 +66,14 @@ namespace sirius::client {
          * @param json_str [input] the json string to build ConfigInfo object.
          * @return Status::OK if the ConfigInfo object was built successfully. Otherwise, an error status is returned.
          */
-        collie::Status build_from_json(const std::string &json_str);
+        turbo::Status build_from_json(const std::string &json_str);
 
         /**
          *
          * @param json_path [input] the json file path to build ConfigInfo object.
          * @return Status::OK if the ConfigInfo object was built successfully. Otherwise, an error status is returned.
          */
-        collie::Status build_from_json_file(const std::string &json_path);
+        turbo::Status build_from_json_file(const std::string &json_path);
 
         /**
          *

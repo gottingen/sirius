@@ -27,7 +27,7 @@ namespace sirius::discovery {
         auto &app_info = const_cast<sirius::proto::AppInfo &>(request.app_info());
         std::string app_name = app_info.app_name();
         if (_app_id_map.find(app_name) != _app_id_map.end()) {
-            SS_LOG(WARN) << "request app:" << app_name << " has been existed";
+            LOG(WARNING) << "request app:" << app_name << " has been existed";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app already existed");
             return;
         }
@@ -41,7 +41,7 @@ namespace sirius::discovery {
 
         std::string app_value;
         if (!app_info.SerializeToString(&app_value)) {
-            SS_LOG(WARN) << "request serializeToArray fail, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
@@ -63,21 +63,21 @@ namespace sirius::discovery {
         set_app_info(app_info);
         set_max_app_id(tmp_app_id);
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(INFO) << "create app success, request:" << request.ShortDebugString();
+        LOG(INFO) << "create app success, request:" << request.ShortDebugString();
     }
 
     void AppManager::drop_app(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
         auto &app_info = request.app_info();
         const std::string& app_name = app_info.app_name();
         if (_app_id_map.find(app_name) == _app_id_map.end()) {
-            SS_LOG(WARN) << "request app:" << app_name << " not exist";
+            LOG(WARNING) << "request app:" << app_name << " not exist";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app not exist");
             return;
         }
 
         int64_t app_id = _app_id_map[app_name];
         if (!_zone_ids[app_id].empty()) {
-            SS_LOG(WARN) << "request app:" << app_name << " has zone";
+            LOG(WARNING) << "request app:" << app_name << " has zone";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app has servlet");
             return;
         }
@@ -92,14 +92,14 @@ namespace sirius::discovery {
 
         erase_app_info(app_name);
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(INFO) << "drop app success, request:" << request.ShortDebugString();
+        LOG(INFO) << "drop app success, request:" << request.ShortDebugString();
     }
 
     void AppManager::modify_app(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
         auto &app_info = request.app_info();
         auto &app_name = app_info.app_name();
         if (_app_id_map.find(app_name) == _app_id_map.end()) {
-            SS_LOG(WARN) << "request app:" << app_name << " not exist";
+            LOG(WARNING) << "request app:" << app_name << " not exist";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app not exist");
             return;
         }
@@ -113,7 +113,7 @@ namespace sirius::discovery {
 
         std::string app_value;
         if (!tmp_info.SerializeToString(&app_value)) {
-            SS_LOG(WARN) << "request serializeToArray fail, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
@@ -126,16 +126,16 @@ namespace sirius::discovery {
 
         set_app_info(tmp_info);
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(INFO) << "modify app success, request:" << request.ShortDebugString();
+        LOG(INFO) << "modify app success, request:" << request.ShortDebugString();
     }
 
     int AppManager::load_app_snapshot(const std::string &value) {
         sirius::proto::AppInfo app_pb;
         if (!app_pb.ParseFromString(value)) {
-            SS_LOG(ERROR) << "parse from pb fail when load app snapshot, value: " << value;
+            LOG(ERROR) << "parse from pb fail when load app snapshot, value: " << value;
             return -1;
         }
-        SS_LOG(INFO) << "load app snapshot success, app_pb:" << app_pb.ShortDebugString();
+        LOG(INFO) << "load app snapshot success, app_pb:" << app_pb.ShortDebugString();
         set_app_info(app_pb);
         return 0;
     }

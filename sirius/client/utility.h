@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <collie/utility/result.h>
+#include <turbo/status/result.h>
 #include <string>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <collie/module/semver.h>
@@ -39,7 +39,7 @@ namespace sirius::client {
      * @param str [input] is the string to convert.
      * @return a ConfigType if the string is valid. Otherwise, an error status is returned.
      */
-    collie::Result<sirius::proto::ConfigType> string_to_config_type(const std::string &str);
+    turbo::Result<sirius::proto::ConfigType> string_to_config_type(const std::string &str);
 
     /**
      * @ingroup ea_proto
@@ -48,7 +48,7 @@ namespace sirius::client {
      * @param v [output] is the Version received from the string.
      * @return Status::OK if the string was converted successfully. Otherwise, an error status is returned.
      */
-    collie::Status string_to_version(const std::string &str, sirius::proto::Version *v);
+    turbo::Status string_to_version(const std::string &str, sirius::proto::Version *v);
 
     /**
      * @ingroup ea_proto
@@ -57,7 +57,7 @@ namespace sirius::client {
      * @param v [output] is the ModuleVersion received from the string.
      * @return Status::OK if the string was converted successfully. Otherwise, an error status is returned.
      */
-    collie::Status string_to_module_version(const std::string &str, collie::ModuleVersion *v);
+    turbo::Status string_to_module_version(const std::string &str, collie::ModuleVersion *v);
 
     /**
      * @ingroup ea_proto
@@ -82,6 +82,6 @@ namespace sirius::client {
      * @param name [input] is the name of the ConfigInfo to convert.
      * @return a ConfigInfo if the string is valid. Otherwise, an error status is returned.
      */
-    [[nodiscard]] collie::Status check_valid_name_type(std::string_view name);
+    [[nodiscard]] turbo::Status check_valid_name_type(std::string_view name);
 
 }  // namespace sirius::client

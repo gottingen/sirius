@@ -39,6 +39,9 @@ enum ErrCode {
 
     INPUT_PARAM_ERROR           = 21;
     HAVE_NOT_INIT               = 22;
+    SERVLET_NO_APP              = 23;
+    SERVLET_NO_ZONE             = 24;
+    SERVLET_EXISTS              = 25;
 
     CONFIG_EXISTS               = 31;
     CONFIG_VERSION_OLD          = 32;

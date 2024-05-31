@@ -25,16 +25,16 @@
 
 namespace sirius::client {
 
-    collie::Status Loader::load_proto(const std::string &content, google::protobuf::Message &message) {
+    turbo::Status Loader::load_proto(const std::string &content, google::protobuf::Message &message) {
         std::string err;
         if (!json2pb::JsonToProtoMessage(content, &message, &err)) {
-            return collie::Status::data_loss(err);
+            return turbo::data_loss_error(err);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
 
-    collie::Status Loader::load_proto_from_file(const std::string &path, google::protobuf::Message &message) {
+    turbo::Status Loader::load_proto_from_file(const std::string &path, google::protobuf::Message &message) {
         alkaid::SequentialReadFile file;
         auto rs = file.open(path);
         if (!rs.ok()) {

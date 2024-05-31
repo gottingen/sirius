@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <string>
 #include <google/protobuf/descriptor.h>
 #include <sirius/proto/discovery.interface.pb.h>
@@ -67,7 +67,7 @@ namespace sirius::client {
          * @param message [output] result of parse the json format string.
          * @return status.ok() if success else return the reason of parse fail.
          */
-        static collie::Status load_proto(const std::string &content, google::protobuf::Message &message);
+        static turbo::Status load_proto(const std::string &content, google::protobuf::Message &message);
 
         /**
          *
@@ -75,6 +75,6 @@ namespace sirius::client {
          * @param message [output] result of parse the json format string.
          * @return status.ok() if success else return the reason of parse fail.
          */
-        static collie::Status load_proto_from_file(const std::string &path, google::protobuf::Message &message);
+        static turbo::Status load_proto_from_file(const std::string &path, google::protobuf::Message &message);
     };
 }  // namespace sirius::client
