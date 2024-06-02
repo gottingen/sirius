@@ -27,7 +27,7 @@
 #include <melon/rpc/controller.h>
 #include <string>
 #include <sirius/base/log.h>
-#include <sirius/flags/discovery.h>
+#include <sirius/flags/sirius.h>
 #include <google/protobuf/descriptor.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <collie/module/semver.h>

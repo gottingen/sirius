@@ -18,7 +18,7 @@
 
 
 #include <sirius/discovery/base_state_machine.h>
-#include <sirius/flags/discovery.h>
+#include <sirius/flags/sirius.h>
 
 namespace sirius::discovery {
 
@@ -68,14 +68,13 @@ namespace sirius::discovery {
 
     int BaseStateMachine::init(const std::vector<melon::raft::PeerId> &peers) {
         melon::raft::NodeOptions options;
-        options.election_timeout_ms = FLAGS_discovery_election_timeout_ms;
+        options.election_timeout_ms = FLAGS_sirius_election_timeout_ms;
         options.fsm = this;
         options.initial_conf = melon::raft::Configuration(peers);
-        options.snapshot_interval_s = FLAGS_discovery_snapshot_interval_s;
-        options.log_uri = FLAGS_discovery_log_uri + std::to_string(_dummy_region_id);
-        //options.stable_uri = FLAGS_discovery_stable_uri + "/discovery_server";
-        options.raft_meta_uri = FLAGS_discovery_stable_uri + _file_path;
-        options.snapshot_uri = FLAGS_discovery_snapshot_uri + _file_path;
+        options.snapshot_interval_s = FLAGS_sirius_snapshot_interval_s;
+        options.log_uri = FLAGS_sirius_log_uri + std::to_string(_dummy_region_id);
+        options.raft_meta_uri = FLAGS_sirius_stable_uri + _file_path;
+        options.snapshot_uri = FLAGS_sirius_snapshot_uri + _file_path;
         int ret = _node.init(options);
         if (ret < 0) {
             LOG(ERROR) << "raft node init fail";

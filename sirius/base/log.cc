@@ -39,6 +39,7 @@ namespace sirius {
             turbo::setup_daily_file_sink(base_log_name, FLAGS_log_rotation_hour, FLAGS_log_rotation_minute,
                                           FLAGS_log_save_days);
         }
+        LOG(INFO)<< "log init success, "<<"console log: "<<FLAGS_enable_console_log;
         init_result = true;
     }
 

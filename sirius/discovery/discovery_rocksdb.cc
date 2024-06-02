@@ -19,7 +19,7 @@
 
 #include <sirius/discovery/discovery_rocksdb.h>
 #include <gflags/gflags.h>
-#include <sirius/flags/discovery.h>
+#include <sirius/flags/sirius.h>
 #include <sirius/base/log.h>
 
 namespace sirius::discovery {
@@ -30,13 +30,13 @@ namespace sirius::discovery {
             LOG(ERROR) << "create rocksdb handler failed";
             return -1;
         }
-        int ret = _rocksdb->init(FLAGS_discovery_db_path);
+        int ret = _rocksdb->init(FLAGS_sirius_db_path);
         if (ret != 0) {
             LOG(ERROR) << "rocksdb init failed: code: " << ret;
             return -1;
         }
         _handle = _rocksdb->get_meta_info_handle();
-        LOG(WARNING) << "rocksdb init success, db_path: " << FLAGS_discovery_db_path;
+        LOG(WARNING) << "rocksdb init success, db_path: " << FLAGS_sirius_db_path;
         return 0;
     }
 

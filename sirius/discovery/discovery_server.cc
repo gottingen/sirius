@@ -42,7 +42,7 @@ namespace sirius::discovery {
             return -1;
         }
         mutil::EndPoint addr;
-        mutil::str2endpoint(FLAGS_discovery_listen.c_str(), &addr);
+        mutil::str2endpoint(FLAGS_sirius_listen.c_str(), &addr);
         //addr.ip = mutil::my_ip();
         //addr.port = FLAGS_discovery_port;
         melon::raft::PeerId peer_id(addr, 0);

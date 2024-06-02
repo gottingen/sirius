@@ -27,10 +27,10 @@
 #include <sirius/base/memory_profile.h>
 #include <collie/filesystem/fs.h>
 #include <collie/strings/str_split.h>
-#include <sirius/flags/discovery.h>
+#include <sirius/flags/sirius.h>
 
 int main(int argc, char **argv) {
-    google::SetCommandLineOption("flagfile", "conf/discovery_gflags.conf");
+    google::SetCommandLineOption("flagfile", "conf/sirius_conf.gflags");
     google::ParseCommandLineFlags(&argc, &argv, true);
     ghc::filesystem::path remove_path("init.success");
     ghc::filesystem::remove_all(remove_path);
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
     //add service
     melon::Server server;
 
-    if (0 != melon::raft::add_service(&server, sirius::FLAGS_discovery_listen.c_str())) {
+    if (0 != melon::raft::add_service(&server, sirius::FLAGS_sirius_listen.c_str())) {
         LOG(ERROR) << "Fail to init raft";
         return -1;
     }
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     std::vector<std::string> instances;
     bool completely_deploy = false;
 
-    std::vector<std::string> list_raft_peers = collie::str_split(sirius::FLAGS_discovery_server_peers, ',');
+    std::vector<std::string> list_raft_peers = collie::str_split(sirius::FLAGS_sirius_server_peers, ',');
     for (auto &raft_peer: list_raft_peers) {
         LOG(INFO)<< "raft_peer:" << raft_peer.c_str();
         melon::raft::PeerId peer(raft_peer);
@@ -66,12 +66,12 @@ int main(int argc, char **argv) {
     auto *discovery_server = sirius::discovery::DiscoveryServer::get_instance();
     auto *router_server = sirius::discovery::RouterServiceImpl::get_instance();
     auto *sns_server = melon::SnsServiceImpl::get_instance();
-    auto rs = router_server->init(sirius::FLAGS_discovery_server_peers);
+    auto rs = router_server->init(sirius::FLAGS_sirius_server_peers);
     if (!rs.ok()) {
         LOG(ERROR) << "Fail init router server " << rs.message();
         return -1;
     }
-    rs = sns_server->init(sirius::FLAGS_discovery_server_peers);
+    rs = sns_server->init(sirius::FLAGS_sirius_server_peers);
     if (!rs.ok()) {
         LOG(ERROR) << "Fail init sns server " << rs.message();
         return -1;
@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
         return -1;
     }
     // enable ports
-    if (server.Start(sirius::FLAGS_discovery_listen.c_str(), nullptr) != 0) {
+    if (server.Start(sirius::FLAGS_sirius_listen.c_str(), nullptr) != 0) {
         LOG(ERROR) << "Fail to start server";
         return -1;
     }

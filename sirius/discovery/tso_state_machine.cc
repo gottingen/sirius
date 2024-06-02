@@ -27,7 +27,7 @@
 #include <collie/rapidjson/prettywriter.h> // for stringify JSON
 #include <melon/raft/util.h>
 #include <melon/raft/storage.h>
-#include <sirius/flags/discovery.h>
+#include <sirius/flags/sirius.h>
 
 namespace sirius::discovery {
 
@@ -52,14 +52,14 @@ namespace sirius::discovery {
         _tso_obj.last_save_physical = 0;
         //int ret = BaseStateMachine::init(peers);
         melon::raft::NodeOptions options;
-        options.election_timeout_ms = FLAGS_discovery_election_timeout_ms;
+        options.election_timeout_ms = FLAGS_sirius_election_timeout_ms;
         options.fsm = this;
         options.initial_conf = melon::raft::Configuration(peers);
-        options.snapshot_interval_s = FLAGS_discovery_tso_snapshot_interval_s;
-        options.log_uri = FLAGS_discovery_log_uri + std::to_string(_dummy_region_id);
+        options.snapshot_interval_s = FLAGS_sirius_tso_snapshot_interval_s;
+        options.log_uri = FLAGS_sirius_log_uri + std::to_string(_dummy_region_id);
         //options.stable_uri = FLAGS_stable_uri + "/discovery";
-        options.raft_meta_uri = FLAGS_discovery_stable_uri + _file_path;
-        options.snapshot_uri = FLAGS_discovery_snapshot_uri + _file_path;
+        options.raft_meta_uri = FLAGS_sirius_stable_uri + _file_path;
+        options.snapshot_uri = FLAGS_sirius_snapshot_uri + _file_path;
         int ret = _node.init(options);
         if (ret < 0) {
             LOG(ERROR) << "raft node init fail";
