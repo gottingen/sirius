@@ -20,7 +20,7 @@
 
 #include <unordered_map>
 #include <sirius/discovery/base_state_machine.h>
-#include <sirius/discovery/discovery_constants.h>
+#include <sirius/discovery/sirius_constants.h>
 
 namespace sirius::discovery {
     class AutoIncrStateMachine : public BaseStateMachine {

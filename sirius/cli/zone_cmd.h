@@ -18,7 +18,7 @@
 #include <collie/cli/cli.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <collie/table/table.h>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <string>
 
 namespace sirius::cli {
@@ -29,7 +29,7 @@ namespace sirius::cli {
             return &ins;
         }
         // for namespace
-        std::string namespace_name;
+        std::string app_name;
         int64_t     namespace_quota;
         std::string zone_name;
     };
@@ -52,19 +52,19 @@ namespace sirius::cli {
 
     void run_zone_info_cmd();
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_zone_create(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_zone_remove(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_zone_modify(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_zone_list(sirius::proto::DiscoveryQueryRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_zone_info(sirius::proto::DiscoveryQueryRequest *req);
 
     collie::table::Table show_discovery_query_zone_response(const sirius::proto::DiscoveryQueryResponse &res);

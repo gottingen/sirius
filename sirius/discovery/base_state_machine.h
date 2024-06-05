@@ -93,7 +93,7 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
                                   google::protobuf::Closure *done) {
             melon::ClosureGuard done_guard(done);
             if (!is_leader() && !request->force()) {
-                SS_LOG(INFO) << "node is not leader when raft control, region_id: " << request->region_id();
+                LOG(INFO) << "node is not leader when raft control, region_id: " << request->region_id();
                 response->set_errcode(sirius::proto::NOT_LEADER);
                 response->set_region_id(request->region_id());
                 response->set_leader(mutil::endpoint2str(_node.leader_id().addr).c_str());
@@ -112,7 +112,7 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
         virtual void on_apply(melon::raft::Iterator &iter) = 0;
 
         virtual void on_shutdown() {
-            SS_LOG(INFO) << "raft is shut down";
+            LOG(INFO) << "raft is shut down";
         };
 
         virtual void on_snapshot_save(melon::raft::SnapshotWriter *writer, melon::raft::Closure *done) = 0;
@@ -137,9 +137,9 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
 
         virtual void shutdown_raft() {
             _node.shutdown(nullptr);
-            SS_LOG(INFO) << "raft node was shutdown";
+            LOG(INFO) << "raft node was shutdown";
             _node.join();
-            SS_LOG(INFO) << "raft node join completely";
+            LOG(INFO) << "raft node join completely";
         }
 
         virtual bool is_leader() const{
@@ -165,7 +165,7 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
 
 #define ERROR_SET_RESPONSE(response, errcode, err_message, op_type, log_id) \
     do {\
-        SS_LOG(ERROR)<<"request op_type: "<<op_type<<", "<<err_message<<",log_id:"<<log_id;\
+        LOG(ERROR)<<"request op_type: "<<op_type<<", "<<err_message<<",log_id:"<<log_id;\
         if (response != nullptr) {\
             response->set_errcode(errcode);\
             response->set_errmsg(err_message);\
@@ -175,7 +175,7 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
 
 #define ERROR_SET_RESPONSE_WARN(response, errcode, err_message, op_type, log_id) \
     do {\
-        SS_LOG(WARN)<<"request op_type: "<<op_type<<", "<<err_message<<",log_id:"<<log_id;\
+        LOG(WARNING)<<"request op_type: "<<op_type<<", "<<err_message<<",log_id:"<<log_id;\
         if (response != nullptr) {\
             response->set_errcode(errcode);\
             response->set_errmsg(err_message);\
@@ -202,7 +202,7 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
 #define RETURN_IF_NOT_INIT(init, response, log_id) \
     do {\
         if (!init) {\
-            SS_LOG(WARN)<<"have not init, log_id: "<<  log_id;\
+            LOG(WARNING)<<"have not init, log_id: "<<  log_id;\
             response->set_errcode(sirius::proto::HAVE_NOT_INIT);\
             response->set_errmsg("have not init");\
             return;\

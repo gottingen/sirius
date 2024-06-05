@@ -24,15 +24,15 @@
 
 namespace sirius {
 
-    class TransactionDBBthreadMutex : public rocksdb::TransactionDBMutex {
+    class TransactionDBBthreadMutex : public mizar::TransactionDBMutex {
     public:
         TransactionDBBthreadMutex() {}
 
         ~TransactionDBBthreadMutex() override {}
 
-        rocksdb::Status Lock() override;
+        mizar::Status Lock() override;
 
-        rocksdb::Status TryLockFor(int64_t timeout_time) override;
+        mizar::Status TryLockFor(int64_t timeout_time) override;
 
         void UnLock() override { _mutex.unlock(); }
 
@@ -42,15 +42,15 @@ namespace sirius {
         fiber::Mutex _mutex;
     };
 
-    class TransactionDBBthreadCond : public rocksdb::TransactionDBCondVar {
+    class TransactionDBBthreadCond : public mizar::TransactionDBCondVar {
     public:
         TransactionDBBthreadCond() {}
 
         ~TransactionDBBthreadCond() override {}
 
-        rocksdb::Status Wait(std::shared_ptr<rocksdb::TransactionDBMutex> mutex) override;
+        mizar::Status Wait(std::shared_ptr<mizar::TransactionDBMutex> mutex) override;
 
-        rocksdb::Status WaitFor(std::shared_ptr<rocksdb::TransactionDBMutex> mutex,
+        mizar::Status WaitFor(std::shared_ptr<mizar::TransactionDBMutex> mutex,
                                 int64_t timeout_time) override;
 
         void Notify() override { _cv.notify_one(); }
@@ -61,22 +61,22 @@ namespace sirius {
         fiber::ConditionVariable _cv;
     };
 
-    std::shared_ptr<rocksdb::TransactionDBMutex>
+    std::shared_ptr<mizar::TransactionDBMutex>
     TransactionDBBthreadFactory::AllocateMutex() {
-        return std::shared_ptr<rocksdb::TransactionDBMutex>(new TransactionDBBthreadMutex());
+        return std::shared_ptr<mizar::TransactionDBMutex>(new TransactionDBBthreadMutex());
     }
 
-    std::shared_ptr<rocksdb::TransactionDBCondVar>
+    std::shared_ptr<mizar::TransactionDBCondVar>
     TransactionDBBthreadFactory::AllocateCondVar() {
-        return std::shared_ptr<rocksdb::TransactionDBCondVar>(new TransactionDBBthreadCond());
+        return std::shared_ptr<mizar::TransactionDBCondVar>(new TransactionDBBthreadCond());
     }
 
-    rocksdb::Status TransactionDBBthreadMutex::Lock() {
+    mizar::Status TransactionDBBthreadMutex::Lock() {
         _mutex.lock();
-        return rocksdb::Status::OK();
+        return mizar::Status::OK();
     }
 
-    rocksdb::Status TransactionDBBthreadMutex::TryLockFor(int64_t timeout_time) {
+    mizar::Status TransactionDBBthreadMutex::TryLockFor(int64_t timeout_time) {
         bool locked = true;
 
         if (timeout_time == 0) {
@@ -87,14 +87,14 @@ namespace sirius {
 
         if (!locked) {
             // timeout acquiring mutex
-            return rocksdb::Status::TimedOut(rocksdb::Status::SubCode::kMutexTimeout);
+            return mizar::Status::TimedOut(mizar::Status::SubCode::kMutexTimeout);
         }
 
-        return rocksdb::Status::OK();
+        return mizar::Status::OK();
     }
 
-    rocksdb::Status TransactionDBBthreadCond::Wait(
-            std::shared_ptr<rocksdb::TransactionDBMutex> mutex) {
+    mizar::Status TransactionDBBthreadCond::Wait(
+            std::shared_ptr<mizar::TransactionDBMutex> mutex) {
         auto bthread_mutex = reinterpret_cast<TransactionDBBthreadMutex *>(mutex.get());
 
         std::unique_lock<fiber_mutex_t> lock(*(bthread_mutex->_mutex.native_handler()), std::adopt_lock);
@@ -103,12 +103,12 @@ namespace sirius {
         // Make sure unique_lock doesn't unlock mutex when it destructs
         lock.release();
 
-        return rocksdb::Status::OK();
+        return mizar::Status::OK();
     }
 
-    rocksdb::Status TransactionDBBthreadCond::WaitFor(
-            std::shared_ptr<rocksdb::TransactionDBMutex> mutex, int64_t timeout_time) {
-        rocksdb::Status s;
+    mizar::Status TransactionDBBthreadCond::WaitFor(
+            std::shared_ptr<mizar::TransactionDBMutex> mutex, int64_t timeout_time) {
+        mizar::Status s;
 
         auto bthread_mutex = reinterpret_cast<TransactionDBBthreadMutex *>(mutex.get());
         std::unique_lock<fiber_mutex_t> lock(*(bthread_mutex->_mutex.native_handler()), std::adopt_lock);
@@ -122,7 +122,7 @@ namespace sirius {
 
             // Check if the wait stopped due to timing out.
             if (cv_status == ETIMEDOUT) {
-                s = rocksdb::Status::TimedOut(rocksdb::Status::SubCode::kMutexTimeout);
+                s = mizar::Status::TimedOut(mizar::Status::SubCode::kMutexTimeout);
             }
         }
 

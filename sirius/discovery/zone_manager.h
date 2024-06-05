@@ -22,7 +22,7 @@
 #include <unordered_map>
 #include <set>
 #include <mutex>
-#include <sirius/discovery/discovery_constants.h>
+#include <sirius/discovery/sirius_constants.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <melon/fiber/mutex.h>
 #include <melon/raft/raft.h>
@@ -46,7 +46,7 @@ namespace sirius::discovery {
         ///
         /// \brief create zone call by schema manager,
         ///        fail on db exists and namespace not spec
-        ///        dbname = namespace_name + "\001" + zone_info.zone();
+        ///        dbname = app_name + "\001" + zone_info.zone();
         /// \param request
         /// \param done
         void create_zone(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done);
@@ -54,7 +54,7 @@ namespace sirius::discovery {
         ///
         /// \brief remove zone call by schema manager,
         ///        fail on db not exists and namespace not spec
-        ///        dbname = namespace_name + "\001" + zone_info.zone();
+        ///        dbname = app_name + "\001" + zone_info.zone();
         ///
         /// \param request
         /// \param done
@@ -63,7 +63,7 @@ namespace sirius::discovery {
         ///
         /// \brief modify zone call by schema manager,
         ///        fail on db not exists and namespace not spec
-        ///        dbname = namespace_name + "\001" + zone_info.zone();
+        ///        dbname = app_name + "\001" + zone_info.zone();
         ///
         /// \param request
         /// \param done
@@ -113,6 +113,10 @@ namespace sirius::discovery {
         /// \return
         int64_t get_zone_id(const std::string &zone_name);
 
+        int64_t get_zone_id(const std::string & app_name, const std::string &zone_name);
+
+        void get_zone_ids(const std::string & app_name, const std::vector<std::string> &zone_name, std::vector<int64_t> &zone_ids);
+
         ///
         /// \brief get db info by zone id
         /// \param zone_id
@@ -128,10 +132,10 @@ namespace sirius::discovery {
         int get_servlet_ids(const int64_t &zone_id, std::set<int64_t> &servlet_ids);
 
         ///
-        /// \param namespace_name
+        /// \param app_name
         /// \param zone_name
         /// \return
-        static std::string make_zone_key(const std::string &namespace_name, const std::string &zone_name);
+        static std::string make_zone_key(const std::string &app_name, const std::string &zone_name);
 
     private:
         ZoneManager();
@@ -170,7 +174,7 @@ namespace sirius::discovery {
 
     inline void ZoneManager::set_zone_info(const sirius::proto::ZoneInfo &zone_info) {
         MELON_SCOPED_LOCK(_zone_mutex);
-        std::string zone_name = make_zone_key(zone_info.namespace_name(),zone_info.zone());
+        std::string zone_name = make_zone_key(zone_info.app_name(),zone_info.zone());
         _zone_id_map[zone_name] = zone_info.zone_id();
         _zone_info_map[zone_info.zone_id()] = zone_info;
     }
@@ -201,6 +205,35 @@ namespace sirius::discovery {
             return _zone_id_map[zone_name];
         }
         return 0;
+    }
+
+    inline int64_t ZoneManager::get_zone_id(const std::string & app_name, const std::string &zone_name) {
+        auto zone_key = make_zone_key(app_name, zone_name);
+        MELON_SCOPED_LOCK(_zone_mutex);
+        auto it = _zone_id_map.find(zone_key);
+        if (it != _zone_id_map.end()) {
+            return it->second;
+        }
+        return 0;
+    }
+
+    inline void ZoneManager::get_zone_ids(const std::string & app_name, const std::vector<std::string> &zone_name, std::vector<int64_t> &zone_ids) {
+        zone_ids.clear();
+        zone_ids.reserve(zone_name.size());
+        MELON_SCOPED_LOCK(_zone_mutex);
+        for (auto &name : zone_name) {
+            if(name.empty()) {
+                zone_ids.push_back(0);
+                continue;
+            }
+            auto zone_key = make_zone_key(app_name, name);
+            auto it = _zone_id_map.find(zone_key);
+            if (it != _zone_id_map.end()) {
+                zone_ids.push_back(it->second);
+            } else {
+                zone_ids.push_back(0);
+            }
+        }
     }
 
     inline int ZoneManager::get_zone_info(const int64_t &zone_id, sirius::proto::ZoneInfo &zone_info) {
@@ -245,8 +278,8 @@ namespace sirius::discovery {
         return max_zone_id_key;
     }
 
-    inline std::string ZoneManager::make_zone_key(const std::string &namespace_name, const std::string &zone_name) {
-        return namespace_name + "\001" + zone_name;
+    inline std::string ZoneManager::make_zone_key(const std::string &app_name, const std::string &zone_name) {
+        return app_name + "\001" + zone_name;
     }
 }  // namespace sirius::discovery
 

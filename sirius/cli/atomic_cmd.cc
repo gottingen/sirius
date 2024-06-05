@@ -30,6 +30,7 @@
 #include <sirius/client/discovery.h>
 #include <sirius/client/config_info_builder.h>
 #include <collie/nlohmann/json.hpp>
+#include <collie/strings/format.h>
 
 
 namespace sirius::cli {

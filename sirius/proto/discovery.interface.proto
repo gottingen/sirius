@@ -29,6 +29,7 @@ service DiscoveryService {
   rpc raft_control(RaftControlRequest) returns (RaftControlResponse);
   rpc discovery_manager(DiscoveryManagerRequest) returns (DiscoveryManagerResponse);
   rpc discovery_query(DiscoveryQueryRequest) returns (DiscoveryQueryResponse);
+  rpc naming(ServletNamingRequest) returns (ServletNamingResponse);
   rpc tso_service(TsoRequest) returns (TsoResponse);
 };
 
@@ -37,4 +38,9 @@ service DiscoveryRouterService {
   rpc discovery_manager(DiscoveryManagerRequest) returns (DiscoveryManagerResponse);
   rpc discovery_query(DiscoveryQueryRequest) returns (DiscoveryQueryResponse);
   rpc tso_service(TsoRequest) returns (TsoResponse);
+
+  //rpc registry(ServletInfo) returns (DiscoveryRegisterResponse);
+  //rpc update(ServletInfo) returns (DiscoveryRegisterResponse);
+  //rpc cancel(ServletInfo) returns (DiscoveryRegisterResponse);
+  //rpc naming(ServletNamingRequest) returns (ServletNamingResponse);
 };

@@ -18,7 +18,7 @@
 
 
 #include <sirius/discovery/base_state_machine.h>
-#include <sirius/flags/discovery.h>
+#include <sirius/flags/sirius.h>
 
 namespace sirius::discovery {
 
@@ -28,7 +28,7 @@ namespace sirius::discovery {
                 response->set_errcode(sirius::proto::NOT_LEADER);
                 response->set_leader(mutil::endpoint2str(common_state_machine->get_leader()).c_str());
             }
-            SS_LOG(ERROR) << "discovery server closure fail, error_code:" << status().error_code() << ", error_mas:"
+            LOG(ERROR) << "discovery server closure fail, error_code:" << status().error_code() << ", error_mas:"
                           << status().error_cstr();
         }
         total_time_cost = time_cost.get_time();
@@ -38,7 +38,7 @@ namespace sirius::discovery {
         }
 
         if (response != nullptr && response->op_type() != sirius::proto::OP_GEN_ID_FOR_AUTO_INCREMENT) {
-            SS_LOG(INFO)
+            LOG(INFO)
             << "request:" << request << ", response:" << response->ShortDebugString() << ", raft_time_cost:["
             << raft_time_cost << "], total_time_cost:[" << total_time_cost << "], remote_side:[" << remote_side << "]";
         }
@@ -54,7 +54,7 @@ namespace sirius::discovery {
                 response->set_errcode(sirius::proto::NOT_LEADER);
                 response->set_leader(mutil::endpoint2str(common_state_machine->get_leader()).c_str());
             }
-            SS_LOG(ERROR) << "discovery server closure fail, error_code:" << status().error_code() << ", error_mas:"
+            LOG(ERROR) << "discovery server closure fail, error_code:" << status().error_code() << ", error_mas:"
                           << status().error_cstr();
         }
         if (sync_cond) {
@@ -68,20 +68,19 @@ namespace sirius::discovery {
 
     int BaseStateMachine::init(const std::vector<melon::raft::PeerId> &peers) {
         melon::raft::NodeOptions options;
-        options.election_timeout_ms = FLAGS_discovery_election_timeout_ms;
+        options.election_timeout_ms = FLAGS_sirius_election_timeout_ms;
         options.fsm = this;
         options.initial_conf = melon::raft::Configuration(peers);
-        options.snapshot_interval_s = FLAGS_discovery_snapshot_interval_s;
-        options.log_uri = FLAGS_discovery_log_uri + std::to_string(_dummy_region_id);
-        //options.stable_uri = FLAGS_discovery_stable_uri + "/discovery_server";
-        options.raft_meta_uri = FLAGS_discovery_stable_uri + _file_path;
-        options.snapshot_uri = FLAGS_discovery_snapshot_uri + _file_path;
+        options.snapshot_interval_s = FLAGS_sirius_snapshot_interval_s;
+        options.log_uri = FLAGS_sirius_log_uri + std::to_string(_dummy_region_id);
+        options.raft_meta_uri = FLAGS_sirius_stable_uri + _file_path;
+        options.snapshot_uri = FLAGS_sirius_snapshot_uri + _file_path;
         int ret = _node.init(options);
         if (ret < 0) {
-            SS_LOG(ERROR) << "raft node init fail";
+            LOG(ERROR) << "raft node init fail";
             return ret;
         }
-        SS_LOG(INFO) << "raft init success, meat state machine init success";
+        LOG(INFO) << "raft init success, meat state machine init success";
         return 0;
     }
 
@@ -96,7 +95,7 @@ namespace sirius::discovery {
                 response->set_errmsg("not leader");
                 response->set_leader(mutil::endpoint2str(_node.leader_id().addr).c_str());
             }
-            SS_LOG(WARN) << "state machine not leader, request: " << request->ShortDebugString();
+            LOG(WARNING) << "state machine not leader, request: " << request->ShortDebugString();
             return;
         }
         melon::Controller *cntl =
@@ -124,22 +123,22 @@ namespace sirius::discovery {
     }
 
     void BaseStateMachine::on_leader_start(int64_t term) {
-        SS_LOG(INFO) << "leader start at term: " << term;
+        LOG(INFO) << "leader start at term: " << term;
         on_leader_start();
     }
 
     void BaseStateMachine::on_leader_stop() {
         _is_leader.store(false);
-        SS_LOG(INFO) << "leader stop";
+        LOG(INFO) << "leader stop";
     }
 
     void BaseStateMachine::on_leader_stop(const mutil::Status &status) {
-        SS_LOG(INFO) << "leader stop, error_code:" << status.error_code() << ", error_des:" << status.error_cstr();
+        LOG(INFO) << "leader stop, error_code:" << status.error_code() << ", error_des:" << status.error_cstr();
         on_leader_stop();
     }
 
     void BaseStateMachine::on_error(const ::melon::raft::Error &e) {
-        SS_LOG(ERROR) << "discovery state machine error, error_type:" << static_cast<int>(e.type())
+        LOG(ERROR) << "discovery state machine error, error_type:" << static_cast<int>(e.type())
                       << ", error_code:" << e.status().error_code() << ", error_des:" << e.status().error_cstr();
     }
 
@@ -148,7 +147,7 @@ namespace sirius::discovery {
         for (auto iter = conf.begin(); iter != conf.end(); ++iter) {
             new_peer += iter->to_string() + ",";
         }
-        SS_LOG(INFO) << "new conf committed, new peer: " << new_peer;
+        LOG(INFO) << "new conf committed, new peer: " << new_peer;
     }
 
 }  // namespace sirius::discovery

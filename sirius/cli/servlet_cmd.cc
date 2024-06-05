@@ -19,6 +19,7 @@
 #include <sirius/proto/discovery.interface.pb.h>
 #include <sirius/cli/show_help.h>
 #include <sirius/cli/validator.h>
+#include <collie/strings/format.h>
 
 namespace sirius::cli {
     /// Set up a subcommand and capture a shared_ptr to a struct that holds all its options.
@@ -34,30 +35,30 @@ namespace sirius::cli {
         //ns->require_subcommand();
         // add sub cmd
         auto cdb = ns->add_subcommand("create", " create servlet");
-        cdb->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
+        cdb->add_option("-n,--app", opt->app_name, "app name")->required();
         cdb->add_option("-z,--zone", opt->zone_name, "zone name")->required();
         cdb->add_option("-s,--servlet", opt->servlet_name, "servlet name")->required();
-        cdb->add_option("-q, --quota", opt->namespace_quota, "new namespace quota");
+        cdb->add_option("-q, --quota", opt->app_quota, "new app quota");
         cdb->callback([]() { run_servlet_create_cmd(); });
 
         auto rdb = ns->add_subcommand("remove", " remove servlet");
-        rdb->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
+        rdb->add_option("-n,--app", opt->app_name, "app name")->required();
         rdb->add_option("-z,--zone", opt->zone_name, "zone name")->required();
         rdb->add_option("-s,--servlet", opt->servlet_name, "servlet name")->required();
         rdb->callback([]() { run_servlet_remove_cmd(); });
 
         auto mdb = ns->add_subcommand("modify", " modify servlet");
-        mdb->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
+        mdb->add_option("-n,--app", opt->app_name, "app name")->required();
         mdb->add_option("-z,--zone", opt->zone_name, "zone name")->required();
         mdb->add_option("-s,--servlet", opt->servlet_name, "zone name")->required();
-        mdb->add_option("-q, --quota", opt->namespace_quota, "new namespace quota");
+        mdb->add_option("-q, --quota", opt->app_quota, "new app quota");
         mdb->callback([]() { run_servlet_modify_cmd(); });
 
         auto lns = ns->add_subcommand("list", " list servlet");
         lns->callback([]() { run_servlet_list_cmd(); });
 
         auto idb = ns->add_subcommand("info", " get servlet info");
-        idb->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
+        idb->add_option("-n,--app", opt->app_name, "app name")->required();
         idb->add_option("-z,--zone", opt->zone_name, "zone name")->required();
         idb->add_option("-s,--servlet", opt->servlet_name, "servlet name")->required();
         idb->callback([]() { run_servlet_info_cmd(); });
@@ -88,7 +89,7 @@ namespace sirius::cli {
         ss.add_table("result", std::move(table));
     }
     void run_servlet_remove_cmd() {
-        collie::println(collie::Color::green, "start to remove namespace: {}", ServletOptionContext::get_instance()->namespace_name);
+        collie::println(collie::Color::green, "start to remove app: {}", ServletOptionContext::get_instance()->app_name);
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         ScopeShower ss;
@@ -101,7 +102,7 @@ namespace sirius::cli {
         ss.add_table("result", std::move(table));
     }
     void run_servlet_modify_cmd() {
-        collie::println(collie::Color::green, "start to modify namespace: {}", ServletOptionContext::get_instance()->namespace_name);
+        collie::println(collie::Color::green, "start to modify app: {}", ServletOptionContext::get_instance()->app_name);
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         ScopeShower ss;
@@ -155,21 +156,20 @@ namespace sirius::cli {
     collie::table::Table show_discovery_query_servlet_response(const sirius::proto::DiscoveryQueryResponse &res) {
         auto &servlets = res.servlet_infos();
         collie::table::Table sumary;
-        sumary.add_row({"namespace", "zone", "servlet", "id", "version", "replica number", "resource tag"});
+        sumary.add_row({"app", "zone", "servlet", "id"});
         for (auto &ns: servlets) {
             sumary.add_row(
-                    collie::table::Table::Row_t{ns.namespace_name(), ns.zone(), ns.servlet_name(), collie::to_str(ns.servlet_id()),
-                          collie::to_str(ns.version()), collie::to_str(ns.replica_num()), ns.resource_tag()});
+                    collie::table::Table::Row_t{ns.app_name(), ns.zone(), ns.servlet_name(), collie::to_str(ns.servlet_id())});
             auto last = sumary.size() - 1;
             sumary[last].format().font_color(collie::Color::green);
         }
         return sumary;
     }
 
-    collie::Status make_servlet_create(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_servlet_create(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::ServletInfo *servlet_req = req->mutable_servlet_info();
         req->set_op_type(sirius::proto::OP_CREATE_SERVLET);
-        auto rs = check_valid_name_type(ServletOptionContext::get_instance()->namespace_name);
+        auto rs = check_valid_name_type(ServletOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
@@ -181,16 +181,16 @@ namespace sirius::cli {
         if (!rs.ok()) {
             return rs;
         }
-        servlet_req->set_namespace_name(ServletOptionContext::get_instance()->namespace_name);
+        servlet_req->set_app_name(ServletOptionContext::get_instance()->app_name);
         servlet_req->set_zone(ServletOptionContext::get_instance()->zone_name);
         servlet_req->set_servlet_name(ServletOptionContext::get_instance()->servlet_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_servlet_remove(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_servlet_remove(sirius::proto::DiscoveryManagerRequest *req) {
         sirius::proto::ServletInfo *servlet_req = req->mutable_servlet_info();
         req->set_op_type(sirius::proto::OP_DROP_SERVLET);
-        auto rs = check_valid_name_type(ServletOptionContext::get_instance()->namespace_name);
+        auto rs = check_valid_name_type(ServletOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
@@ -202,16 +202,16 @@ namespace sirius::cli {
         if (!rs.ok()) {
             return rs;
         }
-        servlet_req->set_namespace_name(ServletOptionContext::get_instance()->namespace_name);
+        servlet_req->set_app_name(ServletOptionContext::get_instance()->app_name);
         servlet_req->set_zone(ServletOptionContext::get_instance()->zone_name);
         servlet_req->set_servlet_name(ServletOptionContext::get_instance()->servlet_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_servlet_modify(sirius::proto::DiscoveryManagerRequest *req) {
+    turbo::Status make_servlet_modify(sirius::proto::DiscoveryManagerRequest *req) {
         req->set_op_type(sirius::proto::OP_MODIFY_SERVLET);
         sirius::proto::ServletInfo *servlet_req = req->mutable_servlet_info();
-        auto rs = check_valid_name_type(ServletOptionContext::get_instance()->namespace_name);
+        auto rs = check_valid_name_type(ServletOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
@@ -223,20 +223,20 @@ namespace sirius::cli {
         if (!rs.ok()) {
             return rs;
         }
-        servlet_req->set_namespace_name(ServletOptionContext::get_instance()->namespace_name);
+        servlet_req->set_app_name(ServletOptionContext::get_instance()->app_name);
         servlet_req->set_zone(ServletOptionContext::get_instance()->zone_name);
         servlet_req->set_servlet_name(ServletOptionContext::get_instance()->servlet_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_servlet_list(sirius::proto::DiscoveryQueryRequest *req) {
+    turbo::Status make_servlet_list(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_SERVLET);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status make_servlet_info(sirius::proto::DiscoveryQueryRequest *req) {
+    turbo::Status make_servlet_info(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_SERVLET);
-        auto rs = check_valid_name_type(ServletOptionContext::get_instance()->namespace_name);
+        auto rs = check_valid_name_type(ServletOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
@@ -248,14 +248,14 @@ namespace sirius::cli {
         if (!rs.ok()) {
             return rs;
         }
-        req->set_namespace_name(ServletOptionContext::get_instance()->namespace_name);
+        req->set_app_name(ServletOptionContext::get_instance()->app_name);
         req->set_zone(ServletOptionContext::get_instance()->zone_name);
         req->set_servlet(ServletOptionContext::get_instance()->servlet_name);
 
-        req->set_namespace_name(ServletOptionContext::get_instance()->namespace_name);
+        req->set_app_name(ServletOptionContext::get_instance()->app_name);
         req->set_zone(ServletOptionContext::get_instance()->zone_name);
 
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
 }  // namespace sirius::cli

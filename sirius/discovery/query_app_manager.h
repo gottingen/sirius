@@ -19,24 +19,26 @@
 
 #pragma once
 
-#include <sirius/discovery/namespace_manager.h>
+#include <sirius/discovery/app_manager.h>
 
 namespace sirius::discovery {
-    class QueryNamespaceManager {
+    class QueryAppManager {
     public:
-        ~QueryNamespaceManager() = default;
+        ~QueryAppManager() = default;
 
-        static QueryNamespaceManager *get_instance() {
-            static QueryNamespaceManager instance;
+        static QueryAppManager *get_instance() {
+            static QueryAppManager instance;
             return &instance;
         }
 
+        void naming(const sirius::proto::ServletNamingRequest *request,
+                    sirius::proto::ServletNamingResponse *response);
         ///
         /// \param request
         /// \param response
-        void get_namespace_info(const sirius::proto::DiscoveryQueryRequest *request, sirius::proto::DiscoveryQueryResponse *response);
+        void get_app_info(const sirius::proto::DiscoveryQueryRequest *request, sirius::proto::DiscoveryQueryResponse *response);
 
     private:
-        QueryNamespaceManager() {}
+        QueryAppManager() {}
     };
 } // namespace sirius::discovery

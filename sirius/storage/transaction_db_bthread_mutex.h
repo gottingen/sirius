@@ -18,17 +18,17 @@
 
 #pragma once
 
-#include <rocksdb/utilities/transaction_db_mutex.h>
+#include <mizar/utilities/transaction_db_mutex.h>
 
 namespace sirius {
 
     // Default implementation of TransactionDBMutexFactory.  May be overridden
     // by TransactionDBOptions.custom_mutex_factory.
-    class TransactionDBBthreadFactory : public rocksdb::TransactionDBMutexFactory {
+    class TransactionDBBthreadFactory : public mizar::TransactionDBMutexFactory {
     public:
-        std::shared_ptr<rocksdb::TransactionDBMutex> AllocateMutex() override;
+        std::shared_ptr<mizar::TransactionDBMutex> AllocateMutex() override;
 
-        std::shared_ptr<rocksdb::TransactionDBCondVar> AllocateCondVar() override;
+        std::shared_ptr<mizar::TransactionDBCondVar> AllocateCondVar() override;
     };
 
 }  // namespace sirius

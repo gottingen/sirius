@@ -21,6 +21,7 @@
 #include <collie/strings/case_conv.h>
 #include <collie/meta/reflect.h>
 #include <turbo/strings/numbers.h>
+#include <turbo/strings/substitute.h>
 
 namespace sirius::cli {
 
@@ -45,7 +46,7 @@ namespace sirius::cli {
         }
     }
 
-    collie::Result<sirius::proto::ConfigType> string_to_config_type(const std::string &str) {
+    turbo::Result<sirius::proto::ConfigType> string_to_config_type(const std::string &str) {
         auto lc = collie::str_to_lower(str);
         if (lc == "json") {
             return sirius::proto::CF_JSON;
@@ -62,7 +63,7 @@ namespace sirius::cli {
         } else if (lc == "toml") {
             return sirius::proto::CF_TOML;
         }
-        return collie::Status::invalid_argument("unknown format '{}'", str);
+        return turbo::invalid_argument_error("unknown format " + str);
     }
 
     std::string get_op_string(sirius::proto::OpType type) {
@@ -77,29 +78,29 @@ namespace sirius::cli {
         return sirius::proto::QueryOpType_Name(type);
     }
 
-    collie::Status string_to_version(const std::string &str, sirius::proto::Version *v) {
+    turbo::Status string_to_version(const std::string &str, sirius::proto::Version *v) {
         std::vector<std::string> vs = collie::str_split(str, ".");
         if (vs.size() != 3) {
-            return collie::Status::invalid_argument("version {} error, should be like 1.2.3", str);
+            return turbo::invalid_argument_error(turbo::substitute("version $0 error, should be like 1.2.3", str));
         }
         int64_t m;
         if (!turbo::simple_atoi(vs[0], &m)) {
-            return collie::Status::invalid_argument("version {} error, should be like 1.2.3", str);
+            return turbo::invalid_argument_error(turbo::substitute("version $0 error, should be like 1.2.3", str));
         }
         v->set_major(m);
         if (!turbo::simple_atoi(vs[1], &m)) {
-            return collie::Status::invalid_argument("version {} error, should be like 1.2.3", str);
+            return turbo::invalid_argument_error(turbo::substitute("version $0 error, should be like 1.2.3", str));
         }
         v->set_minor(m);
         if (!turbo::simple_atoi(vs[2], &m)) {
-            return collie::Status::invalid_argument("version {} error, should be like 1.2.3", str);
+            return turbo::invalid_argument_error(turbo::substitute("version $0 error, should be like 1.2.3", str));
         }
         v->set_patch(m);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
     std::string version_to_string(const sirius::proto::Version &v) {
-        return collie::format("{}.{}.{}", v.major(), v.minor(), v.patch());
+        return turbo::substitute("$0.$1.$2", v.major(), v.minor(), v.patch());
     }
 
 

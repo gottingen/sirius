@@ -26,40 +26,23 @@ import "sirius/proto/user.struct.proto";
 import "sirius/proto/unique_id.proto";
 import "sirius/proto/config.struct.proto";
 
-enum Status {
-  NORMAL = 1;
-  FAULTY = 2;
-  DEAD   = 3;
-  MIGRATE= 4;
-  FULL   = 5;
-  SLOW   = 6;
-  BUSY   = 7;
-};
 
-message NameSpaceInfo {
-  required string namespace_name         = 1;
-  optional int64 namespace_id            = 2;
+message AppInfo {
+  required string app_name         = 1;
+  optional int64 app_id            = 2;
   optional int64 quota                   = 3;
   optional int64 version                 = 4;
   optional bool deleted                  = 5;
-  optional string resource_tag           = 6;
-  optional int64 byte_size_per_record    = 9;
-  optional int64 replica_num             = 10;
-  optional int64 region_split_lines      = 11;
 };
 
 message ZoneInfo {
   required string zone                   = 1;
   optional int64 zone_id                 = 2;
-  required string namespace_name         = 3;
-  optional int64 namespace_id            = 4;
+  required string app_name         = 3;
+  optional int64 app_id            = 4;
   optional int64 quota                   = 5;
   optional int64 version                 = 6;
   optional bool   deleted                = 7;
-  optional string resource_tag           = 8;
-  optional int64 byte_size_per_record    = 11;
-  optional int64 replica_num             = 12;
-  optional int64 region_split_lines      = 13; //region分裂行数阈值
 };
 
 message ServletInfo {
@@ -67,55 +50,48 @@ message ServletInfo {
     required string      servlet_name            = 2;
     required string      zone                    = 3;
     optional int64       zone_id                 = 4;
-    required string      namespace_name          = 5;
-    optional int64       namespace_id            = 6;
-    optional int64       replica_num             = 7;
-    optional string      resource_tag            = 8;
-    optional int64       version                 = 9;
-    optional Status      status                  = 10;
-    optional bool        deleted                 = 11;
-    optional uint32      timestamp               = 12;
-    optional string      conf                    = 15;
-    repeated string      env                     = 16;
-    optional string      comment                 = 17;
-    optional Version     conf_version             = 18;
+    required string      app_name                = 5;
+    optional int64       app_id                  = 6;
+    optional string      color                   = 7;
+    optional int32       status                  = 8;
+    optional bool        deleted                 = 9;
+    optional uint32      ctime                   = 10;
+    optional uint32      mtime                   = 11;
+    required string      env                     = 12;
+    required string      address                 = 13;
 }
 
-message ServletInstance {
-    required string namespace_name  = 1;
-    optional int64  namespace_id    = 2;
-    required string zone_name       = 3;
-    optional int64  zone_id         = 4;
-    required string servlet_name    = 5;
-    optional int64  servlet_id      = 6;
-    required string address         = 8;
-    optional string color           = 9;
-    optional string env             = 10;
-    optional Status status          = 11;
-    optional int64  version         = 12;
-    optional int32  timestamp       = 13;
-    optional int32  weight          = 14;
-    optional string user            = 15;
-    optional int64  user_id         = 16;
-};
-
-message ServletHeartbeat {
-    required string address         = 1;
+message ServletNamingRequest {
+  required string app_name  = 1;
+  optional int64  app_id    = 2;
+  repeated string zones       = 3;
+  optional int64  zone_id         = 4;
+  repeated string env             = 5;
+  repeated string color           = 6;
 }
 
+message ServletNamingResponse {
+  required ErrCode errcode                            = 1;
+  optional string errmsg                              = 2;
+  optional string leader                              = 3;
+  repeated ServletInfo servlets                        = 4;
+}
 
 message DiscoveryManagerRequest {
   required OpType               op_type                = 1;
-  optional NameSpaceInfo        namespace_info         = 2;
+  optional AppInfo              app_info               = 2;
   optional UserPrivilege        user_privilege         = 3;
   optional AutoIncrementRequest auto_increment         = 4;
   repeated string               resource_tags          = 5;
   optional ConfigInfo           config_info            = 6;
   optional ZoneInfo             zone_info              = 7;
   optional ServletInfo          servlet_info           = 8;
-  optional ServletHeartbeat     servlet_renew          = 9;
-  optional ServletInstance      instance_info          = 10;
 };
+
+message DiscoveryRegisterResponse {
+  required ErrCode errcode = 1;
+  optional string errmsg = 2;
+}
 
 message DiscoveryManagerResponse {
   required ErrCode errcode                            = 1;
@@ -131,13 +107,13 @@ message DiscoveryQueryRequest {
   required QueryOpType   op_type                       = 1;
   optional string        instance_address              = 2;
   optional string        user_name                     = 3;
-  optional string        namespace_name                = 4;
+  optional string        app_name                      = 4;
   optional string        config_name                   = 5;
   optional Version       config_version                = 6;
   optional string        zone                          = 7;
   optional string        servlet                       = 8;
   optional string        color                         = 9;
-  optional Status        status                        = 10;
+  optional int32        status                        = 10;
   optional string        env                           = 11;
 };
 
@@ -146,19 +122,18 @@ message DiscoveryQueryResponse {
   optional string                    errmsg                        = 2;
   optional string                    leader                        = 3;
   repeated UserPrivilege             user_privilege                = 4;
-  repeated NameSpaceInfo             namespace_infos               = 5;
+  repeated AppInfo                   app_infos               = 5;
   repeated QueryInstance             flatten_instances             = 6;
   repeated QueryUserPrivilege        flatten_privileges            = 7;
   repeated int64                     peer_ids                      = 8;
   repeated ZoneInfo                  zone_infos                    = 9;
   repeated ServletInfo               servlet_infos                 = 10;
   repeated ConfigInfo                config_infos                  = 11;
-  repeated ServletInstance           instance                      = 12;
 };
 
 message QueryUserPrivilege {
   required string         username        = 1;
-  required string         namespace_name  = 2;
+  required string         app_name  = 2;
   required string         privilege       = 3;
   required RW             servlet_rw      = 4;
   optional string         password        = 5;
@@ -166,11 +141,11 @@ message QueryUserPrivilege {
 
 message QueryInstance {
   required string        address                      = 1;
-  optional string        namespace_name               = 2;
+  optional string        app_name               = 2;
   optional string        zone_name                    = 3;
   optional string        servlet_name                 = 4;
   optional string        env                          = 5;
   optional string        color                        = 6;
   optional int64         version                      = 7;
-  optional Status        status                       = 8;
+  optional int32        status                       = 8;
 };

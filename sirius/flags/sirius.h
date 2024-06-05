@@ -23,21 +23,18 @@
 namespace sirius {
 
     /// for discovery
-    DECLARE_string(discovery_server_peers);
-    DECLARE_int32(discovery_replica_number);
-    DECLARE_int32(discovery_snapshot_interval_s);
-    DECLARE_int32(discovery_election_timeout_ms);
-    DECLARE_string(discovery_raft_group);
-    DECLARE_string(discovery_log_uri);
-    DECLARE_string(discovery_stable_uri);
-    DECLARE_string(discovery_snapshot_uri);
-    DECLARE_int64(discovery_check_migrate_interval_us);
-    DECLARE_int32(discovery_tso_snapshot_interval_s);
-    DECLARE_string(discovery_db_path);
-    DECLARE_string(discovery_listen);
-    DECLARE_int32(discovery_request_timeout);
-    DECLARE_int32(discovery_connect_timeout);
-    DECLARE_string(backup_discovery_server_peers);
-    DECLARE_int64(time_between_discovery_connect_error_ms);
+    DECLARE_string(sirius_server_peers);
+    DECLARE_int32(sirius_snapshot_interval_s);
+    DECLARE_int32(sirius_election_timeout_ms);
+    DECLARE_string(sirius_raft_group);
+    DECLARE_string(sirius_log_uri);
+    DECLARE_string(sirius_stable_uri);
+    DECLARE_string(sirius_snapshot_uri);
+    DECLARE_int32(sirius_tso_snapshot_interval_s);
+    DECLARE_string(sirius_db_path);
+    DECLARE_string(sirius_listen);
+    DECLARE_int32(sirius_request_timeout);
+    DECLARE_int32(sirius_connect_timeout);
+    DECLARE_int64(time_between_sirius_connect_error_ms);
 
 }  // namespace sirius

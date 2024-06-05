@@ -30,8 +30,8 @@ namespace sirius::discovery {
                 *(response->add_servlet_infos()) = servlet_info.second;
             }
         } else {
-            std::string namespace_name = request->namespace_name();
-            std::string zone = namespace_name + "\001" + request->zone();
+            std::string app_name = request->app_name();
+            std::string zone = app_name + "\001" + request->zone();
             std::string servlet = zone + "\001" + request->servlet();
             if (manager->_servlet_id_map.find(servlet) != manager->_servlet_id_map.end()) {
                 int64_t id = manager->_servlet_id_map[servlet];
@@ -39,7 +39,7 @@ namespace sirius::discovery {
             } else {
                 response->set_errmsg("servlet not exist");
                 response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
-                SS_LOG(ERROR)<< "namespace: " << namespace_name << " zone: " << zone << " servlet: " << servlet << " not exist";
+                LOG(ERROR)<< "namespace: " << app_name << " zone: " << zone << " servlet: " << servlet << " not exist";
             }
         }
     }

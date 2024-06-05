@@ -53,6 +53,11 @@ namespace sirius::discovery {
                            sirius::proto::DiscoveryQueryResponse *response,
                            google::protobuf::Closure *done) override;
 
+        void naming(google::protobuf::RpcController *controller,
+                             const sirius::proto::ServletNamingRequest *request,
+                             sirius::proto::ServletNamingResponse *response,
+                             google::protobuf::Closure *done) override;
+
         //raft control method
         void raft_control(google::protobuf::RpcController *controller,
                                   const sirius::proto::RaftControlRequest *request,

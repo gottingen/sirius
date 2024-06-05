@@ -25,6 +25,7 @@
 #include <sirius/cli/show_help.h>
 #include <alkaid/files/sequential_read_file.h>
 #include <sirius/client/config_info_builder.h>
+#include <collie/strings/format.h>
 
 namespace sirius::cli {
 
@@ -93,7 +94,7 @@ namespace sirius::cli {
             return;
         }
         PREPARE_ERROR_RETURN_OR_OK(ss, id.status(), request);
-        request.set_region_id(id.value_or_die());
+        request.set_region_id(id.value());
         auto rs = RaftOptionContext::get_instance()->sender.send_request("raft_control", request, response, 1);
         RPC_ERROR_RETURN_OR_OK(ss, rs, request);
         auto table = ShowHelper::show_response(response.errcode(), request.op_type(),
@@ -116,7 +117,7 @@ namespace sirius::cli {
             return;
         }
         PREPARE_ERROR_RETURN_OR_OK(ss, id.status(), request);
-        request.set_region_id(id.value_or_die());
+        request.set_region_id(id.value());
         auto rs = RaftOptionContext::get_instance()->sender.send_request("raft_control", request, response, 1);
         RPC_ERROR_RETURN_OR_OK(ss, rs, request);
         auto table = ShowHelper::show_response(response.errcode(), request.op_type(),
@@ -135,7 +136,7 @@ namespace sirius::cli {
             return;
         }
         PREPARE_ERROR_RETURN_OR_OK(ss, id.status(), request);
-        request.set_region_id(id.value_or_die());
+        request.set_region_id(id.value());
         auto rs = RaftOptionContext::get_instance()->sender.send_request("raft_control", request, response, 1);
         RPC_ERROR_RETURN_OR_OK(ss, rs, request);
         auto table = ShowHelper::show_response(response.errcode(), request.op_type(),
@@ -154,7 +155,7 @@ namespace sirius::cli {
             return;
         }
         PREPARE_ERROR_RETURN_OR_OK(ss, id.status(), request);
-        request.set_region_id(id.value_or_die());
+        request.set_region_id(id.value());
         auto rs = RaftOptionContext::get_instance()->sender.send_request("raft_control", request, response, 1);
         RPC_ERROR_RETURN_OR_OK(ss, rs, request);
         auto table = ShowHelper::show_response(response.errcode(), request.op_type(),
@@ -183,7 +184,7 @@ namespace sirius::cli {
             request.set_force(true);
         }
         PREPARE_ERROR_RETURN_OR_OK(ss, id.status(), request);
-        request.set_region_id(id.value_or_die());
+        request.set_region_id(id.value());
         auto rs = RaftOptionContext::get_instance()->sender.send_request("raft_control", request, response, 1);
         RPC_ERROR_RETURN_OR_OK(ss, rs, request);
         auto table = ShowHelper::show_response(response.errcode(), request.op_type(),
@@ -208,7 +209,7 @@ namespace sirius::cli {
         auto opt = RaftOptionContext::get_instance();
         PREPARE_ERROR_RETURN_OR_OK(ss, id.status(), request);
         request.set_new_leader(opt->new_leader);
-        request.set_region_id(id.value_or_die());
+        request.set_region_id(id.value());
         auto rs = RaftOptionContext::get_instance()->sender.send_request("raft_control", request, response, 1);
         RPC_ERROR_RETURN_OR_OK(ss, rs, request);
         auto table = ShowHelper::show_response(response.errcode(), request.op_type(),
@@ -220,7 +221,7 @@ namespace sirius::cli {
         }
     }
 
-    collie::Result<int> RaftCmd::to_region_id() {
+    turbo::Result<int> RaftCmd::to_region_id() {
         auto opt = RaftOptionContext::get_instance();
         if(opt->cluster == "discovery") {
             return 0;
@@ -231,7 +232,7 @@ namespace sirius::cli {
         if(opt->cluster == "atomic") {
             return 1;
         }
-        return collie::Status::invalid_argument("unknown cluster:{}", opt->cluster);
+        return turbo::invalid_argument_error("unknown cluster: " + opt->cluster);
     }
 
     collie::table::Table RaftCmd::show_raft_result(sirius::proto::RaftControlResponse &res) {

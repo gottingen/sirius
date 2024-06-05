@@ -45,8 +45,8 @@ message PrivilegeServlet {
 message UserPrivilege {
   required string             username                      = 1;
   optional string             password                      = 2;
-  required string             namespace_name                = 3;
-  optional int64              namespace_id                  = 4;
+  required string             app_name                = 3;
+  optional int64              app_id                  = 4;
   repeated PrivilegeZone      privilege_zone                = 7;
   repeated PrivilegeServlet   privilege_servlet             = 8;
   repeated string             ip                            = 10;

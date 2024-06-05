@@ -23,10 +23,10 @@
 namespace sirius {
     /// for log
     DEFINE_bool(enable_console_log, true, "console or file log");
-    DEFINE_string(log_root, "./logs", "ea flags log root");
+    DEFINE_string(log_root, "./logs", "sirius flags log root");
     DEFINE_int32(log_rotation_hour, 2, "rotation hour");
     DEFINE_int32(log_rotation_minute, 30, "rotation minutes");
-    DEFINE_string(log_base_name, "ea_log.txt", "base name for EA");
-    DEFINE_int32(log_save_days, 7, "ea log save days");
+    DEFINE_string(log_base_name, "sirius_log.txt", "base name for EA sirius log file");
+    DEFINE_int32(log_save_days, 7, "sirius log save days");
 
 }  // namespace sirius

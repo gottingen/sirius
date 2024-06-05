@@ -25,26 +25,27 @@
 #include <sirius/client/config_info_builder.h>
 #include <sirius/client/loader.h>
 #include <sirius/client/dumper.h>
+#include <turbo/strings/substitute.h>
 
 namespace sirius::client {
 
-    collie::Status DiscoveryClient::init(BaseMessageSender *sender) {
+    turbo::Status DiscoveryClient::init(BaseMessageSender *sender) {
         _sender = sender;
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
 
 
-    collie::Status DiscoveryClient::check_config(const std::string &json_content) {
+    turbo::Status DiscoveryClient::check_config(const std::string &json_content) {
         sirius::proto::ConfigInfo config_pb;
         std::string errmsg;
         if (!json2pb::JsonToProtoMessage(json_content, &config_pb, &errmsg)) {
-            return collie::Status::invalid_argument(errmsg);
+            return turbo::invalid_argument_error(errmsg);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::check_config_file(const std::string &config_path) {
+    turbo::Status DiscoveryClient::check_config_file(const std::string &config_path) {
         alkaid::SequentialReadFile file;
         auto rs = file.open(config_path);
         if (!rs.ok()) {
@@ -58,7 +59,7 @@ namespace sirius::client {
         return check_config(config_data);
     }
 
-    collie::Status DiscoveryClient::dump_config_file(const std::string &config_path, const sirius::proto::ConfigInfo &config) {
+    turbo::Status DiscoveryClient::dump_config_file(const std::string &config_path, const sirius::proto::ConfigInfo &config) {
         alkaid::SequentialWriteFile file;
         auto rs = file.open(config_path, alkaid::kDefaultTruncateWriteOption);
         if (!rs.ok()) {
@@ -67,17 +68,17 @@ namespace sirius::client {
         std::string json;
         std::string err;
         if (!json2pb::ProtoMessageToJson(config, &json, &err)) {
-            return collie::Status::invalid_argument(err);
+            return turbo::invalid_argument_error(err);
         }
         rs = file.write(json);
         if (!rs.ok()) {
             return rs;
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::create_config(const std::string &config_name, const std::string &content,
                               const std::string &version, const std::string &config_type, int *retry_times) {
         sirius::proto::DiscoveryManagerRequest request;
@@ -95,12 +96,12 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::create_config(const sirius::proto::ConfigInfo &request,
                               int *retry_times) {
         sirius::proto::DiscoveryManagerRequest meta_request;
@@ -112,12 +113,12 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::create_config_by_file(const std::string &config_name,
+    turbo::Status DiscoveryClient::create_config_by_file(const std::string &config_name,
                                                     const std::string &path,
                                                     const std::string &config_type, const std::string &version,
                                                     int *retry_times) {
@@ -133,12 +134,12 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::create_config_by_json(const std::string &json_path, int *retry_times) {
+    turbo::Status DiscoveryClient::create_config_by_json(const std::string &json_path, int *retry_times) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         sirius::client::ConfigInfoBuilder builder(request.mutable_config_info());
@@ -151,12 +152,12 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_config(std::vector<std::string> &configs, int *retry_time) {
+    turbo::Status DiscoveryClient::list_config(std::vector<std::string> &configs, int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
         sirius::proto::DiscoveryQueryResponse response;
         request.set_op_type(sirius::proto::QUERY_LIST_CONFIG);
@@ -165,16 +166,16 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
         auto res_configs = response.config_infos();
         for (auto config: res_configs) {
             configs.push_back(config.name());
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_config_version(const std::string &config_name, std::vector<std::string> &versions,
+    turbo::Status DiscoveryClient::list_config_version(const std::string &config_name, std::vector<std::string> &versions,
                                                   int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
         sirius::proto::DiscoveryQueryResponse response;
@@ -185,16 +186,16 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
         auto res_configs = response.config_infos();
         for (auto &config: res_configs) {
             versions.push_back(version_to_string(config.version()));
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::list_config_version(const std::string &config_name, std::vector<collie::ModuleVersion> &versions,
                                     int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
@@ -206,17 +207,17 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
         auto res_configs = response.config_infos();
         for (auto config: res_configs) {
             versions.emplace_back(config.version().major(),
                                   config.version().minor(), config.version().patch());
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_config(const std::string &config_name, const std::string &version, sirius::proto::ConfigInfo &config,
                            int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
@@ -232,17 +233,17 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
         if (response.config_infos_size() != 1) {
-            return collie::Status::invalid_argument("bad proto for config list size not 1");
+            return turbo::invalid_argument_error("bad proto for config list size not 1");
         }
 
         config = response.config_infos(0);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_config(const std::string &config_name, const std::string &version, std::string &config,
                            int *retry_time, std::string *type, uint32_t *time) {
         sirius::proto::ConfigInfo config_pb;
@@ -257,10 +258,10 @@ namespace sirius::client {
         if (time) {
             *time = config_pb.time();
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::save_config(const std::string &config_name, const std::string &version, std::string &path,
+    turbo::Status DiscoveryClient::save_config(const std::string &config_name, const std::string &version, std::string &path,
                                           int *retry_time) {
         std::string content;
         auto rs = get_config(config_name, version, content, retry_time);
@@ -277,10 +278,10 @@ namespace sirius::client {
             return rs;
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::save_config(const std::string &config_name, const std::string &version, int *retry_time) {
         std::string content;
         std::string type;
@@ -289,7 +290,7 @@ namespace sirius::client {
             return rs;
         }
         alkaid::SequentialWriteFile file;
-        auto path = collie::format("{}.{}", config_name, type);
+        auto path = turbo::substitute("$0.$1", config_name, type);
         rs = file.open(path, alkaid::kDefaultTruncateWriteOption);
         if (!rs.ok()) {
             return rs;
@@ -299,10 +300,10 @@ namespace sirius::client {
             return rs;
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_config_latest(const std::string &config_name, sirius::proto::ConfigInfo &config,
                                   int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
@@ -314,17 +315,17 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
         if (response.config_infos_size() != 1) {
-            return collie::Status::invalid_argument("bad proto for config list size not 1");
+            return turbo::invalid_argument_error("bad proto for config list size not 1");
         }
 
         config = response.config_infos(0);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_config_latest(const std::string &config_name, std::string &config, std::string &version,
                                   int *retry_time) {
         sirius::proto::ConfigInfo config_pb;
@@ -334,10 +335,10 @@ namespace sirius::client {
         }
         config = config_pb.content();
         version = version_to_string(config_pb.version());
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_config_latest(const std::string &config_name, std::string &config, std::string &version,
                                   std::string &type,
                                   int *retry_time) {
@@ -349,10 +350,10 @@ namespace sirius::client {
         config = config_pb.content();
         version = version_to_string(config_pb.version());
         type = config_type_to_string(config_pb.type());
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_config_latest(const std::string &config_name, std::string &config, collie::ModuleVersion &version,
                                   int *retry_time) {
         sirius::proto::ConfigInfo config_pb;
@@ -363,10 +364,10 @@ namespace sirius::client {
         config = config_pb.content();
         version = collie::ModuleVersion(config_pb.version().major(), config_pb.version().minor(),
                                        config_pb.version().patch());
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_config_latest(const std::string &config_name, std::string &config, collie::ModuleVersion &version,
                                   std::string &type,
                                   int *retry_time) {
@@ -379,10 +380,10 @@ namespace sirius::client {
         version = collie::ModuleVersion(config_pb.version().major(), config_pb.version().minor(),
                                        config_pb.version().patch());
         type = config_type_to_string(config_pb.type());
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_config_latest(const std::string &config_name, std::string &config, int *retry_time) {
         sirius::proto::ConfigInfo config_pb;
         auto rs = get_config_latest(config_name, config_pb, retry_time);
@@ -390,10 +391,10 @@ namespace sirius::client {
             return rs;
         }
         config = config_pb.content();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::remove_config(const std::string &config_name, const std::string &version, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
@@ -410,12 +411,12 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::remove_config(const std::string &config_name, const collie::ModuleVersion &version, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
@@ -431,12 +432,12 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::remove_config_all_version(const std::string &config_name, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
@@ -449,36 +450,36 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::create_namespace(sirius::proto::NameSpaceInfo &info, int *retry_time) {
+    turbo::Status DiscoveryClient::create_app(sirius::proto::AppInfo &info, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_NAMESPACE);
 
-        sirius::proto::NameSpaceInfo *ns_req = request.mutable_namespace_info();
+        sirius::proto::AppInfo *ns_req = request.mutable_app_info();
         *ns_req = info;
         auto rs = discovery_manager(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::create_namespace(const std::string &ns, int64_t quota, int *retry_time) {
+    turbo::Status DiscoveryClient::create_app(const std::string &ns, int64_t quota, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_NAMESPACE);
 
-        sirius::proto::NameSpaceInfo *ns_req = request.mutable_namespace_info();
+        sirius::proto::AppInfo *ns_req = request.mutable_app_info();
         auto rs = check_valid_name_type(ns);
         if (!rs.ok()) {
             return rs;
         }
-        ns_req->set_namespace_name(ns);
+        ns_req->set_app_name(ns);
         if (quota != 0) {
             ns_req->set_quota(quota);
         }
@@ -486,14 +487,14 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::create_namespace_by_json(const std::string &json_str, int *retry_time) {
+    turbo::Status DiscoveryClient::create_namespace_by_json(const std::string &json_str, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_NAMESPACE);
-        auto rs = Loader::load_proto(json_str, *request.mutable_namespace_info());
+        auto rs = Loader::load_proto(json_str, *request.mutable_app_info());
         if (!rs.ok()) {
             return rs;
         }
@@ -501,14 +502,14 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::create_namespace_by_file(const std::string &path, int *retry_time) {
+    turbo::Status DiscoveryClient::create_namespace_by_file(const std::string &path, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_NAMESPACE);
-        auto rs = Loader::load_proto_from_file(path, *request.mutable_namespace_info());
+        auto rs = Loader::load_proto_from_file(path, *request.mutable_app_info());
         if (!rs.ok()) {
             return rs;
         }
@@ -516,44 +517,44 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::remove_namespace(const std::string &ns, int *retry_time) {
+    turbo::Status DiscoveryClient::remove_namespace(const std::string &ns, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_DROP_NAMESPACE);
 
-        sirius::proto::NameSpaceInfo *ns_req = request.mutable_namespace_info();
+        sirius::proto::AppInfo *ns_req = request.mutable_app_info();
         auto rs = check_valid_name_type(ns);
         if (!rs.ok()) {
             return rs;
         }
-        ns_req->set_namespace_name(ns);
+        ns_req->set_app_name(ns);
         rs = discovery_manager(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::modify_namespace(sirius::proto::NameSpaceInfo &ns_info, int *retry_time) {
+    turbo::Status DiscoveryClient::modify_app(sirius::proto::AppInfo &ns_info, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_MODIFY_NAMESPACE);
-        *request.mutable_namespace_info() = ns_info;
+        *request.mutable_app_info() = ns_info;
         auto rs = discovery_manager(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::modify_namespace_by_json(const std::string &json_str, int *retry_time) {
+    turbo::Status DiscoveryClient::modify_namespace_by_json(const std::string &json_str, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_MODIFY_NAMESPACE);
-        auto rs = Loader::load_proto(json_str, *request.mutable_namespace_info());
+        auto rs = Loader::load_proto(json_str, *request.mutable_app_info());
         if (!rs.ok()) {
             return rs;
         }
@@ -561,14 +562,14 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::modify_namespace_by_file(const std::string &path, int *retry_time) {
+    turbo::Status DiscoveryClient::modify_namespace_by_file(const std::string &path, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_MODIFY_NAMESPACE);
-        auto rs = Loader::load_proto_from_file(path, *request.mutable_namespace_info());
+        auto rs = Loader::load_proto_from_file(path, *request.mutable_app_info());
         if (!rs.ok()) {
             return rs;
         }
@@ -576,40 +577,40 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_namespace(std::vector<std::string> &ns_list, int *retry_time) {
-        std::vector<sirius::proto::NameSpaceInfo> ns_proto_list;
+    turbo::Status DiscoveryClient::list_namespace(std::vector<std::string> &ns_list, int *retry_time) {
+        std::vector<sirius::proto::AppInfo> ns_proto_list;
         auto rs = list_namespace(ns_proto_list, retry_time);
         if (!rs.ok()) {
             return rs;
         }
         for (auto &ns: ns_proto_list) {
-            ns_list.push_back(ns.namespace_name());
+            ns_list.push_back(ns.app_name());
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_namespace(std::vector<sirius::proto::NameSpaceInfo> &ns_list, int *retry_time) {
+    turbo::Status DiscoveryClient::list_namespace(std::vector<sirius::proto::AppInfo> &ns_list, int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
         sirius::proto::DiscoveryQueryResponse response;
-        request.set_op_type(sirius::proto::QUERY_NAMESPACE);
+        request.set_op_type(sirius::proto::QUERY_APP);
         auto rs = discovery_query(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
-        for (auto &ns: response.namespace_infos()) {
+        for (auto &ns: response.app_infos()) {
             ns_list.push_back(ns);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_namespace_to_json(std::vector<std::string> &ns_list, int *retry_time) {
-        std::vector<sirius::proto::NameSpaceInfo> ns_proto_list;
+    turbo::Status DiscoveryClient::list_namespace_to_json(std::vector<std::string> &ns_list, int *retry_time) {
+        std::vector<sirius::proto::AppInfo> ns_proto_list;
         auto rs = list_namespace(ns_proto_list, retry_time);
         if (!rs.ok()) {
             return rs;
@@ -622,10 +623,10 @@ namespace sirius::client {
             }
             ns_list.push_back(json_content);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_namespace_to_file(const std::string &save_path, int *retry_time) {
+    turbo::Status DiscoveryClient::list_namespace_to_file(const std::string &save_path, int *retry_time) {
         std::vector<std::string> json_list;
         auto rs = list_namespace_to_json(json_list, retry_time);
         if (!rs.ok()) {
@@ -644,34 +645,34 @@ namespace sirius::client {
             }
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
-    DiscoveryClient::get_namespace(const std::string &ns_name, sirius::proto::NameSpaceInfo &ns_pb, int *retry_time) {
+    turbo::Status
+    DiscoveryClient::get_namespace(const std::string &ns_name, sirius::proto::AppInfo &ns_pb, int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
         sirius::proto::DiscoveryQueryResponse response;
-        request.set_op_type(sirius::proto::QUERY_NAMESPACE);
+        request.set_op_type(sirius::proto::QUERY_APP);
         if (ns_name.empty()) {
-            return collie::Status::invalid_argument("namespace name empty");
+            return turbo::invalid_argument_error("app name empty");
         }
-        request.set_namespace_name(ns_name);
+        request.set_app_name(ns_name);
         auto rs = discovery_query(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
-        if (response.namespace_infos_size() != 1) {
-            return collie::Status::unavailable("bad proto format for namespace info size {}", response.namespace_infos_size());
+        if (response.app_infos_size() != 1) {
+            return turbo::unavailable_error(turbo::substitute("bad proto format for app info size $0", response.app_infos_size()));
         }
-        ns_pb = response.namespace_infos(0);
-        return collie::Status::ok_status();
+        ns_pb = response.app_infos(0);
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::get_namespace_json(const std::string &ns_name, std::string &json_str, int *retry_time) {
-        sirius::proto::NameSpaceInfo ns_pb;
+    turbo::Status DiscoveryClient::get_namespace_json(const std::string &ns_name, std::string &json_str, int *retry_time) {
+        sirius::proto::AppInfo ns_pb;
         auto rs = get_namespace(ns_name, ns_pb, retry_time);
         if (!rs.ok()) {
             return rs;
@@ -679,9 +680,9 @@ namespace sirius::client {
         return Dumper::dump_proto(ns_pb, json_str);
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::save_namespace_json(const std::string &ns_name, const std::string &json_path, int *retry_time) {
-        sirius::proto::NameSpaceInfo ns_pb;
+        sirius::proto::AppInfo ns_pb;
         auto rs = get_namespace(ns_name, ns_pb, retry_time);
         if (!rs.ok()) {
             return rs;
@@ -690,7 +691,7 @@ namespace sirius::client {
     }
 
 
-    collie::Status DiscoveryClient::create_zone(sirius::proto::ZoneInfo &zone_info, int *retry_time) {
+    turbo::Status DiscoveryClient::create_zone(sirius::proto::ZoneInfo &zone_info, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_ZONE);
@@ -701,13 +702,13 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::create_zone(const std::string &ns, const std::string &zone, int64_t quota, int *retry_time) {
         sirius::proto::ZoneInfo zone_pb;
-        zone_pb.set_namespace_name(ns);
+        zone_pb.set_app_name(ns);
         zone_pb.set_zone(zone);
         if (quota != 0) {
             zone_pb.set_quota(quota);
@@ -715,7 +716,7 @@ namespace sirius::client {
         return create_zone(zone_pb, retry_time);
     }
 
-    collie::Status DiscoveryClient::create_zone_by_json(const std::string &json_str, int *retry_time) {
+    turbo::Status DiscoveryClient::create_zone_by_json(const std::string &json_str, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_ZONE);
@@ -727,10 +728,10 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::create_zone_by_file(const std::string &path, int *retry_time) {
+    turbo::Status DiscoveryClient::create_zone_by_file(const std::string &path, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_ZONE);
@@ -742,25 +743,25 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::remove_zone(const std::string &ns, const std::string &zone, int *retry_time) {
+    turbo::Status DiscoveryClient::remove_zone(const std::string &ns, const std::string &zone, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_DROP_ZONE);
 
         auto *zone_req = request.mutable_zone_info();
-        zone_req->set_namespace_name(ns);
+        zone_req->set_app_name(ns);
         zone_req->set_zone(zone);
         auto rs = discovery_manager(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::modify_zone(sirius::proto::ZoneInfo &zone_info, int *retry_time) {
+    turbo::Status DiscoveryClient::modify_zone(sirius::proto::ZoneInfo &zone_info, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_MODIFY_ZONE);
@@ -771,10 +772,10 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::modify_zone_by_json(const std::string &json_str, int *retry_time) {
+    turbo::Status DiscoveryClient::modify_zone_by_json(const std::string &json_str, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_MODIFY_ZONE);
@@ -786,10 +787,10 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::modify_zone_by_file(const std::string &path, int *retry_time) {
+    turbo::Status DiscoveryClient::modify_zone_by_file(const std::string &path, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_MODIFY_ZONE);
@@ -801,10 +802,10 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_zone(std::vector<sirius::proto::ZoneInfo> &zone_list, int *retry_time) {
+    turbo::Status DiscoveryClient::list_zone(std::vector<sirius::proto::ZoneInfo> &zone_list, int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
         sirius::proto::DiscoveryQueryResponse response;
         request.set_op_type(sirius::proto::QUERY_ZONE);
@@ -813,15 +814,15 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
         for (auto &zone: response.zone_infos()) {
             zone_list.push_back(zone);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::list_zone(const std::string &ns, std::vector<sirius::proto::ZoneInfo> &zone_list, int *retry_time) {
         std::vector<sirius::proto::ZoneInfo> all_zone_list;
         auto rs = list_zone(zone_list, retry_time);
@@ -829,39 +830,39 @@ namespace sirius::client {
             return rs;
         }
         for (auto &zone: all_zone_list) {
-            if (zone.namespace_name() == ns) {
+            if (zone.app_name() == ns) {
                 zone_list.push_back(zone);
             }
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_zone(std::vector<std::string> &zone_list, int *retry_time) {
+    turbo::Status DiscoveryClient::list_zone(std::vector<std::string> &zone_list, int *retry_time) {
         std::vector<sirius::proto::ZoneInfo> zone_proto_list;
         auto rs = list_zone(zone_proto_list, retry_time);
         if (!rs.ok()) {
             return rs;
         }
         for (auto &zone: zone_proto_list) {
-            zone_list.push_back(collie::format("{},{}", zone.namespace_name(), zone.zone()));
+            zone_list.push_back(turbo::substitute("$0,$1", zone.app_name(), zone.zone()));
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_zone(std::string &ns, std::vector<std::string> &zone_list, int *retry_time) {
+    turbo::Status DiscoveryClient::list_zone(std::string &ns, std::vector<std::string> &zone_list, int *retry_time) {
         std::vector<sirius::proto::ZoneInfo> zone_proto_list;
         auto rs = list_zone(ns, zone_proto_list, retry_time);
         if (!rs.ok()) {
             return rs;
         }
         for (auto &zone: zone_proto_list) {
-            zone_list.push_back(collie::format("{},{}", zone.namespace_name(), zone.zone()));
+            zone_list.push_back(turbo::substitute("$0,$1", zone.app_name(), zone.zone()));
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
 
-    collie::Status DiscoveryClient::list_zone_to_json(std::vector<std::string> &zone_list, int *retry_time) {
+    turbo::Status DiscoveryClient::list_zone_to_json(std::vector<std::string> &zone_list, int *retry_time) {
         std::vector<sirius::proto::ZoneInfo> zone_proto_list;
         auto rs = list_zone(zone_proto_list, retry_time);
         if (!rs.ok()) {
@@ -875,10 +876,10 @@ namespace sirius::client {
             }
             zone_list.push_back(json_content);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::list_zone_to_json(const std::string &ns, std::vector<std::string> &zone_list, int *retry_time) {
         std::vector<sirius::proto::ZoneInfo> zone_proto_list;
         auto rs = list_zone(ns, zone_proto_list, retry_time);
@@ -893,10 +894,10 @@ namespace sirius::client {
             }
             zone_list.push_back(json_content);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_zone_to_file(const std::string &save_path, int *retry_time) {
+    turbo::Status DiscoveryClient::list_zone_to_file(const std::string &save_path, int *retry_time) {
         std::vector<std::string> json_list;
         auto rs = list_zone_to_json(json_list, retry_time);
         if (!rs.ok()) {
@@ -915,10 +916,10 @@ namespace sirius::client {
             }
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_zone_to_file(const std::string &ns, const std::string &save_path, int *retry_time) {
+    turbo::Status DiscoveryClient::list_zone_to_file(const std::string &ns, const std::string &save_path, int *retry_time) {
         std::vector<std::string> json_list;
         auto rs = list_zone_to_json(ns, json_list, retry_time);
         if (!rs.ok()) {
@@ -937,35 +938,35 @@ namespace sirius::client {
             }
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_zone(const std::string &ns_name, const std::string &zone_name, sirius::proto::ZoneInfo &zone_pb,
                          int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
         sirius::proto::DiscoveryQueryResponse response;
         request.set_op_type(sirius::proto::QUERY_ZONE);
         if (ns_name.empty()) {
-            return collie::Status::invalid_argument("namespace name empty");
+            return turbo::invalid_argument_error("app name empty");
         }
-        request.set_namespace_name(ns_name);
+        request.set_app_name(ns_name);
         request.set_zone(zone_name);
         auto rs = discovery_query(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
         if (response.zone_infos_size() != 1) {
-            return collie::Status::unavailable("bad proto format for zone info size {}", response.zone_infos_size());
+            return turbo::unavailable_error(turbo::substitute("bad proto format for zone info size $0", response.zone_infos_size()));
         }
         zone_pb = response.zone_infos(0);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_zone_json(const std::string &ns_name, const std::string &zone_name, std::string &json_str,
                               int *retry_time) {
         sirius::proto::ZoneInfo zone_pb;
@@ -976,7 +977,7 @@ namespace sirius::client {
         return Dumper::dump_proto(zone_pb, json_str);
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::save_zone_json(const std::string &ns_name, const std::string &zone_name, const std::string &json_path,
                                int *retry_time) {
         sirius::proto::ZoneInfo zone_pb;
@@ -987,7 +988,7 @@ namespace sirius::client {
         return Dumper::dump_proto_to_file(json_path, zone_pb);
     }
 
-    collie::Status DiscoveryClient::create_servlet(sirius::proto::ServletInfo &servlet_info, int *retry_time) {
+    turbo::Status DiscoveryClient::create_servlet(sirius::proto::ServletInfo &servlet_info, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_SERVLET);
@@ -998,20 +999,20 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::create_servlet(const std::string &ns, const std::string &zone, const std::string &servlet,
                                int *retry_time) {
         sirius::proto::ServletInfo servlet_pb;
-        servlet_pb.set_namespace_name(ns);
+        servlet_pb.set_app_name(ns);
         servlet_pb.set_zone(zone);
         servlet_pb.set_servlet_name(servlet);
         return create_servlet(servlet_pb, retry_time);
     }
 
-    collie::Status DiscoveryClient::create_servlet_by_json(const std::string &json_str, int *retry_time) {
+    turbo::Status DiscoveryClient::create_servlet_by_json(const std::string &json_str, int *retry_time) {
         sirius::proto::ServletInfo servlet_pb;
         auto rs = Loader::load_proto(json_str, servlet_pb);
         if (!rs.ok()) {
@@ -1020,7 +1021,7 @@ namespace sirius::client {
         return create_servlet(servlet_pb, retry_time);
     }
 
-    collie::Status DiscoveryClient::create_servlet_by_file(const std::string &path, int *retry_time) {
+    turbo::Status DiscoveryClient::create_servlet_by_file(const std::string &path, int *retry_time) {
         sirius::proto::ServletInfo servlet_pb;
         auto rs = Loader::load_proto_from_file(path, servlet_pb);
         if (!rs.ok()) {
@@ -1029,24 +1030,24 @@ namespace sirius::client {
         return create_servlet(servlet_pb, retry_time);
     }
 
-    collie::Status DiscoveryClient::remove_servlet(const std::string &ns, const std::string &zone, const std::string &servlet,
+    turbo::Status DiscoveryClient::remove_servlet(const std::string &ns, const std::string &zone, const std::string &servlet,
                                              int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_DROP_SERVLET);
 
         auto *servlet_req = request.mutable_servlet_info();
-        servlet_req->set_namespace_name(ns);
+        servlet_req->set_app_name(ns);
         servlet_req->set_zone(zone);
         servlet_req->set_servlet_name(servlet);
         auto rs = discovery_manager(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::modify_servlet(const sirius::proto::ServletInfo &servlet_info, int *retry_time) {
+    turbo::Status DiscoveryClient::modify_servlet(const sirius::proto::ServletInfo &servlet_info, int *retry_time) {
         sirius::proto::DiscoveryManagerRequest request;
         sirius::proto::DiscoveryManagerResponse response;
         request.set_op_type(sirius::proto::OP_CREATE_SERVLET);
@@ -1057,10 +1058,10 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::modify_servlet_by_json(const std::string &json_str, int *retry_time) {
+    turbo::Status DiscoveryClient::modify_servlet_by_json(const std::string &json_str, int *retry_time) {
         sirius::proto::ServletInfo servlet_pb;
         auto rs = Loader::load_proto(json_str, servlet_pb);
         if (!rs.ok()) {
@@ -1069,7 +1070,7 @@ namespace sirius::client {
         return modify_servlet(servlet_pb, retry_time);
     }
 
-    collie::Status DiscoveryClient::modify_servlet_by_file(const std::string &path, int *retry_time) {
+    turbo::Status DiscoveryClient::modify_servlet_by_file(const std::string &path, int *retry_time) {
         sirius::proto::ServletInfo servlet_pb;
         auto rs = Loader::load_proto_from_file(path, servlet_pb);
         if (!rs.ok()) {
@@ -1078,7 +1079,7 @@ namespace sirius::client {
         return modify_servlet(servlet_pb, retry_time);
     }
 
-    collie::Status DiscoveryClient::list_servlet(std::vector<sirius::proto::ServletInfo> &servlet_list, int *retry_time) {
+    turbo::Status DiscoveryClient::list_servlet(std::vector<sirius::proto::ServletInfo> &servlet_list, int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
         sirius::proto::DiscoveryQueryResponse response;
         request.set_op_type(sirius::proto::QUERY_ZONE);
@@ -1087,15 +1088,15 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
         for (auto &servlet: response.servlet_infos()) {
             servlet_list.push_back(servlet);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::list_servlet(const std::string &ns, std::vector<sirius::proto::ServletInfo> &servlet_list,
                              int *retry_time) {
         std::vector<sirius::proto::ServletInfo> all_servlet_list;
@@ -1104,14 +1105,14 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: all_servlet_list) {
-            if (servlet.namespace_name() == ns) {
+            if (servlet.app_name() == ns) {
                 servlet_list.push_back(servlet);
             }
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::list_servlet(const std::string &ns, const std::string &zone,
                              std::vector<sirius::proto::ServletInfo> &servlet_list, int *retry_time) {
         std::vector<sirius::proto::ServletInfo> all_servlet_list;
@@ -1120,14 +1121,14 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: all_servlet_list) {
-            if (servlet.namespace_name() == ns && servlet.zone() == zone) {
+            if (servlet.app_name() == ns && servlet.zone() == zone) {
                 servlet_list.push_back(servlet);
             }
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_servlet(std::vector<std::string> &servlet_list, int *retry_time) {
+    turbo::Status DiscoveryClient::list_servlet(std::vector<std::string> &servlet_list, int *retry_time) {
         std::vector<sirius::proto::ServletInfo> all_servlet_list;
         auto rs = list_servlet(all_servlet_list, retry_time);
         if (!rs.ok()) {
@@ -1136,10 +1137,10 @@ namespace sirius::client {
         for (auto &servlet: all_servlet_list) {
             servlet_list.push_back(servlet.servlet_name());
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::list_servlet(const std::string &ns, std::vector<std::string> &servlet_list, int *retry_time) {
         std::vector<sirius::proto::ServletInfo> all_servlet_list;
         auto rs = list_servlet(all_servlet_list, retry_time);
@@ -1147,14 +1148,14 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: all_servlet_list) {
-            if (servlet.namespace_name() == ns) {
+            if (servlet.app_name() == ns) {
                 servlet_list.push_back(servlet.servlet_name());
             }
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::list_servlet(const std::string &ns, const std::string &zone, std::vector<std::string> &servlet_list,
                              int *retry_time) {
         std::vector<sirius::proto::ServletInfo> all_servlet_list;
@@ -1163,14 +1164,14 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: all_servlet_list) {
-            if (servlet.namespace_name() == ns && servlet.zone() == zone) {
+            if (servlet.app_name() == ns && servlet.zone() == zone) {
                 servlet_list.push_back(servlet.servlet_name());
             }
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_servlet_to_json(std::vector<std::string> &servlet_list, int *retry_time) {
+    turbo::Status DiscoveryClient::list_servlet_to_json(std::vector<std::string> &servlet_list, int *retry_time) {
         std::vector<sirius::proto::ServletInfo> servlet_proto_list;
         auto rs = list_servlet(servlet_proto_list, retry_time);
         if (!rs.ok()) {
@@ -1184,10 +1185,10 @@ namespace sirius::client {
             }
             servlet_list.push_back(json_content);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::list_servlet_to_json(const std::string &ns, std::vector<std::string> &servlet_list, int *retry_time) {
         std::vector<sirius::proto::ServletInfo> servlet_proto_list;
         auto rs = list_servlet(servlet_proto_list, retry_time);
@@ -1195,7 +1196,7 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: servlet_proto_list) {
-            if (servlet.namespace_name() == ns) {
+            if (servlet.app_name() == ns) {
                 std::string json_content;
                 auto r = Dumper::dump_proto(servlet, json_content);
                 if (!r.ok()) {
@@ -1204,10 +1205,10 @@ namespace sirius::client {
                 servlet_list.push_back(json_content);
             }
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_servlet_to_json(const std::string &ns, const std::string &zone,
+    turbo::Status DiscoveryClient::list_servlet_to_json(const std::string &ns, const std::string &zone,
                                                    std::vector<std::string> &servlet_list, int *retry_time) {
         std::vector<sirius::proto::ServletInfo> servlet_proto_list;
         auto rs = list_servlet(servlet_proto_list, retry_time);
@@ -1215,7 +1216,7 @@ namespace sirius::client {
             return rs;
         }
         for (auto &servlet: servlet_proto_list) {
-            if (servlet.namespace_name() == ns && servlet.zone() == zone) {
+            if (servlet.app_name() == ns && servlet.zone() == zone) {
                 std::string json_content;
                 auto r = Dumper::dump_proto(servlet, json_content);
                 if (!r.ok()) {
@@ -1224,10 +1225,10 @@ namespace sirius::client {
                 servlet_list.push_back(json_content);
             }
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status DiscoveryClient::list_servlet_to_file(const std::string &save_path, int *retry_time) {
+    turbo::Status DiscoveryClient::list_servlet_to_file(const std::string &save_path, int *retry_time) {
         std::vector<std::string> json_list;
         auto rs = list_servlet_to_json(json_list, retry_time);
         if (!rs.ok()) {
@@ -1246,10 +1247,10 @@ namespace sirius::client {
             }
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::list_servlet_to_file(const std::string &ns, const std::string &save_path, int *retry_time) {
         std::vector<std::string> json_list;
         auto rs = list_servlet_to_json(ns, json_list, retry_time);
@@ -1269,10 +1270,10 @@ namespace sirius::client {
             }
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::list_servlet_to_file(const std::string &ns, const std::string &zone, const std::string &save_path,
                                      int *retry_time) {
         std::vector<std::string> json_list;
@@ -1293,10 +1294,10 @@ namespace sirius::client {
             }
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_servlet(const std::string &ns_name, const std::string &zone_name, const std::string &servlet,
                             sirius::proto::ServletInfo &servlet_pb,
                             int *retry_time) {
@@ -1308,16 +1309,16 @@ namespace sirius::client {
             return rs;
         }
         if (response.errcode() != sirius::proto::SUCCESS) {
-            return collie::Status::unavailable(response.errmsg());
+            return turbo::unavailable_error(response.errmsg());
         }
         if (response.servlet_infos_size() != 1) {
-            return collie::Status::unavailable("bad proto format for servlet infos size: {}", response.servlet_infos_size());
+            return turbo::unavailable_error(turbo::substitute("bad proto format for servlet infos size: $0", response.servlet_infos_size()));
         }
         servlet_pb = response.servlet_infos(0);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::get_servlet_json(const std::string &ns_name, const std::string &zone_name, const std::string &servlet,
                                  std::string &json_str,
                                  int *retry_time) {
@@ -1329,7 +1330,7 @@ namespace sirius::client {
         return Dumper::dump_proto(servlet_pb, json_str);
     }
 
-    collie::Status
+    turbo::Status
     DiscoveryClient::save_servlet_json(const std::string &ns_name, const std::string &zone_name, const std::string &servlet,
                                   const std::string &json_path,
                                   int *retry_time) {

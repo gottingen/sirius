@@ -21,6 +21,7 @@
 #include <sirius/client/discovery_sender.h>
 #include <sirius/cli/raft_cmd.h>
 #include <sirius/cli/discovery.h>
+#include <collie/strings/format.h>
 
 int main(int argc, char **argv) {
     collie::App app{"EA sirius client"};
@@ -59,7 +60,7 @@ int main(int argc, char **argv) {
                     .set_retry_time(opt->max_retry)
                     .set_verbose(opt->verbose);
             sender = sirius::client::RouterSender::get_instance();
-            SS_LOG_IF(INFO, opt->verbose) << "init connect success to router server " << opt->router_server;
+            LOG_IF(INFO, opt->verbose) << "init connect success to router server " << opt->router_server;
         } else {
             sirius::client::DiscoverySender::get_instance()->set_connect_time_out(opt->connect_timeout_ms)
                     .set_interval_time(opt->time_between_discovery_connect_error_ms)
@@ -71,7 +72,7 @@ int main(int argc, char **argv) {
                 exit(0);
             }
             sender = sirius::client::DiscoverySender::get_instance();
-            SS_LOG_IF(INFO, opt->verbose) << "init connect success to discovery server " << opt->discovery_server;
+            LOG_IF(INFO, opt->verbose) << "init connect success to discovery server " << opt->discovery_server;
         }
         auto r = sirius::client::DiscoveryClient::get_instance()->init(sender);
         if (!r.ok()) {

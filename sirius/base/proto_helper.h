@@ -20,8 +20,8 @@
 #pragma once
 #include <collie/strings/format.h>
 #include <sirius/proto/discovery.interface.pb.h>
-#include <rocksdb/db.h>
-#include <rocksdb/utilities/memory_util.h>
+#include <mizar/db.h>
+#include <mizar/utilities/memory_util.h>
 #include <collie/rapidjson/rapidjson.h>
 #include <collie/rapidjson/reader.h>
 #include <melon/raft/log_entry.h>
@@ -30,8 +30,8 @@
 namespace fmt {
 
     template<>
-    struct formatter<rocksdb::Status::Code> : public formatter<int> {
-        auto format(const rocksdb::Status::Code& a, format_context& ctx) const {
+    struct formatter<mizar::Status::Code> : public formatter<int> {
+        auto format(const mizar::Status::Code& a, format_context& ctx) const {
             return formatter<int>::format(static_cast<int>(a), ctx);
         }
     };
@@ -65,8 +65,8 @@ namespace fmt {
     };
 
     template<>
-    struct formatter<rocksdb::MemoryUtil::UsageType> : public formatter<int> {
-        auto format(const rocksdb::MemoryUtil::UsageType& a, format_context& ctx) const {
+    struct formatter<mizar::MemoryUtil::UsageType> : public formatter<int> {
+        auto format(const mizar::MemoryUtil::UsageType& a, format_context& ctx) const {
             return formatter<int>::format(static_cast<int>(a), ctx);
         }
     };

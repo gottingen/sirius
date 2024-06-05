@@ -23,54 +23,55 @@
 #include <sirius/client/utility.h>
 #include <alkaid/files/sequential_read_file.h>
 #include <melon/utility/endpoint.h>
+#include <turbo/strings/numbers.h>
 #include <sirius/client/loader.h>
 
 namespace sirius::client {
 
-    ServletInstanceBuilder::ServletInstanceBuilder(sirius::proto::ServletInstance *ins) :_instance(ins) {
+    ServletInstanceBuilder::ServletInstanceBuilder(sirius::proto::ServletInfo *ins) : _instance(ins) {
         _instance->Clear();
     }
 
-    void ServletInstanceBuilder::set(sirius::proto::ServletInstance *ins) {
+    void ServletInstanceBuilder::set(sirius::proto::ServletInfo *ins) {
         _instance = ins;
         _instance->Clear();
     }
 
-    collie::Status ServletInstanceBuilder::build_from_json(const std::string &json_str) {
+    turbo::Status ServletInstanceBuilder::build_from_json(const std::string &json_str) {
         auto rs = Loader::load_proto(json_str, *_instance);
         if (!rs.ok()) {
             return rs;
         }
         /// check field
-        if (!_instance->has_namespace_name() || _instance->namespace_name().empty()) {
-            return collie::Status::data_loss("miss required field namespace_name");
+        if (!_instance->has_app_name() || _instance->app_name().empty()) {
+            return turbo::data_loss_error("miss required field app_name");
         }
 
-        if (!_instance->has_zone_name() || _instance->zone_name().empty()) {
-            return collie::Status::data_loss("miss required field zone_name");
+        if (!_instance->has_zone() || _instance->zone().empty()) {
+            return turbo::data_loss_error("miss required field zone_name");
         }
 
         if (!_instance->has_servlet_name() || _instance->servlet_name().empty()) {
-            return collie::Status::data_loss("miss required field servlet_name");
+            return turbo::data_loss_error("miss required field servlet_name");
         }
 
         if (!_instance->has_address() || _instance->address().empty()) {
-            return collie::Status::data_loss("miss required field address");
+            return turbo::data_loss_error("miss required field address");
         }
 
         if (!_instance->has_env() || _instance->env().empty()) {
-            return collie::Status::data_loss("miss required field address");
+            return turbo::data_loss_error("miss required field address");
         }
 
         mutil::EndPoint peer;
-        if(mutil::str2endpoint(_instance->address().c_str(),&peer) != 0) {
-            return collie::Status::invalid_argument("bad address");
+        if (mutil::str2endpoint(_instance->address().c_str(), &peer) != 0) {
+            return turbo::invalid_argument_error("bad address");
         }
 
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    collie::Status ServletInstanceBuilder::build_from_json_file(const std::string &json_path) {
+    turbo::Status ServletInstanceBuilder::build_from_json_file(const std::string &json_path) {
         alkaid::SequentialReadFile file;
         auto rs = file.open(json_path);
         if (!rs.ok()) {
@@ -84,13 +85,13 @@ namespace sirius::client {
         return build_from_json(content);
     }
 
-    ServletInstanceBuilder &ServletInstanceBuilder::set_namespace(const std::string &namespace_name) {
-        _instance->set_namespace_name(namespace_name);
+    ServletInstanceBuilder &ServletInstanceBuilder::set_namespace(const std::string &app_name) {
+        _instance->set_app_name(app_name);
         return *this;
     }
 
     ServletInstanceBuilder &ServletInstanceBuilder::set_zone(const std::string &zone) {
-        _instance->set_zone_name(zone);
+        _instance->set_zone(zone);
         return *this;
     }
 
@@ -109,22 +110,14 @@ namespace sirius::client {
         return *this;
     }
 
-    ServletInstanceBuilder &ServletInstanceBuilder::set_user(const std::string &user) {
-        _instance->set_user(user);
-        return *this;
-    }
-
     ServletInstanceBuilder &ServletInstanceBuilder::set_passwd(const std::string &passwd) {
         return *this;
     }
 
     ServletInstanceBuilder &ServletInstanceBuilder::set_status(const std::string &s) {
-        sirius::proto::Status status;
-        if(sirius::proto::Status_Parse(s, &status)) {
-            _instance->set_status(status);
-        } else {
-            _instance->set_status(sirius::proto::NORMAL);
-        }
+        int st;
+        turbo::simple_atoi(s, &st);
+        _instance->set_status(st);
         return *this;
     }
 
@@ -133,19 +126,10 @@ namespace sirius::client {
         return *this;
     }
 
-    ServletInstanceBuilder &ServletInstanceBuilder::set_status(const sirius::proto::Status &s) {
-        _instance->set_status(sirius::proto::NORMAL);
+    ServletInstanceBuilder &ServletInstanceBuilder::set_status(int s) {
+        _instance->set_status(s);
         return *this;
     }
 
-    ServletInstanceBuilder &ServletInstanceBuilder::set_weight(int weight) {
-        _instance->set_weight(weight);
-        return *this;
-    }
-
-    ServletInstanceBuilder &ServletInstanceBuilder::set_time(int time) {
-        _instance->set_timestamp(time);
-        return *this;
-    }
 
 }  // namespace sirius::client

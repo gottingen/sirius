@@ -18,7 +18,7 @@
 #include <collie/cli/cli.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <collie/table/table.h>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <string>
 
 namespace sirius::cli {
@@ -26,18 +26,18 @@ namespace sirius::cli {
     // We could manually make a few variables and use shared pointers for each; this
     // is just done this way to be nicely organized
 
-    struct NameSpaceOptionContext {
-        static NameSpaceOptionContext *get_instance() {
-            static NameSpaceOptionContext ins;
+    struct AppOptionContext {
+        static AppOptionContext *get_instance() {
+            static AppOptionContext ins;
             return &ins;
         }
         // for namespace
-        std::string namespace_name;
-        int64_t     namespace_quota;
+        std::string app_name;
+        int64_t     app_quota;
     };
 
     // Function declarations.
-    void setup_namespace_cmd(collie::App &app);
+    void setup_app_cmd(collie::App &app);
 
     void run_namespace_cmd(collie::App *app);
 
@@ -51,16 +51,16 @@ namespace sirius::cli {
 
     void run_ns_info_cmd();
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_namespace_create(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_namespace_remove(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_namespace_modify(sirius::proto::DiscoveryManagerRequest *req);
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     make_namespace_query(sirius::proto::DiscoveryQueryRequest *req);
 
     collie::table::Table show_discovery_query_ns_response(const sirius::proto::DiscoveryQueryResponse &res);

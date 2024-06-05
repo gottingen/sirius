@@ -19,6 +19,7 @@
 
 #include <sirius/base/memory_profile.h>
 #include <sirius/flags/base.h>
+#include <map>
 
 namespace sirius {
 
@@ -33,7 +34,7 @@ namespace sirius {
     }
 
     MemTracker::~MemTracker() {
-        SS_LOG(DEBUG)<< "~MemTracker " << collie::ptr(this) << " log_id:" << _log_id << " used_bytes:" << _bytes_consumed.load();
+        LOG(INFO)<< "~MemTracker " << this << " log_id:" << _log_id << " used_bytes:" << _bytes_consumed.load();
         int64_t bytes = bytes_consumed();
         if (bytes > 0 && _parent) {
             _parent->release(_bytes_consumed.load());
@@ -66,7 +67,7 @@ namespace sirius {
             _query_bytes_limit = FLAGS_process_memory_limit_bytes * FLAGS_query_memory_limit_ratio / 100;
         }
         _root_tracker = std::make_shared<MemTracker>(0, FLAGS_process_memory_limit_bytes, nullptr);
-        SS_LOG(INFO)<< "root_limit_size: " << FLAGS_process_memory_limit_bytes << " _query_bytes_limit: " << _query_bytes_limit;
+        LOG(INFO)<< "root_limit_size: " << FLAGS_process_memory_limit_bytes << " _query_bytes_limit: " << _query_bytes_limit;
         _tracker_gc_bth.run([this]() { tracker_gc_thread(); });
         return 0;
     }

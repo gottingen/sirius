@@ -71,7 +71,6 @@ include(sirius_deps)
 include(sirius_cxx_config)
 include(sirius_test)
 
-find_package(Protobuf REQUIRED)
 include(CompileProto)
 set(PROTO_FILES
         sirius/proto/config.struct.proto
@@ -86,6 +85,7 @@ set(PROTO_FILES
 )
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/output/include/zircon)
 set(PROTOC_FLAGS ${PROTOC_FLAGS} -I${PROTOBUF_INCLUDE_DIR})
+set(PROTOC_FLAGS ${PROTOC_FLAGS} -I${melon_INCLUDE_DIR})
 compile_proto(PROTO_HDRS PROTO_SRCS ${PROJECT_BINARY_DIR}
         ${PROJECT_BINARY_DIR}/output/include
         ${PROJECT_SOURCE_DIR}

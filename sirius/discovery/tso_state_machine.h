@@ -22,7 +22,7 @@
 #include <sirius/discovery/base_state_machine.h>
 #include <melon/raft/repeated_timer_task.h>
 #include <time.h>
-#include <sirius/discovery/discovery_constants.h>
+#include <sirius/discovery/sirius_constants.h>
 
 namespace sirius::discovery {
 

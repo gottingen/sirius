@@ -30,6 +30,7 @@
 #include <sirius/client/dumper.h>
 #include <sirius/client/config_info_builder.h>
 #include <collie/nlohmann/json.hpp>
+#include <collie/strings/format.h>
 
 namespace sirius::cli {
 
@@ -115,7 +116,7 @@ namespace sirius::cli {
         auto config_info = request.mutable_config_info();
         sirius::client::ConfigInfoBuilder builder(config_info);
         /// json builder
-        collie::Status rs;
+        turbo::Status rs;
         if (!opt->config_json.empty()) {
             rs = builder.build_from_json_file(opt->config_json);
         } else {
@@ -145,7 +146,7 @@ namespace sirius::cli {
 
         ScopeShower ss;
         auto opt = ConfigOptionContext::get_instance();
-        collie::Status rs;
+        turbo::Status rs;
         std::string file_path;
         if (!opt->config_example.empty()) {
             rs = make_example_config_dump(&request);
@@ -228,7 +229,7 @@ namespace sirius::cli {
         result_table.add_row(collie::table::Table::Row_t{"type", config_type_to_string(request.type())});
         result_table.add_row(collie::table::Table::Row_t{"size", collie::to_str(request.content().size())});
         turbo::Time cs = turbo::Time::from_time_t(request.time());
-        result_table.add_row(collie::table::Table::Row_t{"time", cs.to_string()});
+        result_table.add_row(collie::table::Table::Row_t{"time", turbo::Time::format(cs)});
         result_table.add_row(collie::table::Table::Row_t{"content", request.content()});
         ss.add_table("result", std::move(result_table), true);
     }
@@ -288,7 +289,7 @@ namespace sirius::cli {
         if (response.errcode() != sirius::proto::SUCCESS) {
             return;
         }
-        collie::Status save_status;
+        turbo::Status save_status;
         if (!ConfigOptionContext::get_instance()->config_file.empty()) {
             save_status = save_config_to_file(ConfigOptionContext::get_instance()->config_file, response);
         }
@@ -296,7 +297,7 @@ namespace sirius::cli {
         ss.add_table("summary", std::move(table), true);
     }
 
-    collie::Status ConfigCmd::save_config_to_file(const std::string &path, const sirius::proto::DiscoveryQueryResponse &res) {
+    turbo::Status ConfigCmd::save_config_to_file(const std::string &path, const sirius::proto::DiscoveryQueryResponse &res) {
         alkaid::SequentialWriteFile file;
         auto s = file.open(path, alkaid::kDefaultTruncateWriteOption);
         if (!s.ok()) {
@@ -307,7 +308,7 @@ namespace sirius::cli {
             return s;
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
     void ConfigCmd::run_config_remove_cmd() {
@@ -324,10 +325,10 @@ namespace sirius::cli {
         ss.add_table("result", std::move(table), true);
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     ConfigCmd::make_example_config_dump(sirius::proto::ConfigInfo *req) {
         req->set_name("example");
-        req->set_time(static_cast<int>(turbo::Time::time_now().to_time_t()));
+        req->set_time(static_cast<int>(turbo::Time::current_seconds()));
         req->set_type(sirius::proto::CF_JSON);
         auto v = req->mutable_version();
         v->set_major(1);
@@ -342,24 +343,24 @@ namespace sirius::cli {
         nlohmann::to_string(json_content);
         req->set_content(nlohmann::to_string(json_content));
         std::cout<<json_content<<std::endl;
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     ConfigCmd::make_config_list(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_LIST_CONFIG);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     ConfigCmd::make_config_list_version(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_LIST_CONFIG_VERSION);
         auto opt = ConfigOptionContext::get_instance();
         req->set_config_name(opt->config_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     ConfigCmd::make_config_get(sirius::proto::DiscoveryQueryRequest *req) {
         req->set_op_type(sirius::proto::QUERY_GET_CONFIG);
         auto opt = ConfigOptionContext::get_instance();
@@ -368,10 +369,10 @@ namespace sirius::cli {
             auto v = req->mutable_config_version();
             return string_to_version(opt->config_version, v);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     ConfigCmd::make_config_remove(sirius::proto::DiscoveryManagerRequest *req) {
         req->set_op_type(sirius::proto::OP_REMOVE_CONFIG);
         auto rc = req->mutable_config_info();
@@ -381,7 +382,7 @@ namespace sirius::cli {
             auto v = rc->mutable_version();
             return string_to_version(opt->config_version, v);
         }
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
     collie::table::Table ConfigCmd::show_query_ops_config_list_response(const sirius::proto::DiscoveryQueryResponse &res) {
@@ -434,7 +435,7 @@ namespace sirius::cli {
     }
 
     collie::table::Table ConfigCmd::show_query_ops_config_get_response(const sirius::proto::DiscoveryQueryResponse &res,
-                                                               const collie::Status &save_status) {
+                                                               const turbo::Status &save_status) {
         collie::table::Table result_table;
         auto config = res.config_infos(0);
         result_table.add_row(collie::table::Table::Row_t{"version", collie::format("{}.{}.{}", config.version().major(),
@@ -449,7 +450,7 @@ namespace sirius::cli {
         last = result_table.size() - 1;
         result_table[last].format().font_color(collie::Color::green);
         turbo::Time cs = turbo::Time::from_time_t(config.time());
-        result_table.add_row(collie::table::Table::Row_t{"time", cs.to_string()});
+        result_table.add_row(collie::table::Table::Row_t{"time", turbo::Time::format(cs)});
         last = result_table.size() - 1;
         result_table[last].format().font_color(collie::Color::green);
         if (!ConfigOptionContext::get_instance()->config_file.empty()) {
@@ -469,11 +470,11 @@ namespace sirius::cli {
         auto  rs = sirius::client::ConfigClient::get_instance()->init();
         if(opt->clean_local) {
             collie::println("remove local config cache dir:{}",opt->config_watch_dir);
-            collie::filesystem::remove_all(opt->config_watch_dir);
+            ghc::filesystem::remove_all(opt->config_watch_dir);
         }
 
-        if(!collie::filesystem::exists(opt->config_watch_dir)) {
-            collie::filesystem::create_directories(opt->config_watch_dir);
+        if(!ghc::filesystem::exists(opt->config_watch_dir)) {
+            ghc::filesystem::create_directories(opt->config_watch_dir);
         }
         if(!rs.ok()) {
             collie::println("watch error:{}", rs.to_string());
@@ -525,11 +526,11 @@ namespace sirius::cli {
         }
     }
 
-    collie::Status ConfigCmd::save_config_to_file(const std::string &basedir, const sirius::client::ConfigCallbackData &data) {
+    turbo::Status ConfigCmd::save_config_to_file(const std::string &basedir, const sirius::client::ConfigCallbackData &data) {
         std::string file_name = collie::format("{}/{}-{}.{}.{}.{}", basedir, data.config_name, data.new_version.major,
                                               data.new_version.minor, data.new_version.patch, data.type);
-        if(collie::filesystem::exists(file_name)) {
-            return collie::Status::already_exists("write file [{}] already exists", file_name);
+        if(ghc::filesystem::exists(file_name)) {
+            return turbo::already_exists_error(turbo::substitute("write file [$0] already exists", file_name));
         }
         alkaid::SequentialWriteFile file;
         auto rs = file.open(file_name, alkaid::kDefaultTruncateWriteOption);
@@ -541,6 +542,6 @@ namespace sirius::cli {
             return rs;
         }
         file.close();
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 }  // namespace sirius::cli

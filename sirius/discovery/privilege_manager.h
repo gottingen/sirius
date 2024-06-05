@@ -22,8 +22,8 @@
 #include <unordered_map>
 #include <melon/fiber/mutex.h>
 #include <sirius/proto/discovery.interface.pb.h>
-#include <sirius/discovery/discovery_state_machine.h>
-#include <sirius/discovery/discovery_constants.h>
+#include <sirius/discovery/sirius_state_machine.h>
+#include <sirius/discovery/sirius_constants.h>
 
 namespace sirius::discovery {
     class PrivilegeManager {

@@ -83,7 +83,7 @@ namespace sirius {
             while (_count > cond) {
                 ret = fiber_cond_wait(&_cond, &_mutex);
                 if (ret != 0) {
-                    SS_LOG(WARN) << "wait timeout, ret:" << ret;
+                    LOG(WARNING) << "wait timeout, ret:" << ret;
                     break;
                 }
             }
@@ -97,7 +97,7 @@ namespace sirius {
             while (_count + 1 > cond) {
                 ret = fiber_cond_wait(&_cond, &_mutex);
                 if (ret != 0) {
-                    SS_LOG(WARN) << "wait timeout, ret:" << ret;
+                    LOG(WARNING) << "wait timeout, ret:" << ret;
                     break;
                 }
             }
@@ -113,7 +113,7 @@ namespace sirius {
             while (_count > cond) {
                 ret = fiber_cond_timedwait(&_cond, &_mutex, &tm);
                 if (ret != 0) {
-                    SS_LOG(WARN) << "wait timeout, ret:" << ret;
+                    LOG(WARNING) << "wait timeout, ret:" << ret;
                     break;
                 }
             }
@@ -128,7 +128,7 @@ namespace sirius {
             while (_count + 1 > cond) {
                 ret = fiber_cond_timedwait(&_cond, &_mutex, &tm);
                 if (ret != 0) {
-                    SS_LOG(WARN) << "wait timeout, ret:" << ret;
+                    LOG(WARNING) << "wait timeout, ret:" << ret;
                     break;
                 }
             }
@@ -162,7 +162,7 @@ namespace sirius {
                                                    return nullptr;
                                                }, _call);
             if (ret != 0) {
-                SS_LOG(ERROR)<< "fiber_start_background fail";
+                LOG(ERROR)<< "fiber_start_background fail";
             }
         }
 
@@ -177,7 +177,7 @@ namespace sirius {
                                                return nullptr;
                                            }, _call);
             if (ret != 0) {
-                SS_LOG(ERROR)<< "fiber_start_urgent fail";
+                LOG(ERROR)<< "fiber_start_urgent fail";
             }
         }
 

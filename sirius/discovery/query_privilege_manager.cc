@@ -49,10 +49,10 @@ namespace sirius::discovery {
         MELON_SCOPED_LOCK(manager->_user_mutex);
         std::string user_name = request->user_name();
         collie::trim_all(&user_name);
-        std::string namespace_name = request->namespace_name();
-        collie::trim_all(&namespace_name);
+        std::string app_name = request->app_name();
+        collie::trim_all(&app_name);
         std::map<std::string, std::multimap<std::string, sirius::proto::QueryUserPrivilege>> namespace_privileges;
-        if (user_name.empty() && namespace_name.empty()) {
+        if (user_name.empty() && app_name.empty()) {
             for (auto &privilege_info: manager->_user_privilege) {
                 construct_query_response_for_servlet_privilege(privilege_info.second, namespace_privileges);
             }
@@ -61,9 +61,9 @@ namespace sirius::discovery {
             && manager->_user_privilege.find(user_name) != manager->_user_privilege.end()) {
             construct_query_response_for_servlet_privilege(manager->_user_privilege[user_name], namespace_privileges);
         }
-        if (!namespace_name.empty()) {
+        if (!app_name.empty()) {
             for (auto &privilege_info: manager->_user_privilege) {
-                if (privilege_info.second.namespace_name() != namespace_name) {
+                if (privilege_info.second.app_name() != app_name) {
                     continue;
                 }
                 construct_query_response_for_servlet_privilege(privilege_info.second, namespace_privileges);
@@ -80,33 +80,33 @@ namespace sirius::discovery {
 
     void QueryPrivilegeManager::construct_query_response_for_servlet_privilege(const sirius::proto::UserPrivilege &user_privilege,
                                                                        std::map<std::string, std::multimap<std::string, sirius::proto::QueryUserPrivilege>> &namespace_privileges) {
-        std::string namespace_name = user_privilege.namespace_name();
+        std::string app_name = user_privilege.app_name();
         std::string username = user_privilege.username();
         for (auto &privilege_zone: user_privilege.privilege_zone()) {
             sirius::proto::QueryUserPrivilege flatten_privilege;
             flatten_privilege.set_username(username);
-            flatten_privilege.set_namespace_name(namespace_name);
+            flatten_privilege.set_app_name(app_name);
             flatten_privilege.set_servlet_rw(privilege_zone.zone_rw());
             flatten_privilege.set_privilege(privilege_zone.zone() + ".*");
             std::multimap<std::string, sirius::proto::QueryUserPrivilege> user_privilege_map;
-            if (namespace_privileges.find(namespace_name) != namespace_privileges.end()) {
-                user_privilege_map = namespace_privileges[namespace_name];
+            if (namespace_privileges.find(app_name) != namespace_privileges.end()) {
+                user_privilege_map = namespace_privileges[app_name];
             }
             user_privilege_map.insert(std::pair<std::string, sirius::proto::QueryUserPrivilege>(username, flatten_privilege));
-            namespace_privileges[namespace_name] = user_privilege_map;
+            namespace_privileges[app_name] = user_privilege_map;
         }
         for (auto &privilege_servlet: user_privilege.privilege_servlet()) {
             sirius::proto::QueryUserPrivilege flatten_privilege;
             flatten_privilege.set_username(username);
-            flatten_privilege.set_namespace_name(namespace_name);
+            flatten_privilege.set_app_name(app_name);
             flatten_privilege.set_servlet_rw(privilege_servlet.servlet_rw());
             flatten_privilege.set_privilege(privilege_servlet.zone() + "." + privilege_servlet.servlet_name());
             std::multimap<std::string, sirius::proto::QueryUserPrivilege> user_privilege_map;
-            if (namespace_privileges.find(namespace_name) != namespace_privileges.end()) {
-                user_privilege_map = namespace_privileges[namespace_name];
+            if (namespace_privileges.find(app_name) != namespace_privileges.end()) {
+                user_privilege_map = namespace_privileges[app_name];
             }
             user_privilege_map.insert(std::pair<std::string, sirius::proto::QueryUserPrivilege>(username, flatten_privilege));
-            namespace_privileges[namespace_name] = user_privilege_map;
+            namespace_privileges[app_name] = user_privilege_map;
         }
     }
 

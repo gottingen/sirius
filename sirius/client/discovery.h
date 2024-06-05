@@ -20,14 +20,14 @@
 #ifndef EA_CLIENT_META_H_
 #define EA_CLIENT_META_H_
 
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <melon/utility/endpoint.h>
 #include <melon/rpc/channel.h>
 #include <melon/rpc/server.h>
 #include <melon/rpc/controller.h>
 #include <string>
 #include <sirius/base/log.h>
-#include <sirius/flags/discovery.h>
+#include <sirius/flags/sirius.h>
 #include <google/protobuf/descriptor.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <collie/module/semver.h>
@@ -87,17 +87,17 @@ namespace sirius::client {
          * @param sender [input] is the sender used to communicate with the meta server, it can be a RouterSender or a ConfigSender.
          * @return Status::OK if the DiscoveryClient was initialized successfully. Otherwise, an error status is returned.
          */         
-        collie::Status init(BaseMessageSender *sender);
+        turbo::Status init(BaseMessageSender *sender);
 
 
-        static collie::Status check_config(const std::string &json_content);
+        static turbo::Status check_config(const std::string &json_content);
 
         /**
          *
          * @param config_path
          * @return
          */
-        static collie::Status check_config_file(const std::string &config_path);
+        static turbo::Status check_config_file(const std::string &config_path);
 
         /**
          * @brief dump_config_file is used to dump a ConfigInfo to a file.
@@ -105,7 +105,7 @@ namespace sirius::client {
          * @param config [input] is the ConfigInfo to dump.
          * @return Status::OK if the ConfigInfo was dumped successfully. Otherwise, an error status is returned. 
          */
-        static collie::Status dump_config_file(const std::string &config_path, const sirius::proto::ConfigInfo &config);
+        static turbo::Status dump_config_file(const std::string &config_path, const sirius::proto::ConfigInfo &config);
 
         /**
          * @brief create_config is used to create a config by parameters, it is a synchronous call.
@@ -116,7 +116,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create config.
          * @return Status::OK if the config was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_config(const std::string &config_name,
+        turbo::Status create_config(const std::string &config_name,
                                     const std::string &content,
                                     const std::string &version,
                                     const std::string &config_type = "json",
@@ -128,7 +128,7 @@ namespace sirius::client {
          * @param retry_times [input] is the retry times of the create config.
          * @return Status::OK if the config was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_config(const sirius::proto::ConfigInfo &request, int *retry_times = nullptr);
+        turbo::Status create_config(const sirius::proto::ConfigInfo &request, int *retry_times = nullptr);
 
 
         /**
@@ -140,7 +140,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create config.
          * @return Status::OK if the config was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_config_by_file(const std::string &config_name,
+        turbo::Status create_config_by_file(const std::string &config_name,
                                             const std::string &path,
                                             const std::string &config_type = "json", const std::string &version = "",
                                             int *retry_time = nullptr);
@@ -151,7 +151,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create config.
          * @return Status::OK if the config was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_config_by_json(const std::string &json_path, int *retry_time = nullptr);
+        turbo::Status create_config_by_json(const std::string &json_path, int *retry_time = nullptr);
 
         /**
          * @brief list_config is used to list all config names from the meta server, it is a synchronous call.
@@ -159,7 +159,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list config.
          * @return Status::OK if the config names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_config(std::vector<std::string> &configs, int *retry_time = nullptr);
+        turbo::Status list_config(std::vector<std::string> &configs, int *retry_time = nullptr);
 
         /**
          * @brief list_config_version is used to list all config versions of a config from the meta server, it is a synchronous call.
@@ -168,7 +168,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list config version.
          * @return Status::OK if the config versions were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_config_version(const std::string &config_name, std::vector<std::string> &versions,
+        turbo::Status list_config_version(const std::string &config_name, std::vector<std::string> &versions,
                                           int *retry_time = nullptr);
 
         /**
@@ -178,7 +178,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list config version.
          * @return Status::OK if the config versions were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_config_version(const std::string &config_name, std::vector<collie::ModuleVersion> &versions,
+        turbo::Status list_config_version(const std::string &config_name, std::vector<collie::ModuleVersion> &versions,
                                           int *retry_time = nullptr);
 
         /**
@@ -189,7 +189,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get config.
          * @return Status::OK if the config was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         get_config(const std::string &config_name, const std::string &version, sirius::proto::ConfigInfo &config,
                    int *retry_time = nullptr);
 
@@ -203,7 +203,7 @@ namespace sirius::client {
          * @param time [output] is the time of the config received from the meta server.
          * @return Status::OK if the config was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status get_config(const std::string &config_name, const std::string &version, std::string &config,
+        turbo::Status get_config(const std::string &config_name, const std::string &version, std::string &config,
                                  int *retry_time = nullptr,
                                  std::string *type = nullptr, uint32_t *time = nullptr);
 
@@ -215,7 +215,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the save config.
          * @return Status::OK if the config was saved successfully. Otherwise, an error status is returned. 
          */
-        collie::Status save_config(const std::string &config_name, const std::string &version, std::string &path,
+        turbo::Status save_config(const std::string &config_name, const std::string &version, std::string &path,
                                   int *retry_time = nullptr);
 
         /**
@@ -225,7 +225,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the save config.
          * @return Status::OK if the config was saved successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         save_config(const std::string &config_name, const std::string &version, int *retry_time = nullptr);
 
         /**
@@ -235,7 +235,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get config.
          * @return Status::OK if the config was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         get_config_latest(const std::string &config_name, sirius::proto::ConfigInfo &config,
                           int *retry_time = nullptr);
 
@@ -247,7 +247,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get config.
          * @return Status::OK if the config was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         get_config_latest(const std::string &config_name, std::string &config, std::string &version,
                           int *retry_time = nullptr);
 
@@ -260,7 +260,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get config.
          * @return Status::OK if the config was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         get_config_latest(const std::string &config_name, std::string &config, std::string &version, std::string &type,
                           int *retry_time = nullptr);
 
@@ -272,7 +272,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get config.
          * @return Status::OK if the config was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         get_config_latest(const std::string &config_name, std::string &config, collie::ModuleVersion &version,
                           int *retry_time = nullptr);
 
@@ -285,7 +285,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get config.
          * @return Status::OK if the config was received successfully. Otherwise, an error status is returned.
          */
-        collie::Status
+        turbo::Status
         get_config_latest(const std::string &config_name, std::string &config, collie::ModuleVersion &version,
                           std::string &type,
                           int *retry_time = nullptr);
@@ -297,7 +297,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get config.
          * @return Status::OK if the config was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         get_config_latest(const std::string &config_name, std::string &config, int *retry_time = nullptr);
 
         /**
@@ -307,7 +307,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get config.
          * @return Status::OK if the config was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         remove_config(const std::string &config_name, const std::string &version, int *retry_time = nullptr);
 
         /**
@@ -317,7 +317,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the remove config.
          * @return Status::OK if the config was removed successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         remove_config(const std::string &config_name, const collie::ModuleVersion &version, int *retry_time = nullptr);
 
         /**
@@ -326,26 +326,26 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the remove config.
          * @return Status::OK if the config was removed successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         remove_config_all_version(const std::string &config_name, int *retry_time = nullptr);
 
         /**
-         * @brief create_namespace is used to create a namespace by NameSpaceInfo, it is a synchronous call.
-         * @param info [input] is the NameSpaceInfo to create.
+         * @brief create_app is used to create a app by AppInfo, it is a synchronous call.
+         * @param info [input] is the AppInfo to create.
          * @param retry_time [input] is the retry times of the create namespace.
          * @return Status::OK if the namespace was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_namespace(sirius::proto::NameSpaceInfo &info, int *retry_time = nullptr);
+        turbo::Status create_app(sirius::proto::AppInfo &info, int *retry_time = nullptr);
 
    
         /**
-         * @brief create_namespace is used to create a namespace by parameters, it is a synchronous call.
+         * @brief create_app is used to create a namespace by parameters, it is a synchronous call.
          * @param ns [input] is the name of the namespace to create.
          * @param quota [input] is the quota of the namespace to create.
          * @param retry_time [input] is the retry times of the create namespace.
          * @return Status::OK if the namespace was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_namespace(const std::string &ns, int64_t quota = 0, int *retry_time = nullptr);
+        turbo::Status create_app(const std::string &ns, int64_t quota = 0, int *retry_time = nullptr);
 
         /**
          * @brief create_namespace_by_json is used to create a namespace by json string, it is a synchronous call.
@@ -353,7 +353,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create namespace.
          * @return Status::OK if the namespace was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_namespace_by_json(const std::string &json_str, int *retry_time = nullptr);
+        turbo::Status create_namespace_by_json(const std::string &json_str, int *retry_time = nullptr);
 
         /**
          * @brief create_namespace_by_file is used to create a namespace by json file, it is a synchronous call.
@@ -361,7 +361,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create namespace.
          * @return Status::OK if the namespace was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_namespace_by_file(const std::string &path, int *retry_time = nullptr);
+        turbo::Status create_namespace_by_file(const std::string &path, int *retry_time = nullptr);
 
         /**
          * remove_namespace is used to remove a namespace from the meta server, it is a synchronous call.
@@ -369,15 +369,15 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the remove namespace.
          * @return Status::OK if the namespace was removed successfully. Otherwise, an error status is returned. 
          */
-        collie::Status remove_namespace(const std::string &ns, int *retry_time = nullptr);
+        turbo::Status remove_namespace(const std::string &ns, int *retry_time = nullptr);
 
         /**
-         * @brief modify_namespace is used to modify a namespace by parameters, it is a synchronous call.
-         * @param ns_info [input] is the NameSpaceInfo to modify.
+         * @brief modify_app is used to modify a namespace by parameters, it is a synchronous call.
+         * @param ns_info [input] is the AppInfo to modify.
          * @param retry_time [input] is the retry times of the modify namespace.
          * @return Status::OK if the namespace was modified successfully. Otherwise, an error status is returned. 
          */
-        collie::Status modify_namespace(sirius::proto::NameSpaceInfo &ns_info, int *retry_time = nullptr);
+        turbo::Status modify_app(sirius::proto::AppInfo &ns_info, int *retry_time = nullptr);
 
         /**
          * @brief modify_namespace_by_json is used to modify a namespace by json string, it is a synchronous call.
@@ -385,7 +385,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the modify namespace.
          * @return Status::OK if the namespace was modified successfully. Otherwise, an error status is returned. 
          */
-        collie::Status modify_namespace_by_json(const std::string &json_str, int *retry_time = nullptr);
+        turbo::Status modify_namespace_by_json(const std::string &json_str, int *retry_time = nullptr);
 
         /**
          * @brief modify_namespace_by_file is used to modify a namespace by json file, it is a synchronous call.
@@ -393,7 +393,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the modify namespace.
          * @return Status::OK if the namespace was modified successfully. Otherwise, an error status is returned. 
          */
-        collie::Status modify_namespace_by_file(const std::string &path, int *retry_time = nullptr);
+        turbo::Status modify_namespace_by_file(const std::string &path, int *retry_time = nullptr);
 
         /**
          * @brief list_namespace is used to list all namespace names from the meta server, it is a synchronous call.
@@ -401,7 +401,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list namespace.
          * @return Status::OK if the namespace names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_namespace(std::vector<std::string> &ns_list, int *retry_time = nullptr);
+        turbo::Status list_namespace(std::vector<std::string> &ns_list, int *retry_time = nullptr);
 
         /**
          * @brief list_namespace is used to list all namespace names from the meta server, it is a synchronous call.
@@ -409,7 +409,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list namespace.
          * @return Status::OK if the namespace names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_namespace(std::vector<sirius::proto::NameSpaceInfo> &ns_list, int *retry_time = nullptr);
+        turbo::Status list_namespace(std::vector<sirius::proto::AppInfo> &ns_list, int *retry_time = nullptr);
 
         /**
          * @brief list_namespace_to_json is used to list all namespace names from the meta server, it is a synchronous call.
@@ -417,7 +417,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list namespace.
          * @return Status::OK if the namespace names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_namespace_to_json(std::vector<std::string> &ns_list, int *retry_time = nullptr);
+        turbo::Status list_namespace_to_json(std::vector<std::string> &ns_list, int *retry_time = nullptr);
 
         /**
          * @brief list_namespace_to_file is used to list all namespace names from the meta server, it is a synchronous call.
@@ -425,7 +425,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list namespace.
          * @return Status::OK if the namespace names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_namespace_to_file(const std::string &save_path, int *retry_time = nullptr);
+        turbo::Status list_namespace_to_file(const std::string &save_path, int *retry_time = nullptr);
 
         /**
          * @brief get_namespace is used to get a namespace from the meta server, it is a synchronous call.
@@ -434,8 +434,8 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get namespace.
          * @return Status::OK if the namespace was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
-        get_namespace(const std::string &ns_name, sirius::proto::NameSpaceInfo &ns_pb, int *retry_time = nullptr);
+        turbo::Status
+        get_namespace(const std::string &ns_name, sirius::proto::AppInfo &ns_pb, int *retry_time = nullptr);
 
         /**
          * @brief get_namespace is used to get a namespace from the meta server, it is a synchronous call.
@@ -444,7 +444,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get namespace.
          * @return Status::OK if the namespace was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status get_namespace_json(const std::string &ns_name, std::string &json_str, int *retry_time = nullptr);
+        turbo::Status get_namespace_json(const std::string &ns_name, std::string &json_str, int *retry_time = nullptr);
 
         /**
          * @brief save_namespace_json is used to save a namespace to local file, it is a synchronous call.
@@ -453,7 +453,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the save namespace.
          * @return Status::OK if the namespace was saved successfully. Otherwise, an error status is returned.
          */
-        collie::Status
+        turbo::Status
         save_namespace_json(const std::string &ns_name, const std::string &json_path, int *retry_time = nullptr);
 
         /**
@@ -462,7 +462,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create zone.
          * @return Status::OK if the zone was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_zone(sirius::proto::ZoneInfo &info, int *retry_time = nullptr);
+        turbo::Status create_zone(sirius::proto::ZoneInfo &info, int *retry_time = nullptr);
 
         /**
          * @brief create_zone is used to create a zone by parameters, it is a synchronous call.
@@ -472,7 +472,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create zone.
          * @return Status::OK if the zone was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         create_zone(const std::string &ns, const std::string &zone, int64_t quota = 0, int *retry_time = nullptr);
 
         /**
@@ -481,7 +481,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create zone.
          * @return Status::OK if the zone was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_zone_by_json(const std::string &json_str, int *retry_time = nullptr);
+        turbo::Status create_zone_by_json(const std::string &json_str, int *retry_time = nullptr);
 
         /**
          * @brief create_zone_by_file is used to create a zone by json file, it is a synchronous call.
@@ -489,7 +489,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create zone.
          * @return Status::OK if the zone was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_zone_by_file(const std::string &path, int *retry_time = nullptr);
+        turbo::Status create_zone_by_file(const std::string &path, int *retry_time = nullptr);
 
         /**
          * @brief remove_zone is used to remove a zone from the meta server, it is a synchronous call.
@@ -498,7 +498,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the remove zone.
          * @return Status::OK if the zone was removed successfully. Otherwise, an error status is returned. 
          */
-        collie::Status remove_zone(const std::string &ns, const std::string &zone, int *retry_time = nullptr);
+        turbo::Status remove_zone(const std::string &ns, const std::string &zone, int *retry_time = nullptr);
 
         /**
          * @brief modify_zone is used to modify a zone by parameters, it is a synchronous call.
@@ -506,7 +506,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the modify zone.
          * @return Status::OK if the zone was modified successfully. Otherwise, an error status is returned. 
          */
-        collie::Status modify_zone(sirius::proto::ZoneInfo &zone_info, int *retry_time = nullptr);
+        turbo::Status modify_zone(sirius::proto::ZoneInfo &zone_info, int *retry_time = nullptr);
 
         /**
          * @brief modify_zone_by_json is used to modify a zone by json string, it is a synchronous call.
@@ -514,7 +514,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the modify zone.
          * @return Status::OK if the zone was modified successfully. Otherwise, an error status is returned. 
          */
-        collie::Status modify_zone_by_json(const std::string &json_str, int *retry_time = nullptr);
+        turbo::Status modify_zone_by_json(const std::string &json_str, int *retry_time = nullptr);
 
         /**
          * @brief modify_zone_by_file is used to modify a zone by json file, it is a synchronous call.
@@ -522,7 +522,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the modify zone.
          * @return Status::OK if the zone was modified successfully. Otherwise, an error status is returned. 
          */
-        collie::Status modify_zone_by_file(const std::string &path, int *retry_time = nullptr);
+        turbo::Status modify_zone_by_file(const std::string &path, int *retry_time = nullptr);
 
         /**
          * @brief list_zone is used to list all zone names from the meta server, it is a synchronous call.
@@ -530,7 +530,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list zone.
          * @return Status::OK if the zone names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_zone(std::vector<sirius::proto::ZoneInfo> &zone_list, int *retry_time = nullptr);
+        turbo::Status list_zone(std::vector<sirius::proto::ZoneInfo> &zone_list, int *retry_time = nullptr);
 
         /**
          * @brief list_zone is used to list all zone names of a namespace from the meta server, it is a synchronous call.
@@ -539,7 +539,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list zone.
          * @return Status::OK if the zone names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         list_zone(const std::string &ns, std::vector<sirius::proto::ZoneInfo> &zone_list, int *retry_time = nullptr);
 
         /**
@@ -548,7 +548,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list zone.
          * @return Status::OK if the zone names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_zone(std::vector<std::string> &zone_list, int *retry_time = nullptr);
+        turbo::Status list_zone(std::vector<std::string> &zone_list, int *retry_time = nullptr);
 
         /**
          * @brief list_zone is used to list all zone names of a namespace from the meta server, it is a synchronous call.
@@ -557,7 +557,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list zone.
          * @return Status::OK if the zone names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_zone(std::string &ns, std::vector<std::string> &zone_list, int *retry_time = nullptr);
+        turbo::Status list_zone(std::string &ns, std::vector<std::string> &zone_list, int *retry_time = nullptr);
 
         /**
          * @brief list_zone_to_json is used to list all zone names from the meta server, it is a synchronous call.
@@ -565,7 +565,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list zone.
          * @return Status::OK if the zone names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_zone_to_json(std::vector<std::string> &zone_list, int *retry_time = nullptr);
+        turbo::Status list_zone_to_json(std::vector<std::string> &zone_list, int *retry_time = nullptr);
 
         /**
          * @brief list_zone_to_json is used to list all zone names of a namespace from the meta server, it is a synchronous call.
@@ -574,7 +574,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list zone.
          * @return Status::OK if the zone names were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         list_zone_to_json(const std::string &ns, std::vector<std::string> &zone_list, int *retry_time = nullptr);
 
         /**
@@ -583,7 +583,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list zone.
          * @return Status::OK if the zones were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_zone_to_file(const std::string &save_path, int *retry_time = nullptr);
+        turbo::Status list_zone_to_file(const std::string &save_path, int *retry_time = nullptr);
 
         /**
          * @brief list_zone_to_file is used to list all zone names of a namespace from the meta server, it is a synchronous call.
@@ -592,7 +592,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list zone.
          * @return Status::OK if the zones were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_zone_to_file(const std::string &ns, const std::string &save_path, int *retry_time = nullptr);
+        turbo::Status list_zone_to_file(const std::string &ns, const std::string &save_path, int *retry_time = nullptr);
 
         /**
          * @brief get_zone is used to get a zone from the meta server, it is a synchronous call.
@@ -602,7 +602,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get zone.
          * @return Status::OK if the zone was received successfully. Otherwise, an error status is returned. 
          */     
-        collie::Status get_zone(const std::string &ns_name, const std::string &zone_name, sirius::proto::ZoneInfo &zone_pb,
+        turbo::Status get_zone(const std::string &ns_name, const std::string &zone_name, sirius::proto::ZoneInfo &zone_pb,
                                int *retry_time = nullptr);
 
         /**
@@ -613,7 +613,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get zone.
          * @return Status::OK if the zone was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status get_zone_json(const std::string &ns_name, const std::string &zone_name, std::string &json_str,
+        turbo::Status get_zone_json(const std::string &ns_name, const std::string &zone_name, std::string &json_str,
                                     int *retry_time = nullptr);
 
         /**
@@ -624,7 +624,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the save zone.
          * @return Status::OK if the zone was saved successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         save_zone_json(const std::string &ns_name, const std::string &zone_name, const std::string &json_path,
                        int *retry_time = nullptr);
 
@@ -634,7 +634,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create servlet.
          * @return Status::OK if the servlet was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_servlet(sirius::proto::ServletInfo &servlet_info, int *retry_time = nullptr);
+        turbo::Status create_servlet(sirius::proto::ServletInfo &servlet_info, int *retry_time = nullptr);
 
         /**
          * @brief create_servlet is used to create a servlet by parameters, it is a synchronous call.
@@ -644,7 +644,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create servlet.
          * @return Status::OK if the servlet was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         create_servlet(const std::string &ns, const std::string &zone, const std::string &servlet,
                        int *retry_time = nullptr);
 
@@ -654,7 +654,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create servlet.
          * @return Status::OK if the servlet was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_servlet_by_json(const std::string &json_str, int *retry_time = nullptr);
+        turbo::Status create_servlet_by_json(const std::string &json_str, int *retry_time = nullptr);
 
         /**
          * @brief create_servlet_by_file is used to create a servlet by json file, it is a synchronous call.
@@ -662,7 +662,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the create servlet.
          * @return Status::OK if the servlet was created successfully. Otherwise, an error status is returned. 
          */
-        collie::Status create_servlet_by_file(const std::string &path, int *retry_time = nullptr);
+        turbo::Status create_servlet_by_file(const std::string &path, int *retry_time = nullptr);
 
 
         /**
@@ -673,7 +673,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the remove servlet.
          * @return Status::OK if the servlet was removed successfully. Otherwise, an error status is returned. 
          */
-        collie::Status remove_servlet(const std::string &ns, const std::string &zone, const std::string &servlet,
+        turbo::Status remove_servlet(const std::string &ns, const std::string &zone, const std::string &servlet,
                                      int *retry_time = nullptr);
 
         /**
@@ -682,7 +682,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the modify servlet.
          * @return Status::OK if the servlet was modified successfully. Otherwise, an error status is returned. 
          */
-        collie::Status modify_servlet(const sirius::proto::ServletInfo &servlet_info, int *retry_time = nullptr);
+        turbo::Status modify_servlet(const sirius::proto::ServletInfo &servlet_info, int *retry_time = nullptr);
 
         /**
          * @brief modify_servlet_by_json is used to modify a servlet by json string, it is a synchronous call.
@@ -690,7 +690,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the modify servlet.
          * @return Status::OK if the servlet was modified successfully. Otherwise, an error status is returned. 
          */
-        collie::Status modify_servlet_by_json(const std::string &json_str, int *retry_time = nullptr);
+        turbo::Status modify_servlet_by_json(const std::string &json_str, int *retry_time = nullptr);
 
         /**
          * @brief modify_servlet_by_file is used to modify a servlet by json file, it is a synchronous call.
@@ -698,7 +698,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the modify servlet.
          * @return Status::OK if the servlet was modified successfully. Otherwise, an error status is returned. 
          */ 
-        collie::Status modify_servlet_by_file(const std::string &path, int *retry_time = nullptr);
+        turbo::Status modify_servlet_by_file(const std::string &path, int *retry_time = nullptr);
 
         /**
          * @brief list_servlet is used to list all servlets from the meta server, it is a synchronous call.
@@ -706,7 +706,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list servlet.
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_servlet(std::vector<sirius::proto::ServletInfo> &servlet_list, int *retry_time = nullptr);
+        turbo::Status list_servlet(std::vector<sirius::proto::ServletInfo> &servlet_list, int *retry_time = nullptr);
 
         /**
          * @brief list_servlet is used to list all servlets of a namespace from the meta server, it is a synchronous call.
@@ -715,7 +715,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list servlet.
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         list_servlet(const std::string &ns, std::vector<sirius::proto::ServletInfo> &servlet_list,
                      int *retry_time = nullptr);
 
@@ -728,7 +728,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list servlet.
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         list_servlet(const std::string &ns, const std::string &zone,
                      std::vector<sirius::proto::ServletInfo> &servlet_list, int *retry_time = nullptr);
 
@@ -738,7 +738,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list servlet.
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_servlet(std::vector<std::string> &servlet_list, int *retry_time = nullptr);
+        turbo::Status list_servlet(std::vector<std::string> &servlet_list, int *retry_time = nullptr);
 
         /**
          * @brief list_servlet is used to list all servlets of a namespace from the meta server, it is a synchronous call.
@@ -747,7 +747,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list servlet.
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         list_servlet(const std::string &ns, std::vector<std::string> &servlet_list, int *retry_time = nullptr);
 
         /**
@@ -759,7 +759,7 @@ namespace sirius::client {
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
          
-        collie::Status
+        turbo::Status
         list_servlet(const std::string &ns, const std::string &zone, std::vector<std::string> &servlet_list,
                      int *retry_time = nullptr);
 
@@ -769,7 +769,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list servlet.
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_servlet_to_json(std::vector<std::string> &servlet_list, int *retry_time = nullptr);
+        turbo::Status list_servlet_to_json(std::vector<std::string> &servlet_list, int *retry_time = nullptr);
 
         /**
          * @brief list_servlet_to_json is used to list all servlets of a namespace from the meta server, it is a synchronous call.
@@ -778,7 +778,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list servlet.
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         list_servlet_to_json(const std::string &ns, std::vector<std::string> &servlet_list, int *retry_time = nullptr);
 
         /**
@@ -789,7 +789,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list servlet.
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         list_servlet_to_json(const std::string &ns, const std::string &zone, std::vector<std::string> &servlet_list,
                              int *retry_time = nullptr);
 
@@ -800,7 +800,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list servlet.
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_servlet_to_file(const std::string &save_path, int *retry_time = nullptr);
+        turbo::Status list_servlet_to_file(const std::string &save_path, int *retry_time = nullptr);
 
         /**
          * @brief list_servlet_to_file is used to list all servlets of a namespace from the meta server, it is a synchronous call.
@@ -810,7 +810,7 @@ namespace sirius::client {
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
          
-        collie::Status
+        turbo::Status
         list_servlet_to_file(const std::string &ns, const std::string &save_path, int *retry_time = nullptr);
 
         /**
@@ -821,7 +821,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the list servlet.
          * @return Status::OK if the servlets were received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status list_servlet_to_file(const std::string &ns, const std::string &zone, const std::string &save_path,
+        turbo::Status list_servlet_to_file(const std::string &ns, const std::string &zone, const std::string &save_path,
                                            int *retry_time = nullptr);
 
         /**
@@ -833,7 +833,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get servlet.
          * @return Status::OK if the servlet was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status get_servlet(const std::string &ns_name, const std::string &zone_name, const std::string &servlet,
+        turbo::Status get_servlet(const std::string &ns_name, const std::string &zone_name, const std::string &servlet,
                                   sirius::proto::ServletInfo &servlet_pb,
                                   int *retry_time = nullptr);
 
@@ -846,7 +846,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the get servlet.
          * @return Status::OK if the servlet was received successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         get_servlet_json(const std::string &ns_name, const std::string &zone_name, const std::string &servlet,
                          std::string &json_str,
                          int *retry_time = nullptr);
@@ -860,7 +860,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the save servlet.
          * @return Status::OK if the servlet was saved successfully. Otherwise, an error status is returned. 
          */
-        collie::Status
+        turbo::Status
         save_servlet_json(const std::string &ns_name, const std::string &zone_name, const std::string &servlet,
                           const std::string &json_path,
                           int *retry_time = nullptr);
@@ -872,7 +872,7 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the meta manager.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        collie::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+        turbo::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                    sirius::proto::DiscoveryManagerResponse &response, int *retry_time);
 
         /**
@@ -882,14 +882,14 @@ namespace sirius::client {
          * @param retry_time [input] is the retry times of the meta manager.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        collie::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+        turbo::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                  sirius::proto::DiscoveryQueryResponse &response, int *retry_time);
 
     private:
         BaseMessageSender *_sender;
     };
 
-    inline collie::Status DiscoveryClient::discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+    inline turbo::Status DiscoveryClient::discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                                   sirius::proto::DiscoveryManagerResponse &response, int *retry_time) {
         if (!retry_time) {
             return _sender->discovery_manager(request, response);
@@ -897,7 +897,7 @@ namespace sirius::client {
         return _sender->discovery_manager(request, response, *retry_time);
     }
 
-    inline collie::Status DiscoveryClient::discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+    inline turbo::Status DiscoveryClient::discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                                 sirius::proto::DiscoveryQueryResponse &response, int *retry_time) {
         if (!retry_time) {
             return _sender->discovery_query(request, response);

@@ -24,10 +24,11 @@
 
 #include <collie/cli/cli.h>
 #include <sirius/proto/discovery.interface.pb.h>
-#include <collie/utility/result.h>
+#include <turbo/status/result.h>
 #include <collie/table/table.h>
 #include <string>
 #include <sirius/client/config_client.h>
+#include <melon/naming/sns_naming_service.h>
 
 namespace sirius::cli {
 
@@ -39,7 +40,7 @@ namespace sirius::cli {
         }
 
         // for config
-        std::string namespace_name;
+        std::string app_name;
         std::string servlet_name;
         std::string zone_name;
         std::string env;
@@ -48,8 +49,11 @@ namespace sirius::cli {
         std::string address;
         std::string dump_file;
         std::string json_file;
+        std::vector<std::string> zones;
+        std::vector<std::string> colors;
+        std::vector<std::string> envs;
+        uint32_t    fibers{10};
         bool quiet{false};
-        int64_t weight{-1};
     };
 
     struct DiscoveryCmd {
@@ -58,6 +62,8 @@ namespace sirius::cli {
         static void run_discovery_cmd(collie::App *app);
 
         static void run_discovery_add_instance_cmd();
+
+        static void run_mock_instance_cmd();
 
         static void run_discovery_remove_instance_cmd();
 
@@ -69,22 +75,22 @@ namespace sirius::cli {
 
         static void run_discovery_dump_cmd();
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_discovery_add_instance(sirius::proto::DiscoveryManagerRequest *req);
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_discovery_remove_instance(sirius::proto::DiscoveryManagerRequest *req);
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_discovery_update_instance(sirius::proto::DiscoveryManagerRequest *req);
 
-        [[nodiscard]] static collie::Status
+        [[nodiscard]] static turbo::Status
         make_discovery_list_instance(sirius::proto::DiscoveryQueryRequest *req);
 
-        [[nodiscard]] static collie::Status
-        make_discovery_info_instance(sirius::proto::DiscoveryQueryRequest *req);
+        [[nodiscard]] static turbo::Status
+        make_discovery_info_instance(melon::SnsRequest *req);
 
-        [[nodiscard]] static collie::Result<sirius::proto::Status> string_to_status(const std::string &status);
+        [[nodiscard]] static turbo::Result<int> string_to_status(const std::string &status);
 
         static collie::table::Table show_query_instance_list_response(const sirius::proto::DiscoveryQueryResponse &res);
         static collie::table::Table show_query_instance_info_response(const sirius::proto::DiscoveryQueryResponse &res);

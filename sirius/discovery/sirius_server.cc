@@ -17,20 +17,19 @@
 //
 
 
-#include <sirius/discovery/discovery_server.h>
+#include <sirius/discovery/sirius_server.h>
 #include <sirius/discovery/auto_incr_state_machine.h>
 #include <sirius/discovery/tso_state_machine.h>
-#include <sirius/discovery/discovery_state_machine.h>
+#include <sirius/discovery/sirius_state_machine.h>
 #include <sirius/discovery/privilege_manager.h>
 #include <sirius/discovery/schema_manager.h>
 #include <sirius/discovery/config_manager.h>
 #include <sirius/discovery/query_config_manager.h>
 #include <sirius/discovery/query_privilege_manager.h>
-#include <sirius/discovery/query_namespace_manager.h>
-#include <sirius/discovery/query_instance_manager.h>
+#include <sirius/discovery/query_app_manager.h>
 #include <sirius/discovery/query_zone_manager.h>
 #include <sirius/discovery/query_servlet_manager.h>
-#include <sirius/discovery/discovery_rocksdb.h>
+#include <sirius/discovery/sirius_db.h>
 
 namespace sirius::discovery {
 
@@ -39,50 +38,50 @@ namespace sirius::discovery {
     int DiscoveryServer::init(const std::vector<melon::raft::PeerId> &peers) {
         auto ret = DiscoveryRocksdb::get_instance()->init();
         if (ret < 0) {
-            SS_LOG(ERROR) << "rocksdb init fail";
+            LOG(ERROR) << "rocksdb init fail";
             return -1;
         }
         mutil::EndPoint addr;
-        mutil::str2endpoint(FLAGS_discovery_listen.c_str(), &addr);
+        mutil::str2endpoint(FLAGS_sirius_listen.c_str(), &addr);
         //addr.ip = mutil::my_ip();
         //addr.port = FLAGS_discovery_port;
         melon::raft::PeerId peer_id(addr, 0);
         _discovery_state_machine = new(std::nothrow)DiscoveryStateMachine(peer_id);
         if (_discovery_state_machine == nullptr) {
-            SS_LOG(ERROR) << "new discovery_state_machine fail";
+            LOG(ERROR) << "new discovery_state_machine fail";
             return -1;
         }
         //state_machine初始化
         ret = _discovery_state_machine->init(peers);
         if (ret != 0) {
-            SS_LOG(ERROR) << "discovery state machine init fail";
+            LOG(ERROR) << "discovery state machine init fail";
             return -1;
         }
-        SS_LOG(WARN) << "discovery state machine init success";
+        LOG(WARNING) << "discovery state machine init success";
 
         _auto_incr_state_machine = new(std::nothrow)AutoIncrStateMachine(peer_id);
         if (_auto_incr_state_machine == nullptr) {
-            SS_LOG(ERROR) << "new auot_incr_state_machine fail";
+            LOG(ERROR) << "new auot_incr_state_machine fail";
             return -1;
         }
         ret = _auto_incr_state_machine->init(peers);
         if (ret != 0) {
-            SS_LOG(ERROR) << "auot_incr_state_machine init fail";
+            LOG(ERROR) << "auot_incr_state_machine init fail";
             return -1;
         }
-        SS_LOG(WARN) << "auot_incr_state_machine init success";
+        LOG(WARNING) << "auot_incr_state_machine init success";
 
         _tso_state_machine = new(std::nothrow)TSOStateMachine(peer_id);
         if (_tso_state_machine == nullptr) {
-            SS_LOG(ERROR) << "new _tso_state_machine fail";
+            LOG(ERROR) << "new _tso_state_machine fail";
             return -1;
         }
         ret = _tso_state_machine->init(peers);
         if (ret != 0) {
-            SS_LOG(ERROR) << " _tso_state_machine init fail";
+            LOG(ERROR) << " _tso_state_machine init fail";
             return -1;
         }
-        SS_LOG(INFO) << " tso state machine init success";
+        LOG(INFO) << " tso state machine init success";
 
         SchemaManager::get_instance()->set_discovery_state_machine(_discovery_state_machine);
         ConfigManager::get_instance()->set_discovery_state_machine(_discovery_state_machine);
@@ -99,14 +98,14 @@ namespace sirius::discovery {
                 return;
             }
             auto rocksdb = RocksStorage::get_instance();
-            rocksdb::FlushOptions flush_options;
+            mizar::FlushOptions flush_options;
             auto status = rocksdb->flush(flush_options, rocksdb->get_meta_info_handle());
             if (!status.ok()) {
-                SS_LOG(WARN) << "flush discovery info to rocksdb fail, err_msg:" << status.ToString();
+                LOG(WARNING) << "flush discovery info to rocksdb fail, err_msg:" << status.ToString();
             }
             status = rocksdb->flush(flush_options, rocksdb->get_raft_log_handle());
             if (!status.ok()) {
-                SS_LOG(WARN) << "flush log_cf to rocksdb fail, err_msg:" << status.ToString();
+                LOG(WARNING) << "flush log_cf to rocksdb fail, err_msg:" << status.ToString();
             }
         }
     }
@@ -143,9 +142,6 @@ namespace sirius::discovery {
             || request->op_type() == sirius::proto::OP_CREATE_SERVLET
             || request->op_type() == sirius::proto::OP_DROP_SERVLET
             || request->op_type() == sirius::proto::OP_MODIFY_SERVLET
-            || request->op_type() == sirius::proto::OP_ADD_INSTANCE
-            || request->op_type() == sirius::proto::OP_DROP_INSTANCE
-            || request->op_type() == sirius::proto::OP_UPDATE_INSTANCE
             || request->op_type() == sirius::proto::OP_MODIFY_RESOURCE_TAG
             || request->op_type() == sirius::proto::OP_UPDATE_MAIN_LOGICAL_ROOM) {
             SchemaManager::get_instance()->process_schema_info(controller,
@@ -174,7 +170,7 @@ namespace sirius::discovery {
         }
 
 
-        SS_LOG(ERROR) << "request has wrong op_type:" << request->op_type() << ", log_id:" << log_id;
+        LOG(ERROR) << "request has wrong op_type:" << request->op_type() << ", log_id:" << log_id;
         response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
         response->set_errmsg("invalid op_type");
         response->set_op_type(request->op_type());
@@ -202,8 +198,8 @@ namespace sirius::discovery {
                 QueryPrivilegeManager::get_instance()->get_user_info(request, response);
                 break;
             }
-            case sirius::proto::QUERY_NAMESPACE: {
-                QueryNamespaceManager::get_instance()->get_namespace_info(request, response);
+            case sirius::proto::QUERY_APP: {
+                QueryAppManager::get_instance()->get_app_info(request, response);
                 break;
             }
             case sirius::proto::QUERY_ZONE: {
@@ -231,24 +227,34 @@ namespace sirius::discovery {
                 QueryPrivilegeManager::get_instance()->get_flatten_servlet_privilege(request, response);
                 break;
             }
-            case sirius::proto::QUERY_INSTANCE: {
-                QueryInstanceManager::get_instance()->query_instance(request, response);
-                break;
-            }
-            case sirius::proto::QUERY_INSTANCE_FLATTEN: {
-                QueryInstanceManager::get_instance()->query_instance_flatten(request, response);
-                break;
-            }
 
             default: {
-                SS_LOG(WARN) << "invalid op_type, request: " << request->ShortDebugString() << ", log_id: " << log_id;
+                LOG(WARNING) << "invalid op_type, request: " << request->ShortDebugString() << ", log_id: " << log_id;
                 response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
                 response->set_errmsg("invalid op_type");
             }
         }
-        SS_LOG(INFO) << "query op_type_name:" << sirius::proto::QueryOpType_Name(request->op_type())
+        LOG(INFO) << "query op_type_name:" << sirius::proto::QueryOpType_Name(request->op_type())
                      << ", time_cost:" << time_cost.get_time() << ", log_id:" << log_id
                      << ", ip:" << remote_side << ", request: " << request->ShortDebugString();
+    }
+
+    void DiscoveryServer::naming(google::protobuf::RpcController *controller,
+                const sirius::proto::ServletNamingRequest *request,
+                sirius::proto::ServletNamingResponse *response,
+                google::protobuf::Closure *done) {
+        melon::ClosureGuard done_guard(done);
+        melon::Controller *cntl =
+                static_cast<melon::Controller *>(controller);
+        const auto &remote_side_tmp = mutil::endpoint2str(cntl->remote_side());
+        //const char *remote_side = remote_side_tmp.c_str();
+        uint64_t log_id = 0;
+        if (cntl->has_log_id()) {
+            log_id = cntl->log_id();
+        }
+        RETURN_IF_NOT_INIT(_init_success, response, log_id);
+        auto * query_app_manager = QueryAppManager::get_instance();
+        query_app_manager->naming(request, response);
     }
 
     void DiscoveryServer::raft_control(google::protobuf::RpcController *controller,
@@ -271,7 +277,7 @@ namespace sirius::discovery {
         response->set_region_id(request->region_id());
         response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
         response->set_errmsg("unmatch region id");
-        SS_LOG(ERROR) << "unmatch region_id in discovery server, request: " << request->ShortDebugString();
+        LOG(ERROR) << "unmatch region_id in discovery server, request: " << request->ShortDebugString();
     }
 
 
@@ -313,7 +319,7 @@ namespace sirius::discovery {
 
     void DiscoveryServer::close() {
         _flush_bth.join();
-        SS_LOG(INFO) << "DiscoveryServer flush joined";
+        LOG(INFO) << "DiscoveryServer flush joined";
     }
 
 }  // namespace sirius::discovery

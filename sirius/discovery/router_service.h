@@ -23,6 +23,7 @@
 #pragma once
 
 #include <sirius/client/discovery_sender.h>
+#include <melon/proto/rpc/sns.pb.h>
 
 namespace sirius::discovery {
 
@@ -34,7 +35,7 @@ namespace sirius::discovery {
             return &ins;
         }
 
-        collie::Status init(const std::string &discovery_peers);
+        turbo::Status init(const std::string &discovery_peers);
 
         ~RouterServiceImpl()  = default;
 
@@ -47,7 +48,6 @@ namespace sirius::discovery {
                         const ::sirius::proto::DiscoveryQueryRequest *request,
                         ::sirius::proto::DiscoveryQueryResponse *response,
                         ::google::protobuf::Closure *done) override;
-
     private:
         bool _is_init;
         client::DiscoverySender _manager_sender;
@@ -55,3 +55,38 @@ namespace sirius::discovery {
     };
 
 }  // namespace sirius::discovery
+namespace melon {
+    class SnsServiceImpl : public melon::SnsService {
+    public:
+
+        static SnsServiceImpl* get_instance() {
+            static SnsServiceImpl ins;
+            return &ins;
+        }
+
+        turbo::Status init(const std::string &discovery_peers);
+
+        void registry(::google::protobuf::RpcController* controller,
+                      const ::melon::SnsPeer* request,
+                      ::melon::SnsResponse* response,
+                      ::google::protobuf::Closure* done) override;
+        void update(::google::protobuf::RpcController* controller,
+                    const ::melon::SnsPeer* request,
+                    ::melon::SnsResponse* response,
+                    ::google::protobuf::Closure* done) override;
+        void cancel(::google::protobuf::RpcController* controller,
+                    const ::melon::SnsPeer* request,
+                    ::melon::SnsResponse* response,
+                    ::google::protobuf::Closure* done) override;
+        void naming(::google::protobuf::RpcController* controller,
+                    const ::melon::SnsRequest* request,
+                    ::melon::SnsResponse* response,
+                    ::google::protobuf::Closure* done) override;
+
+    private:
+        bool _is_init;
+        sirius::client::DiscoverySender _manager_sender;
+        sirius::client::DiscoverySender _query_sender;
+    };
+}
+

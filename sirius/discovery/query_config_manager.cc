@@ -37,7 +37,7 @@ namespace sirius::discovery {
             response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
             return;
         }
-        turbo::ModuleVersion version;
+        collie::ModuleVersion version;
 
         if (!request->has_config_version()) {
             // use newest
@@ -49,7 +49,7 @@ namespace sirius::discovery {
             return;
         }
         auto &request_version = request->config_version();
-        version = turbo::ModuleVersion(request_version.major(), request_version.minor(), request_version.patch());
+        version = collie::ModuleVersion(request_version.major(), request_version.minor(), request_version.patch());
 
         auto cit = it->second.find(version);
         if (cit == it->second.end()) {

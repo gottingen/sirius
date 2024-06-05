@@ -24,7 +24,7 @@
 #define EA_CLIENT_SERVLET_INSTANCE_BUILDER_H_
 
 #include <sirius/proto/discovery.struct.pb.h>
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 
 namespace sirius::client {
 
@@ -49,7 +49,7 @@ namespace sirius::client {
     public:
         ServletInstanceBuilder() = default;
 
-        explicit ServletInstanceBuilder(sirius::proto::ServletInstance *ins);
+        explicit ServletInstanceBuilder(sirius::proto::ServletInfo *ins);
 
         ~ServletInstanceBuilder() = default;
 
@@ -59,21 +59,21 @@ namespace sirius::client {
          *
          * @param ins the ConfigInfo object to build
          */
-        void set(sirius::proto::ServletInstance *ins);
+        void set(sirius::proto::ServletInfo *ins);
 
         /**
          *
          * @param json_str [input] the json string to build ConfigInfo object.
          * @return Status::OK if the ConfigInfo object was built successfully. Otherwise, an error status is returned.
          */
-        collie::Status build_from_json(const std::string &json_str);
+        turbo::Status build_from_json(const std::string &json_str);
 
         /**
          *
          * @param json_path [input] the json file path to build ConfigInfo object.
          * @return Status::OK if the ConfigInfo object was built successfully. Otherwise, an error status is returned.
          */
-        collie::Status build_from_json_file(const std::string &json_path);
+        turbo::Status build_from_json_file(const std::string &json_path);
 
         /**
          *
@@ -111,12 +111,6 @@ namespace sirius::client {
          */
         ServletInstanceBuilder &set_env(const std::string &env);
 
-        /**
-         *
-         * @param user [input] the user to set.
-         * @return the ServletInstanceBuilder.
-         */
-        ServletInstanceBuilder &set_user(const std::string &user);
 
         /**
          *
@@ -145,24 +139,11 @@ namespace sirius::client {
          * @param status [input] the status to set.
          * @return the ServletInstanceBuilder.
          */        
-        ServletInstanceBuilder &set_status(const sirius::proto::Status &status);
+        ServletInstanceBuilder &set_status(int status);
 
-        /**
-         *
-         * @param weight [input] the weight to set.
-         * @return the ServletInstanceBuilder.
-         */
-        ServletInstanceBuilder &set_weight(int weight);
-
-        /**
-         *
-         * @param time [input] the time to set.
-         * @return the ServletInstanceBuilder.
-         */
-        ServletInstanceBuilder &set_time(int time);
 
     private:
-        sirius::proto::ServletInstance *_instance;
+        sirius::proto::ServletInfo *_instance;
     };
 }  // namespace sirius::client
 

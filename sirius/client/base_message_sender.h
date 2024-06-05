@@ -20,7 +20,7 @@
 #ifndef EA_CLIENT_BASE_MESSAGE_SENDER_H_
 #define EA_CLIENT_BASE_MESSAGE_SENDER_H_
 
-#include <collie/utility/status.h>
+#include <turbo/status/status.h>
 #include <sirius/proto/discovery.interface.pb.h>
 
 namespace sirius::client {
@@ -42,7 +42,7 @@ namespace sirius::client {
          * @param retry_times [input] is the number of times to retry sending the request.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        virtual collie::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+        virtual turbo::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                                                      sirius::proto::DiscoveryManagerResponse &response, int retry_times) = 0;
         /**
          * @brief discovery_manager is used to send a DiscoveryManagerRequest to the meta server.
@@ -50,7 +50,7 @@ namespace sirius::client {
          * @param response [output] is the MetaManagerResponse received from the meta server.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */        
-        virtual collie::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
+        virtual turbo::Status discovery_manager(const sirius::proto::DiscoveryManagerRequest &request,
                                            sirius::proto::DiscoveryManagerResponse &response) = 0;
 
         /**
@@ -60,7 +60,7 @@ namespace sirius::client {
          * @param retry_times [input] is the number of times to retry sending the request.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned.
          */
-        virtual collie::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+        virtual turbo::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                                     sirius::proto::DiscoveryQueryResponse &response, int retry_times) = 0;
         /**
          * @brief discovery_query is used to send a DiscoveryQueryRequest to the meta server.
@@ -68,8 +68,14 @@ namespace sirius::client {
          * @param response [output] is the DiscoveryQueryResponse received from the meta server.
          * @return Status::OK if the request was sent successfully. Otherwise, an error status is returned. 
          */
-        virtual collie::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
+        virtual turbo::Status discovery_query(const sirius::proto::DiscoveryQueryRequest &request,
                                          sirius::proto::DiscoveryQueryResponse &response) = 0;
+
+        virtual turbo::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                        sirius::proto::ServletNamingResponse &response, int retry_time)  = 0;
+
+        virtual turbo::Status discovery_naming(const sirius::proto::ServletNamingRequest &request,
+                                                sirius::proto::ServletNamingResponse &response)  = 0;
     };
 }  // namespace sirius::client
 

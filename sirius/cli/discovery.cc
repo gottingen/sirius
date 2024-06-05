@@ -32,46 +32,71 @@
 #include <sirius/client/dumper.h>
 #include <sirius/client/loader.h>
 #include <sirius/client/servlet_instance_builder.h>
-#include <sirius/cli/namespace_cmd.h>
+#include <sirius/cli/app_cmd.h>
 #include <sirius/cli/zone_cmd.h>
 #include <sirius/cli/atomic_cmd.h>
 #include <sirius/cli/servlet_cmd.h>
 #include <sirius/cli/config_cmd.h>
 #include <sirius/cli/user_cmd.h>
+#include <turbo/strings/numbers.h>
+#include <melon/naming/sns_naming_service.h>
+#include <gflags/gflags.h>
+#include <collie/strings/format.h>
 
 
 namespace sirius::cli {
+
+    static int seq_id() {
+        static std::atomic<int> seq{0};
+        return seq++;
+    }
+
     void DiscoveryCmd::setup_discovery_cmd(collie::App &app) {
         // Create the option and subcommand objects.
         auto opt = DiscoveryOptionContext::get_instance();
         auto *discovery_cmd = app.add_subcommand("discovery", "discovery operations");
         discovery_cmd->callback([discovery_cmd]() { run_discovery_cmd(discovery_cmd); });
-        setup_namespace_cmd(*discovery_cmd);
+        setup_app_cmd(*discovery_cmd);
         setup_zone_cmd(*discovery_cmd);
         ConfigCmd::setup_config_cmd(*discovery_cmd);
         setup_servlet_cmd(*discovery_cmd);
         setup_user_cmd(*discovery_cmd);
         AtomicCmd::setup_atomic_cmd(*discovery_cmd);
 
-        auto dai = discovery_cmd->add_subcommand("add_instance", " create a instance");
+        auto dai = discovery_cmd->add_subcommand("mock", " mock servlet serving");
         auto *add_parameters_inputs = dai->add_option_group("parameters_inputs", "config input from parameters");
         auto *add_json_inputs = dai->add_option_group("json_inputs", "config input source from json format");
-        add_parameters_inputs->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
+        add_parameters_inputs->add_option("-n,--app", opt->app_name, "app name")->required();
         add_parameters_inputs->add_option("-z,--zone", opt->zone_name, "zone name")->required();
         add_parameters_inputs->add_option("-s,--servlet", opt->servlet_name, "servlet name")->required();
         add_parameters_inputs->add_option("-a, --address", opt->address, "instance address")->required();
         add_parameters_inputs->add_option("-e, --env", opt->env, "instance env")->required();
         add_parameters_inputs->add_option("-c, --color", opt->color, "instance color")->default_val("default");
         add_parameters_inputs->add_option("-t, --status", opt->status, "instance color")->default_val("NORMAL");
-        add_parameters_inputs->add_option("-w, --weight", opt->weight, "instance weight");
+        add_parameters_inputs->add_option("-f, --fiber", opt->fibers, "instance color")->default_val(10);
+        add_json_inputs->add_option("-j, --json", opt->json_file, "json input file")->required(true);
+        dai->require_option(1);
+        dai->callback([]() { run_mock_instance_cmd(); });
+
+        /*
+        auto dai = discovery_cmd->add_subcommand("add_instance", " create a instance");
+        auto *add_parameters_inputs = dai->add_option_group("parameters_inputs", "config input from parameters");
+        auto *add_json_inputs = dai->add_option_group("json_inputs", "config input source from json format");
+        add_parameters_inputs->add_option("-n,--app", opt->app_name, "app name")->required();
+        add_parameters_inputs->add_option("-z,--zone", opt->zone_name, "zone name")->required();
+        add_parameters_inputs->add_option("-s,--servlet", opt->servlet_name, "servlet name")->required();
+        add_parameters_inputs->add_option("-a, --address", opt->address, "instance address")->required();
+        add_parameters_inputs->add_option("-e, --env", opt->env, "instance env")->required();
+        add_parameters_inputs->add_option("-c, --color", opt->color, "instance color")->default_val("default");
+        add_parameters_inputs->add_option("-t, --status", opt->status, "instance color")->default_val("NORMAL");
         add_json_inputs->add_option("-j, --json", opt->json_file, "json input file")->required(true);
         dai->require_option(1);
         dai->callback([]() { run_discovery_add_instance_cmd(); });
-
+        */
         auto dri = discovery_cmd->add_subcommand("remove_instance", " remove a instance");
         auto *remove_parameters_inputs = dri->add_option_group("parameters_inputs", "config input from parameters");
         auto *remove_json_inputs = dri->add_option_group("json_inputs", "config input source from json format");
-        remove_parameters_inputs->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
+        remove_parameters_inputs->add_option("-n,--app", opt->app_name, "app name")->required();
         remove_parameters_inputs->add_option("-z,--zone", opt->zone_name, "zone name")->required();
         remove_parameters_inputs->add_option("-s,--servlet", opt->servlet_name, "servlet name")->required();
         remove_parameters_inputs->add_option("-a, --address", opt->address, "instance address")->required();
@@ -83,30 +108,31 @@ namespace sirius::cli {
         auto dui = discovery_cmd->add_subcommand("update_instance", " create a instance");
         auto *update_parameters_inputs = dui->add_option_group("parameters_inputs", "config input from parameters");
         auto *update_json_inputs = dui->add_option_group("json_inputs", "config input source from json format");
-        update_parameters_inputs->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
+        update_parameters_inputs->add_option("-n,--app", opt->app_name, "app name")->required();
         update_parameters_inputs->add_option("-z,--zone", opt->zone_name, "zone name")->required();
         update_parameters_inputs->add_option("-s,--servlet", opt->servlet_name, "servlet name")->required();
         update_parameters_inputs->add_option("-a, --address", opt->address, "instance address")->required();
         update_parameters_inputs->add_option("-e, --env", opt->env, "instance env")->required();
         update_parameters_inputs->add_option("-c, --color", opt->color, "instance color")->default_val("default");
         update_parameters_inputs->add_option("-t, --status", opt->status, "instance color")->default_val("NORMAL");
-        update_parameters_inputs->add_option("-w, --weight", opt->weight, "instance weight");
         update_json_inputs->add_option("-j, --json", opt->json_file, "json input file")->required(true);
         dui->require_option(1);
         dui->callback([]() { run_discovery_update_instance_cmd(); });
 
         auto dl = discovery_cmd->add_subcommand("list", "list instance");
-        dl->add_option("-n,--namespace", opt->namespace_name, "namespace name");
+        dl->add_option("-n,--app", opt->app_name, "app name");
         dl->add_option("-z,--zone", opt->zone_name, "zone name");
         dl->add_option("-s,--servlet", opt->servlet_name, "servlet name");
         dl->add_option("-a, --address", opt->address, "instance address");
         dl->callback([]() { run_discovery_list_instance_cmd(); });
 
-        auto di = discovery_cmd->add_subcommand("info", "info instance");
-        di->add_option("-n,--namespace", opt->namespace_name, "namespace name")->required();
-        di->add_option("-z,--zone", opt->zone_name, "zone name")->required();
-        di->add_option("-s,--servlet", opt->servlet_name, "servlet name")->required();
-        di->add_option("-a, --address", opt->address, "instance address")->required();
+
+        auto di = discovery_cmd->add_subcommand("naming", "info instance");
+        di->add_option("-n,--app", opt->app_name, "app name")->required();
+        di->add_option("-z,--zone", opt->zones, "zone name")->required();
+        di->add_option("-e,--env", opt->envs, "env name")->required();
+        di->add_option("-c, --color", opt->colors, "color")->required();
+        di->add_option("-t, --status", opt->status, "instance status")->default_val("NORMAL");
         di->callback([]() { run_discovery_info_instance_cmd(); });
 
 
@@ -139,6 +165,70 @@ namespace sirius::cli {
                                                request.op_type(),
                                                response.errmsg());
         ss.add_table("result", std::move(table));
+    }
+
+    static void* run_mock(bool& stop) {
+        auto ctx = DiscoveryOptionContext::get_instance();
+
+        melon::SnsPeer instance;
+        instance.set_app_name(ctx->app_name);
+        instance.set_zone(ctx->zone_name);
+        auto i = seq_id();
+        instance.set_servlet_name(ctx->servlet_name + collie::to_str(i));
+        instance.set_env(ctx->env);
+        instance.set_color(ctx->color);
+        instance.set_status(melon::PeerStatus::NORMAL);
+        instance.set_address(ctx->address);
+        melon::naming::SnsNamingClient sns_naming;
+        auto rs = sns_naming.register_peer(instance);
+        if (rs != 0) {
+            collie::println("register server error");
+            return nullptr;
+        }
+
+        collie::println("register server:{}.{}.{}#{} {} {} {} {}",
+                        instance.app_name(), instance.zone(),
+                        instance.servlet_name(), instance.address(),
+                        instance.env(), instance.color(),
+                        instance.mtime(), static_cast<int>(instance.status()));
+        while (!stop) {
+            fiber_usleep(3 *1000 * 1000);
+        }
+        return nullptr;
+    };
+
+    void DiscoveryCmd::run_mock_instance_cmd() {
+        bool stop = false;
+        auto ctx = DiscoveryOptionContext::get_instance();
+        std::string sns_server = "list://" + OptionContext::get_instance()->router_server;
+        google::SetCommandLineOption("sns_server", sns_server.c_str());
+        std::vector< melon::SnsPeer> instances(ctx->fibers);
+        std::vector<std::unique_ptr<melon::naming::SnsNamingClient>> clients(ctx->fibers);
+        for (size_t i = 0; i < ctx->fibers; i++) {
+            auto &instance = instances[i];
+            instance.set_app_name(ctx->app_name);
+            instance.set_zone(ctx->zone_name);
+            instance.set_servlet_name(ctx->servlet_name + collie::to_str(i));
+            instance.set_env(ctx->env);
+            instance.set_color(ctx->color);
+            instance.set_status(melon::PeerStatus::NORMAL);
+            instance.set_address(ctx->address);
+            clients[i] = std::make_unique<melon::naming::SnsNamingClient>();
+            auto rs = clients[i]->register_peer(instance);
+            if (rs != 0) {
+                collie::println("register server error");
+                return;
+            }
+        }
+        size_t n = 1000;
+        while (n > 0) {
+            fiber_usleep(5* 1000 * 1000);
+            n--;
+        }
+        stop = true;
+        for (auto &client: clients) {
+            client.reset();
+        }
     }
 
     void DiscoveryCmd::run_discovery_remove_instance_cmd() {
@@ -188,11 +278,40 @@ namespace sirius::cli {
     }
 
     void DiscoveryCmd::run_discovery_info_instance_cmd() {
-        sirius::proto::DiscoveryQueryRequest request;
-        sirius::proto::DiscoveryQueryResponse response;
+        melon::ChannelOptions channel_opt;
+        channel_opt.timeout_ms =  OptionContext::get_instance()->timeout_ms;
+        channel_opt.connect_timeout_ms = OptionContext::get_instance()->connect_timeout_ms;
+        melon::Channel short_channel;
+        if (short_channel.Init(OptionContext::get_instance()->router_server.c_str(), &channel_opt) != 0) {
+            collie::println("connect with router server fail. channel Init fail, leader_addr:{}",
+                            OptionContext::get_instance()->router_server);
+            return;
+        }
+        melon::Controller cntl;
+        melon::SnsService_Stub stub(&short_channel);
+        melon::SnsResponse response;
+        melon::SnsRequest request;
 
         ScopeShower ss;
         auto rs = make_discovery_info_instance(&request);
+        stub.naming(&cntl, &request, &response, nullptr);
+        if (cntl.Failed()) {
+            collie::println("rpc to discovery server:discovery_manager error:{}", cntl.ErrorText());
+            return;
+        }
+        auto &ins = response.servlets();
+        collie::println("instance num:{}", ins.size());
+        collie::println("message:{}", response.errmsg());
+        int cnt = 1;
+        for (auto &instance: ins) {
+            collie::println("[cnt: {}] {}.{}.{}#{} {} {} {} {}",cnt++,
+                            instance.app_name(), instance.zone(),
+                            instance.servlet_name(), instance.address(),
+                            instance.env(), instance.color(),
+                            instance.mtime(), static_cast<int>(instance.status()));
+
+        }
+        /*
         PREPARE_ERROR_RETURN_OR_OK(ss, rs, request);
         rs = sirius::client::DiscoveryClient::get_instance()->discovery_query(request, response, nullptr);
         RPC_ERROR_RETURN_OR_OK(ss, rs, request);
@@ -203,18 +322,19 @@ namespace sirius::cli {
             table = show_query_instance_info_response(response);
             ss.add_table("summary", std::move(table), true);
         }
+         */
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     DiscoveryCmd::make_discovery_add_instance(sirius::proto::DiscoveryManagerRequest *req) {
-        sirius::proto::ServletInstance *instance_req = req->mutable_instance_info();
-        req->set_op_type(sirius::proto::OP_ADD_INSTANCE);
+        sirius::proto::ServletInfo *instance_req = req->mutable_servlet_info();
+        req->set_op_type(sirius::proto::OP_CREATE_SERVLET);
         if (!DiscoveryOptionContext::get_instance()->json_file.empty()) {
             auto rs = sirius::client::Loader::load_proto_from_file(DiscoveryOptionContext::get_instance()->json_file,
                                                                *instance_req);
             return rs;
         }
-        auto rs = check_valid_name_type(DiscoveryOptionContext::get_instance()->namespace_name);
+        auto rs = check_valid_name_type(DiscoveryOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
@@ -230,30 +350,26 @@ namespace sirius::cli {
         if (!status.ok()) {
             return status.status();
         }
-        instance_req->set_namespace_name(DiscoveryOptionContext::get_instance()->namespace_name);
-        instance_req->set_zone_name(DiscoveryOptionContext::get_instance()->zone_name);
+        instance_req->set_app_name(DiscoveryOptionContext::get_instance()->app_name);
+        instance_req->set_zone(DiscoveryOptionContext::get_instance()->zone_name);
         instance_req->set_servlet_name(DiscoveryOptionContext::get_instance()->servlet_name);
         instance_req->set_color(DiscoveryOptionContext::get_instance()->color);
         instance_req->set_env(DiscoveryOptionContext::get_instance()->env);
-        instance_req->set_status(status.value_or_die());
+        instance_req->set_status(status.value());
         instance_req->set_address(DiscoveryOptionContext::get_instance()->address);
-        if (DiscoveryOptionContext::get_instance()->weight != -1) {
-            instance_req->set_weight(DiscoveryOptionContext::get_instance()->weight);
-        }
-        instance_req->set_timestamp(static_cast<int>(::time(nullptr)));
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     DiscoveryCmd::make_discovery_remove_instance(sirius::proto::DiscoveryManagerRequest *req) {
-        sirius::proto::ServletInstance *instance_req = req->mutable_instance_info();
-        req->set_op_type(sirius::proto::OP_DROP_INSTANCE);
+        sirius::proto::ServletInfo *instance_req = req->mutable_servlet_info();
+        req->set_op_type(sirius::proto::OP_DROP_SERVLET);
         if (!DiscoveryOptionContext::get_instance()->json_file.empty()) {
             auto rs = sirius::client::Loader::load_proto_from_file(DiscoveryOptionContext::get_instance()->json_file,
                                                                *instance_req);
             return rs;
         }
-        auto rs = check_valid_name_type(DiscoveryOptionContext::get_instance()->namespace_name);
+        auto rs = check_valid_name_type(DiscoveryOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
@@ -266,24 +382,24 @@ namespace sirius::cli {
             return rs;
         }
 
-        instance_req->set_namespace_name(DiscoveryOptionContext::get_instance()->namespace_name);
-        instance_req->set_zone_name(DiscoveryOptionContext::get_instance()->zone_name);
+        instance_req->set_app_name(DiscoveryOptionContext::get_instance()->app_name);
+        instance_req->set_zone(DiscoveryOptionContext::get_instance()->zone_name);
         instance_req->set_servlet_name(DiscoveryOptionContext::get_instance()->servlet_name);
         instance_req->set_address(DiscoveryOptionContext::get_instance()->address);
 
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     DiscoveryCmd::make_discovery_update_instance(sirius::proto::DiscoveryManagerRequest *req) {
-        sirius::proto::ServletInstance *instance_req = req->mutable_instance_info();
-        req->set_op_type(sirius::proto::OP_UPDATE_INSTANCE);
+        sirius::proto::ServletInfo *instance_req = req->mutable_servlet_info();
+        req->set_op_type(sirius::proto::OP_MODIFY_SERVLET);
         if (!DiscoveryOptionContext::get_instance()->json_file.empty()) {
             auto rs = sirius::client::Loader::load_proto_from_file(DiscoveryOptionContext::get_instance()->json_file,
                                                                *instance_req);
             return rs;
         }
-        auto rs = check_valid_name_type(DiscoveryOptionContext::get_instance()->namespace_name);
+        auto rs = check_valid_name_type(DiscoveryOptionContext::get_instance()->app_name);
         if (!rs.ok()) {
             return rs;
         }
@@ -299,22 +415,18 @@ namespace sirius::cli {
         if (!status.ok()) {
             return status.status();
         }
-        instance_req->set_namespace_name(DiscoveryOptionContext::get_instance()->namespace_name);
-        instance_req->set_zone_name(DiscoveryOptionContext::get_instance()->zone_name);
+        instance_req->set_app_name(DiscoveryOptionContext::get_instance()->app_name);
+        instance_req->set_zone(DiscoveryOptionContext::get_instance()->zone_name);
         instance_req->set_servlet_name(DiscoveryOptionContext::get_instance()->servlet_name);
         instance_req->set_color(DiscoveryOptionContext::get_instance()->color);
         instance_req->set_env(DiscoveryOptionContext::get_instance()->env);
-        instance_req->set_status(status.value_or_die());
+        instance_req->set_status(status.value());
         instance_req->set_address(DiscoveryOptionContext::get_instance()->address);
-        if (DiscoveryOptionContext::get_instance()->weight != -1) {
-            instance_req->set_weight(DiscoveryOptionContext::get_instance()->weight);
-        }
-        instance_req->set_timestamp(static_cast<int>(::time(nullptr)));
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
     void DiscoveryCmd::run_discovery_dump_cmd() {
-        sirius::proto::ServletInstance instance;
+        sirius::proto::ServletInfo instance;
         sirius::client::ServletInstanceBuilder builder(&instance);
         builder.set_namespace("ex_namespace")
                 .set_zone("ex_zone")
@@ -322,8 +434,6 @@ namespace sirius::cli {
                 .set_env("ex_env")
                 .set_color("green")
                 .set_status("NORMAL")
-                .set_weight(10)
-                .set_time(time(NULL))
                 .set_address("127.0.0.1:12345");
         auto rs = sirius::client::Dumper::dump_proto_to_file(DiscoveryOptionContext::get_instance()->dump_file, instance);
         if (!rs.ok()) {
@@ -343,42 +453,47 @@ namespace sirius::cli {
 
     }
 
-    [[nodiscard]] collie::Status
+    [[nodiscard]] turbo::Status
     DiscoveryCmd::make_discovery_list_instance(sirius::proto::DiscoveryQueryRequest *req) {
-        req->set_op_type(sirius::proto::QUERY_INSTANCE_FLATTEN);
+        req->set_op_type(sirius::proto::QUERY_SERVLET);
         auto opt = DiscoveryOptionContext::get_instance();
-        if (opt->namespace_name.empty()) {
-            return collie::Status::ok_status();
+        if (opt->app_name.empty()) {
+            return turbo::OkStatus();
         }
-        req->set_namespace_name(opt->namespace_name);
+        req->set_app_name(opt->app_name);
         if (opt->zone_name.empty()) {
-            return collie::Status::ok_status();
+            return turbo::OkStatus();
         }
         req->set_zone(opt->zone_name);
         if (opt->servlet_name.empty()) {
-            return collie::Status::ok_status();
+            return turbo::OkStatus();
         }
         req->set_servlet(opt->servlet_name);
-        return collie::Status::ok_status();
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Status
-    DiscoveryCmd::make_discovery_info_instance(sirius::proto::DiscoveryQueryRequest *req) {
-        req->set_op_type(sirius::proto::QUERY_INSTANCE);
+    [[nodiscard]] turbo::Status
+    DiscoveryCmd::make_discovery_info_instance(melon::SnsRequest *req) {
         auto opt = DiscoveryOptionContext::get_instance();
-        req->set_namespace_name(opt->namespace_name);
-        req->set_zone(opt->zone_name);
-        req->set_servlet(opt->servlet_name);
-        req->set_instance_address(opt->address);
-        return collie::Status::ok_status();
+        req->set_app_name(opt->app_name);
+        for(auto &zone: opt->zones) {
+            req->add_zones(zone);
+        }
+        for(auto &env: opt->envs) {
+            req->add_env(env);
+        }
+        for(auto &color: opt->colors) {
+            req->add_color(color);
+        }
+        return turbo::OkStatus();
     }
 
-    [[nodiscard]] collie::Result<sirius::proto::Status> DiscoveryCmd::string_to_status(const std::string &status) {
-        sirius::proto::Status ret;
-        if (sirius::proto::Status_Parse(status, &ret)) {
-            return ret;
+    [[nodiscard]] turbo::Result<int> DiscoveryCmd::string_to_status(const std::string &status) {
+        int s;
+        if(!turbo::simple_atoi(status, &s) ){
+            return turbo::invalid_argument_error("unknown status");
         }
-        return collie::Status::invalid_argument("unknown status");
+        return s;
     }
 
     collie::table::Table DiscoveryCmd::show_query_instance_list_response(const sirius::proto::DiscoveryQueryResponse &res) {
@@ -401,7 +516,7 @@ namespace sirius::cli {
         std::sort(sorted_list.begin(), sorted_list.end(), less_fun);
         for (auto &ns: sorted_list) {
             result.add_row(collie::table::Table::Row_t{collie::to_str(i++),
-                                               collie::format("{}.{}.{}#{}", ns.namespace_name(), ns.zone_name(),
+                                               collie::format("{}.{}.{}#{}", ns.app_name(), ns.zone_name(),
                                                              ns.servlet_name(), ns.address())});
             last = result.size() - 1;
             result[last].format().font_color(collie::Color::yellow);
@@ -412,18 +527,17 @@ namespace sirius::cli {
 
     collie::table::Table DiscoveryCmd::show_query_instance_info_response(const sirius::proto::DiscoveryQueryResponse &res) {
         collie::table::Table result;
-        auto &instance = res.instance(0);
-        result.add_row(collie::table::Table::Row_t{"uri", "address", "env", "color","create time", "version","status"});
+        auto &instance = res.servlet_infos(0);
+        result.add_row(collie::table::Table::Row_t{"uri", "address", "env", "color","lmtime","status"});
         result.add_row(
                 collie::table::Table::Row_t{
-                        collie::format("{}.{}.{}", instance.namespace_name(), instance.zone_name(),
+                        collie::format("{}.{}.{}", instance.app_name(), instance.zone(),
                                       instance.servlet_name()),
                         instance.address(),
                         instance.env(),
                         instance.color(),
-                        collie::to_str(instance.timestamp()),
-                        collie::to_str(instance.version()),
-                        sirius::proto::Status_Name(instance.status())
+                        collie::to_str(instance.mtime()),
+                        instance.status() == 1 ? "NORMAL" : "DELETED"
                 }
         );
 

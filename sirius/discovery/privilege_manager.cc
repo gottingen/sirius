@@ -19,10 +19,10 @@
 
 #include <sirius/discovery/privilege_manager.h>
 #include <melon/rpc/channel.h>
-#include <sirius/discovery/discovery_state_machine.h>
+#include <sirius/discovery/sirius_state_machine.h>
 #include <sirius/discovery/schema_manager.h>
-#include <sirius/discovery/discovery_server.h>
-#include <sirius/discovery/discovery_rocksdb.h>
+#include <sirius/discovery/sirius_server.h>
+#include <sirius/discovery/sirius_db.h>
 
 namespace sirius::discovery {
 
@@ -78,13 +78,13 @@ namespace sirius::discovery {
         auto &user_privilege = const_cast<sirius::proto::UserPrivilege &>(request.user_privilege());
         std::string username = user_privilege.username();
         if (_user_privilege.find(username) != _user_privilege.end()) {
-            SS_LOG(INFO) << "request username has been created, username:" << user_privilege.username();
+            LOG(INFO) << "request username has been created, username:" << user_privilege.username();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "username has been repeated");
             return;
         }
         int ret = SchemaManager::get_instance()->check_and_get_for_privilege(user_privilege);
         if (ret < 0) {
-            SS_LOG(WARN) << "request not illegal, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request not illegal, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "request invalid");
             return;
         }
@@ -92,14 +92,14 @@ namespace sirius::discovery {
         // construct key and value
         std::string value;
         if (!user_privilege.SerializeToString(&value)) {
-            SS_LOG(WARN) << "request serializeToArray fail, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
         // write date to rocksdb
         ret = DiscoveryRocksdb::get_instance()->put_discovery_info(construct_privilege_key(username), value);
         if (ret < 0) {
-            SS_LOG(WARN) << "add username:" << username << " privilege to rocksdb fail";
+            LOG(WARNING) << "add username:" << username << " privilege to rocksdb fail";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "write db fail");
             return;
         }
@@ -107,13 +107,13 @@ namespace sirius::discovery {
         MELON_SCOPED_LOCK(_user_mutex);
         _user_privilege[username] = user_privilege;
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(INFO) << "create user success, request:" << request.ShortDebugString();
+        LOG(INFO) << "create user success, request:" << request.ShortDebugString();
     }
 
     void PrivilegeManager::drop_user(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
         std::string username = request.user_privilege().username();
         if (_user_privilege.find(username) == _user_privilege.end()) {
-            SS_LOG(WARN) << "request username not exist, username:" << username;
+            LOG(WARNING) << "request username not exist, username:" << username;
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "username not exist");
             return;
         }
@@ -122,7 +122,7 @@ namespace sirius::discovery {
         auto ret = DiscoveryRocksdb::get_instance()->remove_discovery_info(
                 std::vector<std::string>{construct_privilege_key(username)});
         if (ret < 0) {
-            SS_LOG(WARN) << "drop username:" << username << " privilege to rocksdb fail";
+            LOG(WARNING) << "drop username:" << username << " privilege to rocksdb fail";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "delete from db fail");
             return;
         }
@@ -130,20 +130,20 @@ namespace sirius::discovery {
         MELON_SCOPED_LOCK(_user_mutex);
         _user_privilege.erase(username);
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(INFO) << "drop user success, request:" << request.ShortDebugString();
+        LOG(INFO) << "drop user success, request:" << request.ShortDebugString();
     }
 
     void PrivilegeManager::add_privilege(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
         auto &user_privilege = const_cast<sirius::proto::UserPrivilege &>(request.user_privilege());
         std::string username = user_privilege.username();
         if (_user_privilege.find(username) == _user_privilege.end()) {
-            SS_LOG(WARN) << "request username not exist, username:" << username;
+            LOG(WARNING) << "request username not exist, username:" << username;
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "username not exist");
             return;
         }
         int ret = SchemaManager::get_instance()->check_and_get_for_privilege(user_privilege);
         if (ret < 0) {
-            SS_LOG(WARN) << "request not illegal, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request not illegal, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "request invalid");
             return;
         }
@@ -167,34 +167,34 @@ namespace sirius::discovery {
         // 构造key 和 value
         std::string value;
         if (!tmp_mem_privilege.SerializeToString(&value)) {
-            SS_LOG(WARN) << "request serializeToArray fail, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
         // write date to rocksdb
         ret = DiscoveryRocksdb::get_instance()->put_discovery_info(construct_privilege_key(username), value);
         if (ret != 0) {
-            SS_LOG(WARN)<< "add username:" << username << " privilege to rocksdb fail";
+            LOG(WARNING)<< "add username:" << username << " privilege to rocksdb fail";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "write db fail");
             return;
         }
         MELON_SCOPED_LOCK(_user_mutex);
         _user_privilege[username] = tmp_mem_privilege;
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(INFO) << "add privilege success, request:" << request.ShortDebugString();
+        LOG(INFO) << "add privilege success, request:" << request.ShortDebugString();
     }
 
     void PrivilegeManager::drop_privilege(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
         auto &user_privilege = const_cast<sirius::proto::UserPrivilege &>(request.user_privilege());
         std::string username = user_privilege.username();
         if (_user_privilege.find(username) == _user_privilege.end()) {
-            SS_LOG(WARN) << "request username not exist, username:" << username;
+            LOG(WARNING) << "request username not exist, username:" << username;
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "username not exist");
             return;
         }
         int ret = SchemaManager::get_instance()->check_and_get_for_privilege(user_privilege);
         if (ret < 0) {
-            SS_LOG(WARN) << "request not illegal, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request not illegal, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "request invalid");
             return;
         }
@@ -221,42 +221,42 @@ namespace sirius::discovery {
         // 构造key 和 value
         std::string value;
         if (!tmp_mem_privilege.SerializeToString(&value)) {
-            SS_LOG(WARN) << "request serializeToArray fail, request:" << request.ShortDebugString();
+            LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
         // write date to rocksdb
         ret = DiscoveryRocksdb::get_instance()->put_discovery_info(construct_privilege_key(username), value);
         if (ret < 0) {
-            SS_LOG(WARN) << "add username:" << username << " privilege to rocksdb fail";
+            LOG(WARNING) << "add username:" << username << " privilege to rocksdb fail";
             IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "write db fail");
             return;
         }
         MELON_SCOPED_LOCK(_user_mutex);
         _user_privilege[username] = tmp_mem_privilege;
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        SS_LOG(INFO) << "drop privilege success, request:" << request.ShortDebugString();
+        LOG(INFO) << "drop privilege success, request:" << request.ShortDebugString();
     }
 
 
     int PrivilegeManager::load_snapshot() {
         _user_privilege.clear();
         std::string privilege_prefix = DiscoveryConstants::PRIVILEGE_IDENTIFY;
-        rocksdb::ReadOptions read_options;
+        mizar::ReadOptions read_options;
         read_options.prefix_same_as_start = true;
         read_options.total_order_seek = false;
         RocksStorage *db = RocksStorage::get_instance();
-        std::unique_ptr<rocksdb::Iterator> iter(
+        std::unique_ptr<mizar::Iterator> iter(
                 db->new_iterator(read_options, db->get_meta_info_handle()));
         iter->Seek(privilege_prefix);
         for (; iter->Valid(); iter->Next()) {
             std::string username(iter->key().ToString(), privilege_prefix.size());
             sirius::proto::UserPrivilege user_privilege;
             if (!user_privilege.ParseFromString(iter->value().ToString())) {
-                SS_LOG(ERROR) << "parse from pb fail when load privilege snapshot, key:" << iter->key().data();
+                LOG(ERROR) << "parse from pb fail when load privilege snapshot, key:" << iter->key().data();
                 return -1;
             }
-            SS_LOG(WARN) << "user_privilege:" << user_privilege.ShortDebugString();
+            LOG(WARNING) << "user_privilege:" << user_privilege.ShortDebugString();
             MELON_SCOPED_LOCK(_user_mutex);
             _user_privilege[username] = user_privilege;
         }
