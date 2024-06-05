@@ -17,7 +17,7 @@
 //
 
 
-#include <sirius/discovery/discovery_rocksdb.h>
+#include <sirius/discovery/sirius_db.h>
 #include <gflags/gflags.h>
 #include <sirius/flags/sirius.h>
 #include <sirius/base/log.h>
@@ -41,9 +41,9 @@ namespace sirius::discovery {
     }
 
     int DiscoveryRocksdb::put_discovery_info(const std::string &key, const std::string &value) {
-        rocksdb::WriteOptions write_option;
+        mizar::WriteOptions write_option;
         write_option.disableWAL = true;
-        auto status = _rocksdb->put(write_option, _handle, rocksdb::Slice(key), rocksdb::Slice(value));
+        auto status = _rocksdb->put(write_option, _handle, mizar::Slice(key), mizar::Slice(value));
         if (!status.ok()) {
             LOG(WARNING) << "put rocksdb fail, err_msg: " << status.ToString()<<", key: "<<key<<", value: "<<value;
             return -1;
@@ -57,9 +57,9 @@ namespace sirius::discovery {
             LOG(WARNING) << "input keys'size is not equal to values' size";
             return -1;
         }
-        rocksdb::WriteOptions write_option;
+        mizar::WriteOptions write_option;
         write_option.disableWAL = true;
-        rocksdb::WriteBatch batch;
+        mizar::WriteBatch batch;
         for (size_t i = 0; i < keys.size(); ++i) {
             batch.Put(_handle, keys[i], values[i]);
         }
@@ -72,8 +72,8 @@ namespace sirius::discovery {
     }
 
     int DiscoveryRocksdb::get_discovery_info(const std::string &key, std::string *value) {
-        rocksdb::ReadOptions options;
-        auto status = _rocksdb->get(options, _handle, rocksdb::Slice(key), value);
+        mizar::ReadOptions options;
+        auto status = _rocksdb->get(options, _handle, mizar::Slice(key), value);
         if (!status.ok()) {
             return -1;
         }
@@ -81,9 +81,9 @@ namespace sirius::discovery {
     }
 
     int DiscoveryRocksdb::remove_discovery_info(const std::vector<std::string> &keys) {
-        rocksdb::WriteOptions write_option;
+        mizar::WriteOptions write_option;
         write_option.disableWAL = true;
-        rocksdb::WriteBatch batch;
+        mizar::WriteBatch batch;
         for (auto &key: keys) {
             batch.Delete(_handle, key);
         }
@@ -102,9 +102,9 @@ namespace sirius::discovery {
             LOG(WARNING) << "input keys'size is not equal to values' size";
             return -1;
         }
-        rocksdb::WriteOptions write_option;
+        mizar::WriteOptions write_option;
         write_option.disableWAL = true;
-        rocksdb::WriteBatch batch;
+        mizar::WriteBatch batch;
         for (size_t i = 0; i < put_keys.size(); ++i) {
             batch.Put(_handle, put_keys[i], put_values[i]);
         }

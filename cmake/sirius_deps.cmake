@@ -38,18 +38,16 @@ include(GNUInstallDirs)
 set(EA_ROOT /opt/EA/inf)
 set(EA_ROOT_INCLUDE ${EA_ROOT}/${CMAKE_INSTALL_INCLUDEDIR})
 set(EA_ROOT_LIB ${EA_ROOT}/${CMAKE_INSTALL_LIBDIR})
-find_package(RocksDB REQUIRED)
 list(APPEND CMAKE_PREFIX_PATH "/opt/EA/inf")
+
+find_package(mizar REQUIRED)
 find_package(Threads REQUIRED)
 find_package(melon REQUIRED)
 find_package(turbo REQUIRED)
 find_package(collie REQUIRED)
 find_package(alkaid REQUIRED)
-find_library(ROCKSDB_LIB NAMES rocksdb)
-if(NOT ROCKSDB_LIB)
-    message(FATAL_ERROR "rocksdb not found")
-endif()
-message(STATUS "rocksdb found at ${ROCKSDB_LIB}")
+get_target_property(MIZAR_LIB mizar::mizar LOCATION)
+message(STATUS "mizar found at ${MIZAR_LIB}")
 include_directories(${collie_INCLUDE_DIR})
 include_directories(${turbo_INCLUDE_DIR})
 include_directories(${melon_INCLUDE_DIR})
@@ -82,11 +80,7 @@ set(CARBIN_DEPS_LINK
         melon::melon_static
         turbo::turbo_static
         alkaid::alkaid_static
-        ${ROCKSDB_LIB}
-        ${LZ4_LIBRARIES}
-        ${ZSTD_LIBRARIES}
-        ${BZIP2_LIBRARIES}
-        ZLIB::ZLIB
+        ${MIZAR_LIB}
         ${THIRDPARTY_LIBS}
         ${MELON_DEPS_LIBS}
         ${CARBIN_SYSTEM_DYLINK}

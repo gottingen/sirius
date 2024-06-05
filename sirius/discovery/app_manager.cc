@@ -18,7 +18,7 @@
 
 
 #include <sirius/discovery/app_manager.h>
-#include <sirius/discovery/discovery_rocksdb.h>
+#include <sirius/discovery/sirius_db.h>
 #include <sirius/discovery/base_state_machine.h>
 
 namespace sirius::discovery {

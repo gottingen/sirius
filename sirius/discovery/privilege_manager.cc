@@ -19,10 +19,10 @@
 
 #include <sirius/discovery/privilege_manager.h>
 #include <melon/rpc/channel.h>
-#include <sirius/discovery/discovery_state_machine.h>
+#include <sirius/discovery/sirius_state_machine.h>
 #include <sirius/discovery/schema_manager.h>
-#include <sirius/discovery/discovery_server.h>
-#include <sirius/discovery/discovery_rocksdb.h>
+#include <sirius/discovery/sirius_server.h>
+#include <sirius/discovery/sirius_db.h>
 
 namespace sirius::discovery {
 
@@ -242,11 +242,11 @@ namespace sirius::discovery {
     int PrivilegeManager::load_snapshot() {
         _user_privilege.clear();
         std::string privilege_prefix = DiscoveryConstants::PRIVILEGE_IDENTIFY;
-        rocksdb::ReadOptions read_options;
+        mizar::ReadOptions read_options;
         read_options.prefix_same_as_start = true;
         read_options.total_order_seek = false;
         RocksStorage *db = RocksStorage::get_instance();
-        std::unique_ptr<rocksdb::Iterator> iter(
+        std::unique_ptr<mizar::Iterator> iter(
                 db->new_iterator(read_options, db->get_meta_info_handle()));
         iter->Seek(privilege_prefix);
         for (; iter->Valid(); iter->Next()) {

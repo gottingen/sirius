@@ -17,7 +17,7 @@
 //
 
 
-#include <sirius/discovery/discovery_state_machine.h>
+#include <sirius/discovery/sirius_state_machine.h>
 #include <melon/raft/util.h>
 #include <melon/raft/storage.h>
 #include <sirius/base/scope_exit.h>
@@ -138,7 +138,7 @@ namespace sirius::discovery {
         LOG(WARNING) << "max_app_id:" << AppManager::get_instance()->get_max_app_id()
                      << ", max_zone_id:" << ZoneManager::get_instance()->get_max_zone_id()<< " when on snapshot save";
         //创建snapshot
-        rocksdb::ReadOptions read_options;
+        mizar::ReadOptions read_options;
         read_options.prefix_same_as_start = false;
         read_options.total_order_seek = true;
         auto iter = RocksStorage::get_instance()->new_iterator(read_options,
@@ -152,15 +152,15 @@ namespace sirius::discovery {
     }
 
     void DiscoveryStateMachine::save_snapshot(melon::raft::Closure *done,
-                                         rocksdb::Iterator *iter,
+                                         mizar::Iterator *iter,
                                          melon::raft::SnapshotWriter *writer) {
         melon::ClosureGuard done_guard(done);
-        std::unique_ptr<rocksdb::Iterator> iter_lock(iter);
+        std::unique_ptr<mizar::Iterator> iter_lock(iter);
 
         std::string snapshot_path = writer->get_path();
         std::string sst_file_path = snapshot_path + "/discovery_info.sst";
 
-        rocksdb::Options option = RocksStorage::get_instance()->get_options(
+        mizar::Options option = RocksStorage::get_instance()->get_options(
                 RocksStorage::get_instance()->get_meta_info_handle());
         SstFileWriter sst_writer(option);
         LOG(INFO)<< "snapshot path:" << snapshot_path;
@@ -196,7 +196,7 @@ namespace sirius::discovery {
     int DiscoveryStateMachine::on_snapshot_load(melon::raft::SnapshotReader *reader) {
         LOG(WARNING) << "start on snapshot load";
         std::string remove_start_key(DiscoveryConstants::SCHEMA_IDENTIFY);
-        rocksdb::WriteOptions options;
+        mizar::WriteOptions options;
         auto status = RocksStorage::get_instance()->remove_range(options,
                                                                  RocksStorage::get_instance()->get_meta_info_handle(),
                                                                  remove_start_key,
@@ -209,8 +209,8 @@ namespace sirius::discovery {
             LOG(WARNING) << "remove range success when on snapshot load:code:" << status.code() << ", msg:" << status.ToString();
         }
         LOG(WARNING) << "clear data success";
-        rocksdb::ReadOptions read_options;
-        std::unique_ptr<rocksdb::Iterator> iter(RocksStorage::get_instance()->new_iterator(read_options,
+        mizar::ReadOptions read_options;
+        std::unique_ptr<mizar::Iterator> iter(RocksStorage::get_instance()->new_iterator(read_options,
                                                                                            RocksStorage::get_instance()->get_meta_info_handle()));
         iter->Seek(DiscoveryConstants::SCHEMA_IDENTIFY);
         for (; iter->Valid(); iter->Next()) {
@@ -227,7 +227,7 @@ namespace sirius::discovery {
                 snapshot_path.append("/discovery_info.sst");
 
                 //恢复文件
-                rocksdb::IngestExternalFileOptions ifo;
+                mizar::IngestExternalFileOptions ifo;
                 auto res = RocksStorage::get_instance()->ingest_external_file(
                         RocksStorage::get_instance()->get_meta_info_handle(),
                         {snapshot_path},

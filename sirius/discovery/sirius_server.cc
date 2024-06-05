@@ -17,10 +17,10 @@
 //
 
 
-#include <sirius/discovery/discovery_server.h>
+#include <sirius/discovery/sirius_server.h>
 #include <sirius/discovery/auto_incr_state_machine.h>
 #include <sirius/discovery/tso_state_machine.h>
-#include <sirius/discovery/discovery_state_machine.h>
+#include <sirius/discovery/sirius_state_machine.h>
 #include <sirius/discovery/privilege_manager.h>
 #include <sirius/discovery/schema_manager.h>
 #include <sirius/discovery/config_manager.h>
@@ -29,7 +29,7 @@
 #include <sirius/discovery/query_app_manager.h>
 #include <sirius/discovery/query_zone_manager.h>
 #include <sirius/discovery/query_servlet_manager.h>
-#include <sirius/discovery/discovery_rocksdb.h>
+#include <sirius/discovery/sirius_db.h>
 
 namespace sirius::discovery {
 
@@ -98,7 +98,7 @@ namespace sirius::discovery {
                 return;
             }
             auto rocksdb = RocksStorage::get_instance();
-            rocksdb::FlushOptions flush_options;
+            mizar::FlushOptions flush_options;
             auto status = rocksdb->flush(flush_options, rocksdb->get_meta_info_handle());
             if (!status.ok()) {
                 LOG(WARNING) << "flush discovery info to rocksdb fail, err_msg:" << status.ToString();

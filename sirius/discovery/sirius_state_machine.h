@@ -19,11 +19,11 @@
 
 #pragma once
 
-#include <rocksdb/db.h>
+#include <mizar/db.h>
 #include <sirius/discovery/base_state_machine.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <sirius/flags/sirius.h>
-#include <sirius/discovery/discovery_constants.h>
+#include <sirius/discovery/sirius_constants.h>
 
 namespace sirius::discovery {
 
@@ -51,7 +51,7 @@ namespace sirius::discovery {
 
     private:
         void save_snapshot(melon::raft::Closure *done,
-                           rocksdb::Iterator *iter,
+                           mizar::Iterator *iter,
                            melon::raft::SnapshotWriter *writer);
 
         int64_t _applied_index = 0;

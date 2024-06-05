@@ -23,7 +23,7 @@
 #include <set>
 #include <mutex>
 #include <sirius/proto/discovery.interface.pb.h>
-#include <sirius/discovery/discovery_constants.h>
+#include <sirius/discovery/sirius_constants.h>
 #include <melon/raft/raft.h>
 #include <melon/fiber/mutex.h>
 

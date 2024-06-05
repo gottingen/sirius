@@ -50,7 +50,7 @@ namespace sirius::discovery {
         DiscoveryRocksdb() {}
 
         RocksStorage *_rocksdb = nullptr;
-        rocksdb::ColumnFamilyHandle *_handle = nullptr;
+        mizar::ColumnFamilyHandle *_handle = nullptr;
     }; //class
 
 }  // namespace sirius::discovery

@@ -22,7 +22,7 @@
 #include <unordered_map>
 #include <set>
 #include <mutex>
-#include <sirius/discovery/discovery_constants.h>
+#include <sirius/discovery/sirius_constants.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <melon/fiber/mutex.h>
 #include <melon/raft/raft.h>

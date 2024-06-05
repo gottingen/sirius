@@ -21,7 +21,7 @@
 #include <fstream>
 #include <melon/rpc/server.h>
 #include <gflags/gflags.h>
-#include <sirius/discovery/discovery_server.h>
+#include <sirius/discovery/sirius_server.h>
 #include <sirius/discovery/router_service.h>
 #include <sirius/storage/rocks_storage.h>
 #include <sirius/base/memory_profile.h>

@@ -18,8 +18,8 @@
 
 #include <sirius/discovery/config_manager.h>
 #include <sirius/discovery/base_state_machine.h>
-#include <sirius/discovery/discovery_rocksdb.h>
-#include <sirius/discovery/discovery_constants.h>
+#include <sirius/discovery/sirius_db.h>
+#include <sirius/discovery/sirius_constants.h>
 #include <sirius/base/scope_exit.h>
 
 namespace sirius::discovery {
@@ -185,11 +185,11 @@ namespace sirius::discovery {
         LOG(INFO) << "start to load config snapshot";
         _configs.clear();
         std::string config_prefix = DiscoveryConstants::CONFIG_IDENTIFY;
-        rocksdb::ReadOptions read_options;
+        mizar::ReadOptions read_options;
         read_options.prefix_same_as_start = true;
         read_options.total_order_seek = false;
         RocksStorage *db = RocksStorage::get_instance();
-        std::unique_ptr<rocksdb::Iterator> iter(
+        std::unique_ptr<mizar::Iterator> iter(
                 db->new_iterator(read_options, db->get_meta_info_handle()));
         iter->Seek(config_prefix);
         for (; iter->Valid(); iter->Next()) {

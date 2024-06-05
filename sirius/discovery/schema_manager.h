@@ -20,7 +20,7 @@
 #pragma once
 
 #include <sirius/proto/discovery.interface.pb.h>
-#include <sirius/discovery/discovery_state_machine.h>
+#include <sirius/discovery/sirius_state_machine.h>
 
 namespace sirius::discovery {
 

@@ -24,8 +24,8 @@
 #include <turbo/container/flat_hash_map.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <turbo/container/flat_hash_map.h>
-#include <sirius/discovery/discovery_state_machine.h>
-#include <sirius/discovery/discovery_server.h>
+#include <sirius/discovery/sirius_state_machine.h>
+#include <sirius/discovery/sirius_server.h>
 #include <melon/raft/raft.h>
 #include <melon/fiber/mutex.h>
 #include <collie/module/semver.h>

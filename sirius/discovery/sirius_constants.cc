@@ -17,7 +17,7 @@
 //
 
 
-#include <sirius/discovery/discovery_constants.h>
+#include <sirius/discovery/sirius_constants.h>
 
 namespace sirius::discovery {
 

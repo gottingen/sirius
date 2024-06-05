@@ -20,16 +20,16 @@
 #pragma once
 
 #include <string>
-#include <rocksdb/db.h>
-#include <rocksdb/convenience.h>
-#include <rocksdb/slice.h>
-#include <rocksdb/cache.h>
-#include <rocksdb/listener.h>
-#include <rocksdb/options.h>
-#include <rocksdb/status.h>
-#include <rocksdb/slice_transform.h>
-#include <rocksdb/utilities/transaction.h>
-#include <rocksdb/utilities/transaction_db.h>
+#include <mizar/db.h>
+#include <mizar/convenience.h>
+#include <mizar/slice.h>
+#include <mizar/cache.h>
+#include <mizar/listener.h>
+#include <mizar/options.h>
+#include <mizar/status.h>
+#include <mizar/slice_transform.h>
+#include <mizar/utilities/transaction.h>
+#include <mizar/utilities/transaction_db.h>
 #include <collie/strings/format.h>
 #include <sirius/flags/engine.h>
 #include <melon/fiber/fiber.h>
@@ -55,92 +55,92 @@ namespace sirius {
 
         int32_t init(const std::string &path);
 
-        rocksdb::Status write(const rocksdb::WriteOptions &options, rocksdb::WriteBatch *updates) {
+        mizar::Status write(const mizar::WriteOptions &options, mizar::WriteBatch *updates) {
             return _txn_db->Write(options, updates);
         }
 
-        rocksdb::Status write(const rocksdb::WriteOptions &options,
-                              rocksdb::ColumnFamilyHandle *column_family,
+        mizar::Status write(const mizar::WriteOptions &options,
+                              mizar::ColumnFamilyHandle *column_family,
                               const std::vector<std::string> &keys,
                               const std::vector<std::string> &values) {
-            rocksdb::WriteBatch batch;
+            mizar::WriteBatch batch;
             for (size_t i = 0; i < keys.size(); ++i) {
                 batch.Put(column_family, keys[i], values[i]);
             }
             return _txn_db->Write(options, &batch);
         }
 
-        rocksdb::Status get(const rocksdb::ReadOptions &options,
-                            rocksdb::ColumnFamilyHandle *column_family,
-                            const rocksdb::Slice &key,
+        mizar::Status get(const mizar::ReadOptions &options,
+                            mizar::ColumnFamilyHandle *column_family,
+                            const mizar::Slice &key,
                             std::string *value) {
             return _txn_db->Get(options, column_family, key, value);
         }
 
-        rocksdb::Status put(const rocksdb::WriteOptions &options,
-                            rocksdb::ColumnFamilyHandle *column_family,
-                            const rocksdb::Slice &key,
-                            const rocksdb::Slice &value) {
+        mizar::Status put(const mizar::WriteOptions &options,
+                            mizar::ColumnFamilyHandle *column_family,
+                            const mizar::Slice &key,
+                            const mizar::Slice &value) {
             return _txn_db->Put(options, column_family, key, value);
         }
 
-        rocksdb::Transaction *begin_transaction(
-                const rocksdb::WriteOptions &write_options,
-                const rocksdb::TransactionOptions &txn_options) {
+        mizar::Transaction *begin_transaction(
+                const mizar::WriteOptions &write_options,
+                const mizar::TransactionOptions &txn_options) {
             return _txn_db->BeginTransaction(write_options, txn_options);
         }
 
-        rocksdb::Status compact_range(const rocksdb::CompactRangeOptions &options,
-                                      rocksdb::ColumnFamilyHandle *column_family,
-                                      const rocksdb::Slice *begin,
-                                      const rocksdb::Slice *end) {
+        mizar::Status compact_range(const mizar::CompactRangeOptions &options,
+                                      mizar::ColumnFamilyHandle *column_family,
+                                      const mizar::Slice *begin,
+                                      const mizar::Slice *end) {
             return _txn_db->CompactRange(options, column_family, begin, end);
         }
 
-        rocksdb::Status flush(const rocksdb::FlushOptions &options,
-                              rocksdb::ColumnFamilyHandle *column_family) {
+        mizar::Status flush(const mizar::FlushOptions &options,
+                              mizar::ColumnFamilyHandle *column_family) {
             return _txn_db->Flush(options, column_family);
         }
 
-        rocksdb::Status remove(const rocksdb::WriteOptions &options,
-                               rocksdb::ColumnFamilyHandle *column_family,
-                               const rocksdb::Slice &key) {
+        mizar::Status remove(const mizar::WriteOptions &options,
+                               mizar::ColumnFamilyHandle *column_family,
+                               const mizar::Slice &key) {
             return _txn_db->Delete(options, column_family, key);
         }
 
         // Consider setting ReadOptions::ignore_range_deletions = true to speed
         // up reads for key(s) that are known to be unaffected by range deletions.
-        rocksdb::Status remove_range(const rocksdb::WriteOptions &options,
-                                     rocksdb::ColumnFamilyHandle *column_family,
-                                     const rocksdb::Slice &begin,
-                                     const rocksdb::Slice &end,
+        mizar::Status remove_range(const mizar::WriteOptions &options,
+                                     mizar::ColumnFamilyHandle *column_family,
+                                     const mizar::Slice &begin,
+                                     const mizar::Slice &end,
                                      bool delete_files_in_range);
 
-        rocksdb::Iterator *new_iterator(const rocksdb::ReadOptions &options,
-                                        rocksdb::ColumnFamilyHandle *family) {
+        mizar::Iterator *new_iterator(const mizar::ReadOptions &options,
+                                        mizar::ColumnFamilyHandle *family) {
             return _txn_db->NewIterator(options, family);
         }
 
-        rocksdb::Iterator *new_iterator(const rocksdb::ReadOptions &options, const std::string cf) {
+        mizar::Iterator *new_iterator(const mizar::ReadOptions &options, const std::string cf) {
             if (_column_families.count(cf) == 0) {
                 return nullptr;
             }
             return _txn_db->NewIterator(options, _column_families[cf]);
         }
 
-        rocksdb::Status ingest_external_file(rocksdb::ColumnFamilyHandle *family,
+        mizar::Status ingest_external_file(mizar::ColumnFamilyHandle *family,
                                              const std::vector<std::string> &external_files,
-                                             const rocksdb::IngestExternalFileOptions &options) {
+                                             const mizar::IngestExternalFileOptions &options) {
             return _txn_db->IngestExternalFile(family, external_files, options);
         }
 
-        rocksdb::ColumnFamilyHandle *get_raft_log_handle();
+        mizar::ColumnFamilyHandle *get_raft_log_handle();
 
-        rocksdb::ColumnFamilyHandle *get_data_handle();
+        mizar::ColumnFamilyHandle *get_data_handle();
 
-        rocksdb::ColumnFamilyHandle *get_meta_info_handle();
+        mizar::ColumnFamilyHandle *get_meta_info_handle();
 
-        rocksdb::TransactionDB *get_db() {
+        mizar::TransactionDB *get_db() {
             return _txn_db;
         }
 
@@ -148,23 +148,23 @@ namespace sirius {
 
         int32_t delete_column_family(std::string cf_name);
 
-        rocksdb::Options get_options(rocksdb::ColumnFamilyHandle *family) {
+        mizar::Options get_options(mizar::ColumnFamilyHandle *family) {
             return _txn_db->GetOptions(family);
         }
 
-        rocksdb::DBOptions get_db_options() {
+        mizar::DBOptions get_db_options() {
             return _txn_db->GetDBOptions();
         }
 
-        rocksdb::Cache *get_cache() {
+        mizar::Cache *get_cache() {
             return _cache;
         }
 
-        const rocksdb::Snapshot *get_snapshot() {
+        const mizar::Snapshot *get_snapshot() {
             return _txn_db->GetSnapshot();
         }
 
-        void release_snapshot(const rocksdb::Snapshot *snapshot) {
+        void release_snapshot(const mizar::Snapshot *snapshot) {
             _txn_db->ReleaseSnapshot(snapshot);
         }
 
@@ -222,7 +222,7 @@ namespace sirius {
         void collect_rocks_options();
 
         int get_rocks_statistic(uint64_t &level0_sst, uint64_t &pending_compaction_size) {
-            rocksdb::ColumnFamilyMetaData cf_meta;
+            mizar::ColumnFamilyMetaData cf_meta;
             _txn_db->GetColumnFamilyMetaData(get_data_handle(), &cf_meta);
             if (cf_meta.levels.size() == 0) {
                 return -1;
@@ -241,14 +241,14 @@ namespace sirius {
 
         bool _is_init;
 
-        rocksdb::TransactionDB *_txn_db;
-        rocksdb::Cache *_cache;
+        mizar::TransactionDB *_txn_db;
+        mizar::Cache *_cache;
 
-        std::map<std::string, rocksdb::ColumnFamilyHandle *> _column_families;
+        std::map<std::string, mizar::ColumnFamilyHandle *> _column_families;
 
-        rocksdb::ColumnFamilyOptions _log_cf_option;
-        rocksdb::ColumnFamilyOptions _data_cf_option;
-        rocksdb::ColumnFamilyOptions _meta_info_option;
+        mizar::ColumnFamilyOptions _log_cf_option;
+        mizar::ColumnFamilyOptions _data_cf_option;
+        mizar::ColumnFamilyOptions _meta_info_option;
         uint64_t _flush_file_number = 0;
         melon::var::Adder<int64_t> _raft_cf_remove_range_count;
         melon::var::Adder<int64_t> _data_cf_remove_range_count;

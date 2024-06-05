@@ -150,11 +150,11 @@ namespace sirius::discovery {
         ZoneManager::get_instance()->clear();
         ServletManager::get_instance()->clear();
         //创建一个snapshot
-        rocksdb::ReadOptions read_options;
+        mizar::ReadOptions read_options;
         read_options.prefix_same_as_start = true;
         read_options.total_order_seek = false;
         RocksStorage *db = RocksStorage::get_instance();
-        std::unique_ptr<rocksdb::Iterator> iter(
+        std::unique_ptr<mizar::Iterator> iter(
                 RocksStorage::get_instance()->new_iterator(read_options, db->get_meta_info_handle()));
         iter->Seek(DiscoveryConstants::SCHEMA_IDENTIFY);
         std::string max_id_prefix = DiscoveryConstants::SCHEMA_IDENTIFY;
