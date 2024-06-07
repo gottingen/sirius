@@ -15,7 +15,7 @@
 
 #pragma once
 
-#include <turbo/status/status.h>
+#include <turbo/utility/status.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <collie/table/table.h>
 #include <sirius/cli/proto_help.h>

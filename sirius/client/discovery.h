@@ -20,7 +20,7 @@
 #ifndef EA_CLIENT_META_H_
 #define EA_CLIENT_META_H_
 
-#include <turbo/status/status.h>
+#include <turbo/utility/status.h>
 #include <melon/utility/endpoint.h>
 #include <melon/rpc/channel.h>
 #include <melon/rpc/server.h>

@@ -24,7 +24,7 @@
 
 #include <collie/cli/cli.h>
 #include <sirius/proto/discovery.interface.pb.h>
-#include <turbo/status/result.h>
+#include <turbo/utility/status.h>
 #include <collie/table/table.h>
 #include <string>
 #include <sirius/client/config_client.h>

@@ -20,7 +20,7 @@
 #ifndef EA_CLIENT_BASE_MESSAGE_SENDER_H_
 #define EA_CLIENT_BASE_MESSAGE_SENDER_H_
 
-#include <turbo/status/status.h>
+#include <turbo/utility/status.h>
 #include <sirius/proto/discovery.interface.pb.h>
 
 namespace sirius::client {
