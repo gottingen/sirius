@@ -18,8 +18,7 @@
 
 #include <sirius/client/discovery.h>
 #include <sirius/client/utility.h>
-#include <alkaid/files/sequential_read_file.h>
-#include <alkaid/files/sequential_write_file.h>
+#include <alkaid/files/filesystem.h>
 #include <melon/json2pb/json_to_pb.h>
 #include <melon/json2pb/pb_to_json.h>
 #include <sirius/client/config_info_builder.h>
@@ -46,35 +45,20 @@ namespace sirius::client {
     }
 
     turbo::Status DiscoveryClient::check_config_file(const std::string &config_path) {
-        alkaid::SequentialReadFile file;
-        auto rs = file.open(config_path);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
         std::string config_data;
-        auto rr = file.read(&config_data);
-        if (!rr.ok()) {
-            return rr.status();
-        }
+        STATUS_RETURN_IF_ERROR(lfs->read_file(config_path, &config_data));
         return check_config(config_data);
     }
 
     turbo::Status DiscoveryClient::dump_config_file(const std::string &config_path, const sirius::proto::ConfigInfo &config) {
-        alkaid::SequentialWriteFile file;
-        auto rs = file.open(config_path, alkaid::kDefaultTruncateWriteOption);
-        if (!rs.ok()) {
-            return rs;
-        }
         std::string json;
         std::string err;
         if (!json2pb::ProtoMessageToJson(config, &json, &err)) {
             return turbo::invalid_argument_error(err);
         }
-        rs = file.write(json);
-        if (!rs.ok()) {
-            return rs;
-        }
-        file.close();
+        auto lfs = alkaid::Filesystem::localfs();
+        STATUS_RETURN_IF_ERROR(lfs->write_file(config_path, json));
         return turbo::OkStatus();
     }
 
@@ -264,20 +248,9 @@ namespace sirius::client {
     turbo::Status DiscoveryClient::save_config(const std::string &config_name, const std::string &version, std::string &path,
                                           int *retry_time) {
         std::string content;
-        auto rs = get_config(config_name, version, content, retry_time);
-        if (!rs.ok()) {
-            return rs;
-        }
-        alkaid::SequentialWriteFile file;
-        rs = file.open(path, alkaid::kDefaultTruncateWriteOption);
-        if (!rs.ok()) {
-            return rs;
-        }
-        rs = file.write(content);
-        if (!rs.ok()) {
-            return rs;
-        }
-        file.close();
+        STATUS_RETURN_IF_ERROR(get_config(config_name, version, content, retry_time));
+        auto lfs = alkaid::Filesystem::localfs();
+        STATUS_RETURN_IF_ERROR(lfs->write_file(path, content));
         return turbo::OkStatus();
     }
 
@@ -285,21 +258,10 @@ namespace sirius::client {
     DiscoveryClient::save_config(const std::string &config_name, const std::string &version, int *retry_time) {
         std::string content;
         std::string type;
-        auto rs = get_config(config_name, version, content, retry_time, &type);
-        if (!rs.ok()) {
-            return rs;
-        }
-        alkaid::SequentialWriteFile file;
+        STATUS_RETURN_IF_ERROR(get_config(config_name, version, content, retry_time, &type));
         auto path = turbo::substitute("$0.$1", config_name, type);
-        rs = file.open(path, alkaid::kDefaultTruncateWriteOption);
-        if (!rs.ok()) {
-            return rs;
-        }
-        rs = file.write(content);
-        if (!rs.ok()) {
-            return rs;
-        }
-        file.close();
+        auto lfs = alkaid::Filesystem::localfs();
+        STATUS_RETURN_IF_ERROR(lfs->write_file(path, content));
         return turbo::OkStatus();
     }
 
@@ -632,19 +594,13 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-
-        alkaid::SequentialWriteFile file;
-        rs = file.open(save_path, alkaid::kDefaultTruncateWriteOption);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
+        RESULT_ASSIGN_OR_RETURN(auto file, lfs->create_sequential_write_file());
+        STATUS_RETURN_IF_ERROR(file->open(save_path, alkaid::lfs::kDefaultTruncateWriteOption));
         for (auto &ns: json_list) {
-            rs = file.write(ns);
-            if (!rs.ok()) {
-                return rs;
-            }
+            STATUS_RETURN_IF_ERROR(file->append(ns));
         }
-        file.close();
+        file->close();
         return turbo::OkStatus();
     }
 
@@ -899,23 +855,15 @@ namespace sirius::client {
 
     turbo::Status DiscoveryClient::list_zone_to_file(const std::string &save_path, int *retry_time) {
         std::vector<std::string> json_list;
-        auto rs = list_zone_to_json(json_list, retry_time);
-        if (!rs.ok()) {
-            return rs;
-        }
+        STATUS_RETURN_IF_ERROR(list_zone_to_json(json_list, retry_time));
 
-        alkaid::SequentialWriteFile file;
-        rs = file.open(save_path, alkaid::kDefaultTruncateWriteOption);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
+        RESULT_ASSIGN_OR_RETURN(auto file, lfs->create_sequential_write_file());
+        STATUS_RETURN_IF_ERROR(file->open(save_path, alkaid::lfs::kDefaultTruncateWriteOption));
         for (auto &zone: json_list) {
-            rs = file.write(zone);
-            if (!rs.ok()) {
-                return rs;
-            }
+            STATUS_RETURN_IF_ERROR(file->append(zone));
         }
-        file.close();
+        STATUS_RETURN_IF_ERROR(file->close());
         return turbo::OkStatus();
     }
 
@@ -925,19 +873,13 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-
-        alkaid::SequentialWriteFile file;
-        rs = file.open(save_path, alkaid::kDefaultTruncateWriteOption);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
+        RESULT_ASSIGN_OR_RETURN(auto file, lfs->create_sequential_write_file());
+        STATUS_RETURN_IF_ERROR(file->open(save_path, alkaid::lfs::kDefaultTruncateWriteOption));
         for (auto &zone: json_list) {
-            rs = file.write(zone);
-            if (!rs.ok()) {
-                return rs;
-            }
+            STATUS_RETURN_IF_ERROR(file->append(zone));
         }
-        file.close();
+        STATUS_RETURN_IF_ERROR(file->close());
         return turbo::OkStatus();
     }
 
@@ -1235,18 +1177,13 @@ namespace sirius::client {
             return rs;
         }
 
-        alkaid::SequentialWriteFile file;
-        rs = file.open(save_path, alkaid::kDefaultTruncateWriteOption);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
+        RESULT_ASSIGN_OR_RETURN(auto file, lfs->create_sequential_write_file());
+        STATUS_RETURN_IF_ERROR(file->open(save_path, alkaid::lfs::kDefaultTruncateWriteOption));
         for (auto &zone: json_list) {
-            rs = file.write(zone);
-            if (!rs.ok()) {
-                return rs;
-            }
+            STATUS_RETURN_IF_ERROR(file->append(zone));
         }
-        file.close();
+        STATUS_RETURN_IF_ERROR(file->close());
         return turbo::OkStatus();
     }
 
@@ -1257,19 +1194,13 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-
-        alkaid::SequentialWriteFile file;
-        rs = file.open(save_path, alkaid::kDefaultTruncateWriteOption);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
+        RESULT_ASSIGN_OR_RETURN(auto file, lfs->create_sequential_write_file());
+        STATUS_RETURN_IF_ERROR(file->open(save_path, alkaid::lfs::kDefaultTruncateWriteOption));
         for (auto &zone: json_list) {
-            rs = file.write(zone);
-            if (!rs.ok()) {
-                return rs;
-            }
+            STATUS_RETURN_IF_ERROR(file->append(zone));
         }
-        file.close();
+        STATUS_RETURN_IF_ERROR(file->close());
         return turbo::OkStatus();
     }
 
@@ -1281,19 +1212,13 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
-
-        alkaid::SequentialWriteFile file;
-        rs = file.open(save_path, alkaid::kDefaultTruncateWriteOption);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
+        RESULT_ASSIGN_OR_RETURN(auto file, lfs->create_sequential_write_file());
+        STATUS_RETURN_IF_ERROR(file->open(save_path, alkaid::lfs::kDefaultTruncateWriteOption));
         for (auto &zone: json_list) {
-            rs = file.write(zone);
-            if (!rs.ok()) {
-                return rs;
-            }
+            STATUS_RETURN_IF_ERROR(file->append(zone));
         }
-        file.close();
+        STATUS_RETURN_IF_ERROR(file->close());
         return turbo::OkStatus();
     }
 

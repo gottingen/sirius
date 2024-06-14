@@ -26,7 +26,7 @@
 #include <sirius/storage/transaction_db_bthread_mutex.h>
 #include <turbo/strings/numbers.h>
 #include <sirius/base/fiber.h>
-#include <alkaid/ghc/filesystem.hpp>
+#include <alkaid/files/filesystem.h>
 
 
 namespace sirius {
@@ -48,13 +48,13 @@ namespace sirius {
         if (_is_init) {
             return 0;
         }
-        ghc::filesystem::path dir_path = ghc::filesystem::path(path).parent_path();
+        alkaid::filesystem::path dir_path = alkaid::filesystem::path(path).parent_path();
         std::error_code ec;
-        if(!ghc::filesystem::exists(dir_path, ec)) {
+        if(!alkaid::filesystem::exists(dir_path, ec)) {
             if(ec) {
                 return -1;
             }
-            ghc::filesystem::create_directories(dir_path, ec);
+            alkaid::filesystem::create_directories(dir_path, ec);
             if(ec) {
                 return -1;
             }
@@ -73,7 +73,6 @@ namespace sirius {
             table_options.pin_l0_filter_and_index_blocks_in_cache = true;
             table_options.block_cache = mizar::NewLRUCache(FLAGS_rocks_block_cache_size_mb * 1024 * 1024LL,
                                                              8, false, FLAGS_rocks_high_pri_pool_ratio);
-            // 通过cache控制内存，不需要控制max_open_files
             FLAGS_rocks_max_open_files = -1;
         } else {
             table_options.data_block_index_type = mizar::BlockBasedTableOptions::kDataBlockBinaryAndHash;

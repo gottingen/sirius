@@ -23,7 +23,6 @@
 #include <sirius/cli/option_context.h>
 #include <sirius/cli/show_help.h>
 #include <sirius/cli/router_interact.h>
-#include <alkaid/files/sequential_read_file.h>
 #include <sirius/client/discovery.h>
 #include <collie/nlohmann/json.hpp>
 #include <sirius/cli/validator.h>

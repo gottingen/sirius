@@ -20,8 +20,7 @@
 #include <sirius/client/config_cache.h>
 #include <sirius/flags/client.h>
 #include <sirius/client/utility.h>
-#include <alkaid/files/sequential_write_file.h>
-#include <alkaid/files/sequential_read_file.h>
+#include <alkaid/files/filesystem.h>
 #include <sirius/client/loader.h>
 #include <sirius/client/dumper.h>
 #include <turbo/strings/substitute.h>
@@ -37,15 +36,15 @@ namespace sirius::client {
             return turbo::OkStatus();
         }
         std::error_code ec;
-        if(!ghc::filesystem::exists(_cache_dir, ec)) {
+        if(!alkaid::filesystem::exists(_cache_dir, ec)) {
             if(ec) {
                 return turbo::already_exists_error("check cache dir error");
             }
-            ghc::filesystem::create_directories(_cache_dir);
+            alkaid::filesystem::create_directories(_cache_dir);
             return turbo::OkStatus();
         }
-        ghc::filesystem::directory_iterator dir_itr(_cache_dir);
-        ghc::filesystem::directory_iterator end;
+        alkaid::filesystem::directory_iterator dir_itr(_cache_dir);
+        alkaid::filesystem::directory_iterator end;
         for(;dir_itr != end; ++dir_itr) {
             if(dir_itr->path() == "." || dir_itr->path() == "..") {
                 continue;
@@ -252,7 +251,7 @@ namespace sirius::client {
             return turbo::OkStatus();
         }
         auto file_path = make_cache_file_path(dir, config);
-        ghc::filesystem::remove(file_path);
+        alkaid::filesystem::remove(file_path);
         return turbo::OkStatus();
     }
 

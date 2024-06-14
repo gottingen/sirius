@@ -18,7 +18,7 @@
 
 #include <sirius/client/config_info_builder.h>
 #include <sirius/client/utility.h>
-#include <alkaid/files/sequential_read_file.h>
+#include <alkaid/files/localfs.h>
 #include <sirius/client/loader.h>
 
 namespace sirius::client {
@@ -54,49 +54,27 @@ namespace sirius::client {
     }
 
     turbo::Status ConfigInfoBuilder::build_from_json_file(const std::string &json_path) {
-        alkaid::SequentialReadFile file;
-        auto rs = file.open(json_path);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
         std::string content;
-        auto frs = file.read(&content);
-        if (!frs.ok()) {
-            return frs.status();
-        }
+        STATUS_RETURN_IF_ERROR(lfs->read_file(json_path, &content));
         return build_from_json(content);
     }
 
     turbo::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
                                                      const sirius::proto::Version &version,
                                                      const sirius::proto::ConfigType &type) {
-        alkaid::SequentialReadFile file;
-        auto rs = file.open(file_path);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
         std::string content;
-        auto frs = file.read(&content);
-        if (!frs.ok()) {
-            return frs.status();
-        }
-
+        STATUS_RETURN_IF_ERROR(lfs->read_file(file_path, &content));
         return build_from_content(name, content, version, type);
     }
 
     turbo::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
                                                      const sirius::proto::Version &version,
                                                      const std::string &type) {
-        alkaid::SequentialReadFile file;
-        auto rs = file.open(file_path);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
         std::string content;
-        auto frs = file.read(&content);
-        if (!frs.ok()) {
-            return frs.status();
-        }
+        STATUS_RETURN_IF_ERROR(lfs->read_file(file_path, &content));
         auto rt = string_to_config_type(type);
         if (!rt.ok()) {
             return rt.status();
@@ -108,52 +86,24 @@ namespace sirius::client {
     turbo::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
                                                      const std::string &version,
                                                      const sirius::proto::ConfigType &type) {
-        alkaid::SequentialReadFile file;
-        auto rs = file.open(file_path);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
         std::string content;
-        auto frs = file.read(&content);
-        if (!frs.ok()) {
-            return frs.status();
-        }
-
+        STATUS_RETURN_IF_ERROR(lfs->read_file(file_path, &content));
         sirius::proto::Version tmp_version;
-        rs = string_to_version(version, &tmp_version);
-        if (!rs.ok()) {
-            return rs;
-        }
-
+        STATUS_RETURN_IF_ERROR(string_to_version(version, &tmp_version));
         return build_from_content(name, content, tmp_version, type);
     }
 
     turbo::Status ConfigInfoBuilder::build_from_file(const std::string &name, const std::string &file_path,
                                                      const std::string &version,
                                                      const std::string &type) {
-        alkaid::SequentialReadFile file;
-        auto rs = file.open(file_path);
-        if (!rs.ok()) {
-            return rs;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
         std::string content;
-        auto frs = file.read(&content);
-        if (!frs.ok()) {
-            return frs.status();
-        }
-
-        auto rt = string_to_config_type(type);
-        if (!rt.ok()) {
-            return rt.status();
-        }
-
+        STATUS_RETURN_IF_ERROR(lfs->read_file(file_path, &content));
+        RESULT_ASSIGN_OR_RETURN(auto r, string_to_config_type(type));
         sirius::proto::Version tmp_version;
-        rs = string_to_version(version, &tmp_version);
-        if (!rs.ok()) {
-            return rs;
-        }
-
-        return build_from_content(name, content, tmp_version, rt.value());
+        STATUS_RETURN_IF_ERROR(string_to_version(version, &tmp_version));
+        return build_from_content(name, content, tmp_version, r);
     }
 
     turbo::Status ConfigInfoBuilder::build_from_content(const std::string &name, const std::string &content,

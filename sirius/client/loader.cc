@@ -19,7 +19,7 @@
 // Created by jeff on 23-11-30.
 //
 #include <sirius/client/loader.h>
-#include <alkaid/files/sequential_read_file.h>
+#include <alkaid/files/filesystem.h>
 #include <melon/json2pb/json_to_pb.h>
 #include <melon/json2pb/pb_to_json.h>
 
@@ -35,16 +35,9 @@ namespace sirius::client {
 
 
     turbo::Status Loader::load_proto_from_file(const std::string &path, google::protobuf::Message &message) {
-        alkaid::SequentialReadFile file;
-        auto rs = file.open(path);
-        if (!rs.ok()) {
-            return rs;
-        }
         std::string config_data;
-        auto rr = file.read(&config_data);
-        if (!rr.ok()) {
-            return rr.status();
-        }
+        auto lfs = alkaid::Filesystem::localfs();
+        STATUS_RETURN_IF_ERROR(lfs->read_file(path, &config_data));
         return load_proto(config_data, message);
     }
 
