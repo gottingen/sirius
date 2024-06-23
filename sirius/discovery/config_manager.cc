@@ -104,7 +104,9 @@ namespace sirius::discovery {
         }
         std::string rocks_key = make_config_key(name, version);
         std::string rocks_value;
-        if (!create_request.SerializeToString(&rocks_value)) {
+        auto tmp_request = create_request;
+        tmp_request.set_time(time(nullptr));
+        if (!tmp_request.SerializeToString(&rocks_value)) {
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
@@ -114,7 +116,7 @@ namespace sirius::discovery {
             IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "write db fail");
             return;
         }
-        it->second[version] = create_request;
+        it->second[version] = tmp_request;
         LOG(INFO) << "config : " << name << " version: " << version.to_string() << " create";
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
     }
