@@ -28,6 +28,8 @@
 #include <collie/filesystem/fs.h>
 #include <collie/strings/str_split.h>
 #include <sirius/flags/sirius.h>
+#include <sirius/restful/registry.h>
+#include <sirius/restful/client.h>
 
 int main(int argc, char **argv) {
     google::SetCommandLineOption("flagfile", "conf/sirius_conf.gflags");
@@ -66,7 +68,17 @@ int main(int argc, char **argv) {
     auto *discovery_server = sirius::discovery::DiscoveryServer::get_instance();
     auto *router_server = sirius::discovery::RouterServiceImpl::get_instance();
     auto *sns_server = melon::SnsServiceImpl::get_instance();
-    auto rs = router_server->init(sirius::FLAGS_sirius_server_peers);
+    auto rs = sirius::restful::Client::instance().init(sirius::FLAGS_sirius_listen);
+    if (!rs.ok()) {
+        LOG(ERROR) << "Fail to init restful client " << rs.message();
+        return -1;
+    }
+    rs = sirius::restful::registry_server(&server);
+    if (!rs.ok()) {
+        LOG(ERROR) << "Fail to registry restful service " << rs.message();
+        return -1;
+    }
+    rs = router_server->init(sirius::FLAGS_sirius_server_peers);
     if (!rs.ok()) {
         LOG(ERROR) << "Fail init router server " << rs.message();
         return -1;

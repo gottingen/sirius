@@ -67,12 +67,12 @@ namespace sirius::discovery {
     void QueryConfigManager::list_config(const ::sirius::proto::DiscoveryQueryRequest *request,
                                          ::sirius::proto::DiscoveryQueryResponse *response) {
         MELON_SCOPED_LOCK( ConfigManager::get_instance()->_config_mutex);
-        auto configs = ConfigManager::get_instance()->_configs;
+        auto &configs = ConfigManager::get_instance()->_configs;
         response->mutable_config_infos()->Reserve(configs.size());
-        sirius::proto::ConfigInfo config;
         for (auto it = configs.begin(); it != configs.end(); ++it) {
-            config.set_name(it->first);
-            *(response->add_config_infos()) = config;
+            for(auto vit = it->second.begin(); vit != it->second.end(); ++vit) {
+                *(response->add_config_infos()) = vit->second;
+            }
         }
         response->set_errmsg("success");
         response->set_errcode(sirius::proto::SUCCESS);
@@ -87,7 +87,7 @@ namespace sirius::discovery {
         }
         auto &name = request->config_name();
         MELON_SCOPED_LOCK( ConfigManager::get_instance()->_config_mutex);
-        auto configs = ConfigManager::get_instance()->_configs;
+        auto &configs = ConfigManager::get_instance()->_configs;
         auto it = configs.find(name);
         if (it == configs.end()) {
             response->set_errmsg("config not exist");

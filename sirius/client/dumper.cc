@@ -20,7 +20,7 @@
 // Created by jeff on 23-11-30.
 //
 #include <sirius/client/dumper.h>
-#include <alkaid/files/sequential_write_file.h>
+#include <alkaid/files/filesystem.h>
 #include <melon/json2pb/json_to_pb.h>
 #include <melon/json2pb/pb_to_json.h>
 
@@ -33,16 +33,8 @@ namespace sirius::client {
             return rs;
         }
 
-        alkaid::SequentialWriteFile file;
-        rs = file.open(path, alkaid::kDefaultTruncateWriteOption);
-        if (!rs.ok()) {
-            return rs;
-        }
-        rs = file.write(content);
-        if (!rs.ok()) {
-            return rs;
-        }
-        file.close();
+        auto lfs = alkaid::Filesystem::localfs();
+        STATUS_RETURN_IF_ERROR(lfs->write_file(path, content));
         return turbo::OkStatus();
     }
 

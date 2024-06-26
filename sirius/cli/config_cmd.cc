@@ -21,8 +21,7 @@
 #include <sirius/cli/show_help.h>
 #include <sirius/cli/router_interact.h>
 #include <collie/module/semver.h>
-#include <alkaid/files/sequential_read_file.h>
-#include <alkaid/files/sequential_write_file.h>
+#include <alkaid/files/filesystem.h>
 #include <turbo/times/time.h>
 #include <melon/json2pb/pb_to_json.h>
 #include <melon/json2pb/json_to_pb.h>
@@ -163,8 +162,6 @@ namespace sirius::cli {
         } else {
             ss.add_table("prepare", "ok", true);
         }
-        alkaid::SequentialWriteFile file;
-        rs = file.open(file_path, alkaid::kDefaultTruncateWriteOption);
         if (!rs.ok()) {
             ss.add_table("prepare file", rs.to_string(), false);
             return;
@@ -181,14 +178,23 @@ namespace sirius::cli {
             ss.add_table("convert", "ok", true);
         }
 
-        rs = file.write(json);
+        auto lfs = alkaid::Filesystem::localfs();
+        auto file_rs =  lfs->create_sequential_write_file();
+        if (!file_rs.ok()) {
+            ss.add_table("create file", file_rs.status().to_string(), false);
+            return;
+        } else {
+            ss.add_table("create file", "ok", true);
+        }
+        auto file = file_rs.value();
+        rs = file->append(json);
         if (!rs.ok()) {
             ss.add_table("write", rs.to_string(), false);
             return;
         } else {
             ss.add_table("write", "ok", true);
         }
-        file.close();
+        (void)file->close();
         ss.add_table("summary", collie::format("success write to  file: {}", file_path), true);
     }
 
@@ -200,21 +206,16 @@ namespace sirius::cli {
             return;
         }
         std::string content;
-        alkaid::SequentialReadFile file;
-        auto rs = file.open(ConfigOptionContext::get_instance()->config_file);
-        if (!rs.ok()) {
-            ss.add_table("open file", rs.to_string(), false);
-            return;
-        }
+        auto lfs = alkaid::Filesystem::localfs();
         ss.add_table("open file", "ok", true);
-        auto r = file.read(&content);
+        auto r = lfs->read_file(ConfigOptionContext::get_instance()->config_file, &content);
         if (!r.ok()) {
-            ss.add_table("read file", rs.to_string(), false);
+            ss.add_table("read file", r.to_string(), false);
             return;
         }
         ss.add_table("read file", "ok", true);
         sirius::client::ConfigInfoBuilder builder(&request);
-        rs = builder.build_from_json(content);
+        auto rs = builder.build_from_json(content);
         if (!rs.ok()) {
             ss.add_table("convert", rs.to_string(), false);
             return;
@@ -298,16 +299,11 @@ namespace sirius::cli {
     }
 
     turbo::Status ConfigCmd::save_config_to_file(const std::string &path, const sirius::proto::DiscoveryQueryResponse &res) {
-        alkaid::SequentialWriteFile file;
-        auto s = file.open(path, alkaid::kDefaultTruncateWriteOption);
+        auto lfs = alkaid::Filesystem::localfs();
+        auto s = lfs->write_file(path, res.config_infos(0).content());
         if (!s.ok()) {
             return s;
         }
-        s = file.write(res.config_infos(0).content());
-        if (!s.ok()) {
-            return s;
-        }
-        file.close();
         return turbo::OkStatus();
     }
 
@@ -532,16 +528,11 @@ namespace sirius::cli {
         if(ghc::filesystem::exists(file_name)) {
             return turbo::already_exists_error(turbo::substitute("write file [$0] already exists", file_name));
         }
-        alkaid::SequentialWriteFile file;
-        auto rs = file.open(file_name, alkaid::kDefaultTruncateWriteOption);
+        auto lfs = alkaid::Filesystem::localfs();
+        auto rs = lfs->write_file(file_name, data.new_content);
         if(!rs.ok()){
             return rs;
         }
-        rs = file.write(data.new_content);
-        if(!rs.ok()){
-            return rs;
-        }
-        file.close();
         return turbo::OkStatus();
     }
 }  // namespace sirius::cli

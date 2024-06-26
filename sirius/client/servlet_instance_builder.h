@@ -24,7 +24,7 @@
 #define EA_CLIENT_SERVLET_INSTANCE_BUILDER_H_
 
 #include <sirius/proto/discovery.struct.pb.h>
-#include <turbo/status/status.h>
+#include <turbo/utility/status.h>
 
 namespace sirius::client {
 

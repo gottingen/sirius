@@ -19,7 +19,7 @@
 #pragma once
 
 #include <sirius/proto/discovery.interface.pb.h>
-#include <turbo/status/result.h>
+#include <turbo/utility/status.h>
 
 namespace sirius::cli {
 

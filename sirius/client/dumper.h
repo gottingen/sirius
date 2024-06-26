@@ -23,7 +23,7 @@
 #ifndef EA_CLIENT_DUMPER_H_
 #define EA_CLIENT_DUMPER_H_
 
-#include <turbo/status/status.h>
+#include <turbo/utility/status.h>
 #include <string>
 #include <google/protobuf/descriptor.h>
 #include <sirius/proto/discovery.interface.pb.h>

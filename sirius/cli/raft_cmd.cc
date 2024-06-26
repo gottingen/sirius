@@ -23,7 +23,6 @@
 #include <sirius/cli/raft_cmd.h>
 #include <sirius/cli/option_context.h>
 #include <sirius/cli/show_help.h>
-#include <alkaid/files/sequential_read_file.h>
 #include <sirius/client/config_info_builder.h>
 #include <collie/strings/format.h>
 

@@ -21,6 +21,7 @@ file(GLOB_RECURSE DISCOVERY_SRC "discovery/*.cc")
 file(GLOB_RECURSE BASE_SRC "base/*.cc")
 file(GLOB_RECURSE FLAGS_SRC "flags/*.cc")
 file(GLOB_RECURSE STORAGE_SRC "storage/*.cc")
+file(GLOB_RECURSE REST_SRC "restful/*.cc")
 file(GLOB_RECURSE CLIENT_SRC "client/*.cc")
 
 carbin_cc_object(
@@ -77,14 +78,25 @@ carbin_cc_object(
         ${CARBIN_CXX_OPTIONS}
 )
 
+carbin_cc_object(
+        NAMESPACE sirius
+        NAME restful
+        SOURCES
+        ${REST_SRC}
+        DEPS
+        proto_object
+        CXXOPTS
+        ${CARBIN_CXX_OPTIONS}
+)
+
 carbin_cc_library(
         NAMESPACE sirius
         NAME sirius
-        OBJECTS proto_object base_object flags_object storage_object discovery_object client_object
+        OBJECTS proto_object base_object flags_object storage_object discovery_object client_object restful
         CXXOPTS
         ${CARBIN_CXX_OPTIONS}
         DEPS
-        proto_object base_object flags_object storage_object discovery_object client_object
+        proto_object base_object flags_object storage_object discovery_object client_object restful
         PLINKS
         ${CARBIN_DEPS_LINK}
         PUBLIC

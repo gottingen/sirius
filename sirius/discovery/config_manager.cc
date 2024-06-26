@@ -104,17 +104,25 @@ namespace sirius::discovery {
         }
         std::string rocks_key = make_config_key(name, version);
         std::string rocks_value;
-        if (!create_request.SerializeToString(&rocks_value)) {
+        auto tmp_request = create_request;
+        tmp_request.set_time(time(nullptr));
+        auto tmp_id = _max_config_id + 1;
+        tmp_request.set_id(tmp_id);
+        std::string max_config_id_value;
+        max_config_id_value.append((char *) &tmp_id, sizeof(int64_t));
+        auto max_config_id_key = construct_max_config_id_key();
+        if (!tmp_request.SerializeToString(&rocks_value)) {
             IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
 
-        int ret = DiscoveryRocksdb::get_instance()->put_discovery_info(rocks_key, rocks_value);
+        int ret = DiscoveryRocksdb::get_instance()->put_discovery_info({rocks_key,max_config_id_key}, {rocks_value, max_config_id_value});
         if (ret < 0) {
             IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "write db fail");
             return;
         }
-        it->second[version] = create_request;
+        it->second[version] = tmp_request;
+        _max_config_id = tmp_id;
         LOG(INFO) << "config : " << name << " version: " << version.to_string() << " create";
         IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
     }
@@ -192,9 +200,25 @@ namespace sirius::discovery {
         std::unique_ptr<mizar::Iterator> iter(
                 db->new_iterator(read_options, db->get_meta_info_handle()));
         iter->Seek(config_prefix);
+        std::string config_content_prefix = DiscoveryConstants::CONFIG_IDENTIFY + DiscoveryConstants::CONFIG_CONTENT_IDENTIFY;
+        std::string config_max_id_prefix = DiscoveryConstants::CONFIG_IDENTIFY + DiscoveryConstants::MAX_ID_SCHEMA_IDENTIFY;
         for (; iter->Valid(); iter->Next()) {
-            if(load_config_snapshot(iter->value().ToString()) != 0) {
-                return -1;
+            if(iter->key().starts_with(config_content_prefix)) {
+                if (load_config_snapshot(iter->value().ToString()) != 0) {
+                    return -1;
+
+                }
+            } else {
+                if (iter->key().starts_with(config_max_id_prefix)) {
+                    if (iter->value().size() != sizeof(int64_t)) {
+                        LOG(ERROR) << "config max id value size error";
+                        return -1;
+                    }
+                    int64_t max_id = 0;
+                    memcpy(&max_id, iter->value().data(), sizeof(int64_t));
+                    _max_config_id = max_id;
+                }
+
             }
         }
         LOG(INFO) << "load config snapshot done";
@@ -219,7 +243,7 @@ namespace sirius::discovery {
     }
 
     std::string ConfigManager::make_config_key(const std::string &name, const collie::ModuleVersion &version) {
-        return DiscoveryConstants::CONFIG_IDENTIFY + name + version.to_string();
+        return DiscoveryConstants::CONFIG_IDENTIFY + DiscoveryConstants::CONFIG_CONTENT_IDENTIFY + name + version.to_string();
     }
 
 }  // namespace sirius::discovery

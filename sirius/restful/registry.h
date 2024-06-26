@@ -15,32 +15,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
+//
+// Created by jeff on 24-6-23.
+//
 
-syntax="proto2";
-package sirius.proto;
-option cc_generic_services = true;
+#pragma once
 
-enum ConfigType {
-  CF_JSON = 0;
-  CF_GFLAGS = 1;
-  CF_TEXT = 3;
-  CF_TOML = 4;
-  CF_XML = 5;
-  CF_YAML = 6;
-  CF_INI = 7;
-};
+#include <melon/rpc/server.h>
+#include <turbo/utility/status.h>
 
-message Version {
-  required int32 major = 1;
-  required int32 minor = 2;
-  required int32 patch = 3;
-};
+namespace sirius::restful {
 
-message ConfigInfo {
-  required string name = 1;
-  optional Version version = 2;
-  optional string content = 3;
-  optional ConfigType type = 4 [default = CF_JSON];
-  optional uint32 time = 5;
-  optional int64 id = 6;
-}
+    turbo::Status registry_server(melon::Server *server);
+}  // namespace sirius::restful

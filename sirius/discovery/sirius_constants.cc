@@ -31,6 +31,7 @@ namespace sirius::discovery {
     const std::string DiscoveryConstants::PRIVILEGE_IDENTIFY(1, 0x02);
 
     const std::string DiscoveryConstants::CONFIG_IDENTIFY(1, 0x04);
+    const std::string DiscoveryConstants::CONFIG_CONTENT_IDENTIFY(1, 0x02);
 
     const std::string DiscoveryConstants::DISCOVERY_IDENTIFY(1, 0x03);
     const std::string DiscoveryConstants::DISCOVERY_MAX_ID_IDENTIFY(1, 0x01);
@@ -41,6 +42,7 @@ namespace sirius::discovery {
     const std::string DiscoveryConstants::MAX_IDENTIFY(1, 0xFF);
 
     /// for schema
+    const std::string DiscoveryConstants::MAX_CONFIG_ID_KEY = "max_config_id";
     const std::string DiscoveryConstants::MAX_APP_ID_KEY = "max_app_id";
     const std::string DiscoveryConstants::MAX_ZONE_ID_KEY = "max_zone_id";
     const std::string DiscoveryConstants::MAX_SERVLET_ID_KEY = "max_servlet_id";

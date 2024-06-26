@@ -21,7 +21,7 @@
 //
 #include <sirius/client/servlet_instance_builder.h>
 #include <sirius/client/utility.h>
-#include <alkaid/files/sequential_read_file.h>
+#include <alkaid/files/filesystem.h>
 #include <melon/utility/endpoint.h>
 #include <turbo/strings/numbers.h>
 #include <sirius/client/loader.h>
@@ -72,16 +72,9 @@ namespace sirius::client {
     }
 
     turbo::Status ServletInstanceBuilder::build_from_json_file(const std::string &json_path) {
-        alkaid::SequentialReadFile file;
-        auto rs = file.open(json_path);
-        if (!rs.ok()) {
-            return rs;
-        }
         std::string content;
-        auto frs = file.read(&content);
-        if (!frs.ok()) {
-            return frs.status();
-        }
+        auto lfs = alkaid::Filesystem::localfs();
+        STATUS_RETURN_IF_ERROR(lfs->read_file(json_path, &content));
         return build_from_json(content);
     }
 
