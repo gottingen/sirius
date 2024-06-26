@@ -40,10 +40,12 @@ namespace sirius::discovery {
         static const std::string INSTANCE_PARAM_CLUSTER_IDENTIFY;
 
         static const std::string CONFIG_IDENTIFY;
+        static const std::string CONFIG_CONTENT_IDENTIFY;
 
         static const std::string MAX_IDENTIFY;
 
         /// for schema
+        static const std::string MAX_CONFIG_ID_KEY;
         static const std::string MAX_APP_ID_KEY;
         static const std::string MAX_ZONE_ID_KEY;
         static const std::string MAX_SERVLET_ID_KEY;

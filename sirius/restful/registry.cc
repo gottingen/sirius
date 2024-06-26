@@ -21,6 +21,7 @@
 
 #include <sirius/restful/registry.h>
 #include <sirius/restful/config.h>
+#include <sirius/restful/discovery.h>
 #include <sirius/restful/common.h>
 #include <melon/rpc/restful_service.h>
 
@@ -33,6 +34,14 @@ namespace sirius::restful {
         service->set_processor("/config/remove", std::make_shared<RemoveConfigProcessor>());
         service->set_processor("/config/version", std::make_shared<ListConfigVersionProcessor>());
         service->set_processor("/config/query", std::make_shared<ConfigQueryProcessor>());
+        service->set_processor("/discovery/app/list", std::make_shared<AppListProcessor>());
+        service->set_processor("/discovery/app/create", std::make_shared<AppCreateProcessor>());
+        service->set_processor("/discovery/app/query", std::make_shared<AppQueryProcessor>());
+        service->set_processor("/discovery/app/remove", std::make_shared<AppRemoveProcessor>());
+        service->set_processor("/discovery/zone/list", std::make_shared<ZoneListProcessor>());
+        service->set_processor("/discovery/zone/create", std::make_shared<ZoneCreateProcessor>());
+        service->set_processor("/discovery/zone/query", std::make_shared<ZoneQueryProcessor>());
+        service->set_processor("/discovery/zone/remove", std::make_shared<ZoneRemoveProcessor>());
         service->set_not_found_processor(std::make_shared<NotFoundProcessor>());
         service->set_root_processor(std::make_shared<RootProcessor>());
         service->set_mapping_path("ea");

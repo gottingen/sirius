@@ -159,6 +159,24 @@ namespace sirius::client {
         return turbo::OkStatus();
     }
 
+    turbo::Status DiscoveryClient::list_config(std::vector<sirius::proto::ConfigInfo> &configs, int *retry_time) {
+        sirius::proto::DiscoveryQueryRequest request;
+        sirius::proto::DiscoveryQueryResponse response;
+        request.set_op_type(sirius::proto::QUERY_LIST_CONFIG);
+        auto rs = discovery_query(request, response, retry_time);
+        if (!rs.ok()) {
+            return rs;
+        }
+        if (response.errcode() != sirius::proto::SUCCESS) {
+            return turbo::unavailable_error(response.errmsg());
+        }
+        auto res_configs = response.config_infos();
+        for (auto config: res_configs) {
+            configs.push_back(config);
+        }
+        return turbo::OkStatus();
+    }
+
     turbo::Status DiscoveryClient::list_config_version(const std::string &config_name, std::vector<std::string> &versions,
                                                   int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;

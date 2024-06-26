@@ -160,6 +160,13 @@ namespace sirius::client {
          * @return Status::OK if the config names were received successfully. Otherwise, an error status is returned. 
          */
         turbo::Status list_config(std::vector<std::string> &configs, int *retry_time = nullptr);
+        /**
+         * @brief list_config is used to list all config names from the meta server, it is a synchronous call.
+         * @param configs [output] is the config names received from the meta server.
+         * @param retry_time [input] is the retry times of the list config.
+         * @return Status::OK if the config names were received successfully. Otherwise, an error status is returned.
+         */
+        turbo::Status list_config(std::vector<sirius::proto::ConfigInfo> &configs, int *retry_time = nullptr);
 
         /**
          * @brief list_config_version is used to list all config versions of a config from the meta server, it is a synchronous call.
