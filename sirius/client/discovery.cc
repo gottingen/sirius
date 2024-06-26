@@ -220,6 +220,27 @@ namespace sirius::client {
     }
 
     turbo::Status
+    DiscoveryClient::list_config_version(const std::string &config_name, std::vector<sirius::proto::ConfigInfo> &versions,
+                                         int *retry_time) {
+        sirius::proto::DiscoveryQueryRequest request;
+        sirius::proto::DiscoveryQueryResponse response;
+        request.set_op_type(sirius::proto::QUERY_LIST_CONFIG_VERSION);
+        request.set_config_name(config_name);
+        auto rs = discovery_query(request, response, retry_time);
+        if (!rs.ok()) {
+            return rs;
+        }
+        if (response.errcode() != sirius::proto::SUCCESS) {
+            return turbo::unavailable_error(response.errmsg());
+        }
+        auto res_configs = response.config_infos();
+        for (auto config: res_configs) {
+            versions.emplace_back(config);
+        }
+        return turbo::OkStatus();
+    }
+
+    turbo::Status
     DiscoveryClient::get_config(const std::string &config_name, const std::string &version, sirius::proto::ConfigInfo &config,
                            int *retry_time) {
         sirius::proto::DiscoveryQueryRequest request;
@@ -467,6 +488,9 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
+        if(response.errcode() != sirius::proto::SUCCESS) {
+            return turbo::unavailable_error(response.errmsg());
+        }
         return turbo::OkStatus();
     }
 
@@ -514,6 +538,9 @@ namespace sirius::client {
         rs = discovery_manager(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
+        }
+        if(response.errcode() != sirius::proto::SUCCESS) {
+            return turbo::unavailable_error(response.errmsg());
         }
         return turbo::OkStatus();
     }
@@ -676,6 +703,9 @@ namespace sirius::client {
         if (!rs.ok()) {
             return rs;
         }
+        if(response.errcode() != sirius::proto::SUCCESS) {
+            return turbo::unavailable_error(response.errmsg());
+        }
         return turbo::OkStatus();
     }
 
@@ -731,6 +761,9 @@ namespace sirius::client {
         auto rs = discovery_manager(request, response, retry_time);
         if (!rs.ok()) {
             return rs;
+        }
+        if(response.errcode() != sirius::proto::SUCCESS) {
+            return turbo::unavailable_error(response.errmsg());
         }
         return turbo::OkStatus();
     }

@@ -82,7 +82,6 @@ namespace sirius::discovery {
         int64_t get_max_config_id();
 
         std::string construct_max_config_id_key();
-        std::string construct_config_key(int64_t config_id);
     private:
         ConfigManager();
 
@@ -103,7 +102,6 @@ namespace sirius::discovery {
         DiscoveryStateMachine *_discovery_state_machine;
         fiber_mutex_t _config_mutex;
         int64_t _max_config_id{0};
-        turbo::flat_hash_map<std::string, int64_t> _config_name_to_id;
         turbo::flat_hash_map<std::string, std::map<collie::ModuleVersion, sirius::proto::ConfigInfo>> _configs;
 
     };
@@ -133,12 +131,6 @@ namespace sirius::discovery {
 
     inline void ConfigManager::set_discovery_state_machine(DiscoveryStateMachine *machine) {
         _discovery_state_machine = machine;
-    }
-    inline std::string ConfigManager::construct_config_key(int64_t config_id) {
-        std::string app_key = DiscoveryConstants::CONFIG_IDENTIFY
-                              + DiscoveryConstants::CONFIG_CONTENT_IDENTIFY;
-        app_key.append((char *) &config_id, sizeof(int64_t));
-        return app_key;
     }
 
     inline std::string ConfigManager::construct_max_config_id_key() {

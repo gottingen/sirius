@@ -42,4 +42,5 @@ message ConfigInfo {
   optional string content = 3;
   optional ConfigType type = 4 [default = CF_JSON];
   optional uint32 time = 5;
+  optional int64 id = 6;
 }

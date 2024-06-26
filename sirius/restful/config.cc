@@ -26,10 +26,9 @@
 
 namespace sirius::restful {
 
-    const std::vector<std::string> empty_config;
 
     void ListConfigProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
-        std::vector<std::string> config;
+        std::vector<sirius::proto::ConfigInfo> config;
         response->set_content_type("application/json");
         response->set_header("Access-Control-Allow-Origin", "*");
         response->set_header("Access-Control-Allow-Method","*");
@@ -42,11 +41,21 @@ namespace sirius::restful {
         if (!rs.ok()) {
             j["code"] = rs.code();
             j["message"] = rs.message();
-            j["config"] = empty_config;
         } else {
             j["code"] = 0;
             j["message"] = "ok";
-            j["config"] = config;
+        };
+        for (const auto &c : config) {
+            nlohmann::json item;
+            item["name"] = c.name();
+            item["version"] = sirius::client::version_to_string(c.version());
+            item["content"] = c.content();
+            item["type"] = sirius::client::config_type_to_string(c.type());
+            item["createtime"] = c.time();
+            item["id"] = c.id();
+            LOG(INFO)<< "version major: " << c.version().major() << " minor: " << c.version().minor();
+            LOG(INFO) << "config name: " << c.name() << " version: " << sirius::client::version_to_string(c.version());
+            j["configs"].push_back(item);
         }
         response->set_body(j.dump());
     }
@@ -110,7 +119,6 @@ namespace sirius::restful {
         } else {
             type = input["type"].get<std::string>();
         }
-
 
         nlohmann::json j;
         auto rs = Client::instance().discovery().create_config(name, content, version, type);
@@ -176,7 +184,7 @@ namespace sirius::restful {
     }
 
     void ListConfigVersionProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
-        std::vector<std::string> versions;
+        std::vector<sirius::proto::ConfigInfo> versions;
         response->set_content_type("application/json");
         response->set_header("Access-Control-Allow-Origin", "*");
         response->set_header("Access-Control-Allow-Method","*");
@@ -213,7 +221,16 @@ namespace sirius::restful {
             j["code"] = 0;
             j["message"] = "ok";
         }
-        j["versions"] = versions;
+        for (const auto &c : versions) {
+            nlohmann::json item;
+            item["name"] = c.name();
+            item["version"] = sirius::client::version_to_string(c.version());
+            item["content"] = c.content();
+            item["type"] = sirius::client::config_type_to_string(c.type());
+            item["createtime"] = c.time();
+            item["id"] = c.id();
+            j["configs"].push_back(item);
+        }
         response->set_body(j.dump());
     }
 
@@ -267,11 +284,14 @@ namespace sirius::restful {
             j["code"] = 0;
             j["message"] = "ok";
         }
-        j["name"] = config.name();
-        j["version"] = sirius::client::version_to_string(config.version());
-        j["content"] = config.content();
-        j["type"] = sirius::client::config_type_to_string(config.type());
-        j["createtime"] = config.time();
+        nlohmann::json item;
+        item["name"] = config.name();
+        item["version"] = sirius::client::version_to_string(config.version());
+        item["content"] = config.content();
+        item["type"] = sirius::client::config_type_to_string(config.type());
+        item["createtime"] = config.time();
+        item["id"] = config.id();
+        j["configs"].push_back(item);
         response->set_body(j.dump());
     }
 

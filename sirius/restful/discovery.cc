@@ -28,10 +28,10 @@ namespace sirius::restful {
     void AppCreateProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
         response->set_content_type("application/json");
         response->set_header("Access-Control-Allow-Origin", "*");
-        response->set_header("Access-Control-Allow-Method","*");
-        response->set_header("Access-Control-Allow-Headers","*");
-        response->set_header("Access-Control-Allow-Credentials","true");
-        response->set_header("Access-Control-Expose-Headers","*");
+        response->set_header("Access-Control-Allow-Method", "*");
+        response->set_header("Access-Control-Allow-Headers", "*");
+        response->set_header("Access-Control-Allow-Credentials", "true");
+        response->set_header("Access-Control-Expose-Headers", "*");
         response->set_status_code(200);
         std::string input_str = request->body().to_string();
 
@@ -79,10 +79,10 @@ namespace sirius::restful {
     void AppListProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
         response->set_content_type("application/json");
         response->set_header("Access-Control-Allow-Origin", "*");
-        response->set_header("Access-Control-Allow-Method","*");
-        response->set_header("Access-Control-Allow-Headers","*");
-        response->set_header("Access-Control-Allow-Credentials","true");
-        response->set_header("Access-Control-Expose-Headers","*");
+        response->set_header("Access-Control-Allow-Method", "*");
+        response->set_header("Access-Control-Allow-Headers", "*");
+        response->set_header("Access-Control-Allow-Credentials", "true");
+        response->set_header("Access-Control-Expose-Headers", "*");
         response->set_status_code(200);
 
         std::vector<sirius::proto::AppInfo> apps;
@@ -98,7 +98,7 @@ namespace sirius::restful {
             j["code"] = 0;
             j["message"] = "ok";
         }
-        for(auto &app : apps) {
+        for (auto &app: apps) {
             nlohmann::json app_j;
             app_j["app_name"] = app.app_name();
             app_j["app_id"] = app.app_id();
@@ -107,13 +107,14 @@ namespace sirius::restful {
         }
         response->set_body(j.dump());
     }
+
     void AppQueryProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
         response->set_content_type("application/json");
         response->set_header("Access-Control-Allow-Origin", "*");
-        response->set_header("Access-Control-Allow-Method","*");
-        response->set_header("Access-Control-Allow-Headers","*");
-        response->set_header("Access-Control-Allow-Credentials","true");
-        response->set_header("Access-Control-Expose-Headers","*");
+        response->set_header("Access-Control-Allow-Method", "*");
+        response->set_header("Access-Control-Allow-Headers", "*");
+        response->set_header("Access-Control-Allow-Credentials", "true");
+        response->set_header("Access-Control-Expose-Headers", "*");
         response->set_status_code(200);
         std::string input_str = request->body().to_string();
 
@@ -161,10 +162,10 @@ namespace sirius::restful {
     void AppRemoveProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
         response->set_content_type("application/json");
         response->set_header("Access-Control-Allow-Origin", "*");
-        response->set_header("Access-Control-Allow-Method","*");
-        response->set_header("Access-Control-Allow-Headers","*");
-        response->set_header("Access-Control-Allow-Credentials","true");
-        response->set_header("Access-Control-Expose-Headers","*");
+        response->set_header("Access-Control-Allow-Method", "*");
+        response->set_header("Access-Control-Allow-Headers", "*");
+        response->set_header("Access-Control-Allow-Credentials", "true");
+        response->set_header("Access-Control-Expose-Headers", "*");
         response->set_status_code(200);
         std::string input_str = request->body().to_string();
 
@@ -206,10 +207,10 @@ namespace sirius::restful {
     void ZoneCreateProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
         response->set_content_type("application/json");
         response->set_header("Access-Control-Allow-Origin", "*");
-        response->set_header("Access-Control-Allow-Method","*");
-        response->set_header("Access-Control-Allow-Headers","*");
-        response->set_header("Access-Control-Allow-Credentials","true");
-        response->set_header("Access-Control-Expose-Headers","*");
+        response->set_header("Access-Control-Allow-Method", "*");
+        response->set_header("Access-Control-Allow-Headers", "*");
+        response->set_header("Access-Control-Allow-Credentials", "true");
+        response->set_header("Access-Control-Expose-Headers", "*");
         response->set_status_code(200);
         std::string input_str = request->body().to_string();
 
@@ -268,10 +269,10 @@ namespace sirius::restful {
     void ZoneListProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
         response->set_content_type("application/json");
         response->set_header("Access-Control-Allow-Origin", "*");
-        response->set_header("Access-Control-Allow-Method","*");
-        response->set_header("Access-Control-Allow-Headers","*");
-        response->set_header("Access-Control-Allow-Credentials","true");
-        response->set_header("Access-Control-Expose-Headers","*");
+        response->set_header("Access-Control-Allow-Method", "*");
+        response->set_header("Access-Control-Allow-Headers", "*");
+        response->set_header("Access-Control-Allow-Credentials", "true");
+        response->set_header("Access-Control-Expose-Headers", "*");
         response->set_status_code(200);
 
         std::string input_str = request->body().to_string();
@@ -295,7 +296,7 @@ namespace sirius::restful {
 
         std::vector<sirius::proto::ZoneInfo> zones;
         turbo::Status rs;
-        if(app_name.empty()) {
+        if (app_name.empty()) {
             rs = Client::instance().discovery().list_zone(zones);
         } else {
             rs = Client::instance().discovery().list_zone(app_name, zones);
@@ -310,7 +311,7 @@ namespace sirius::restful {
             j["code"] = 0;
             j["message"] = "ok";
         }
-        for(auto &zone : zones) {
+        for (auto &zone: zones) {
             nlohmann::json app_j;
             app_j["app_name"] = zone.app_name();
             app_j["app_id"] = zone.app_id();
@@ -325,10 +326,10 @@ namespace sirius::restful {
     void ZoneQueryProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
         response->set_content_type("application/json");
         response->set_header("Access-Control-Allow-Origin", "*");
-        response->set_header("Access-Control-Allow-Method","*");
-        response->set_header("Access-Control-Allow-Headers","*");
-        response->set_header("Access-Control-Allow-Credentials","true");
-        response->set_header("Access-Control-Expose-Headers","*");
+        response->set_header("Access-Control-Allow-Method", "*");
+        response->set_header("Access-Control-Allow-Headers", "*");
+        response->set_header("Access-Control-Allow-Credentials", "true");
+        response->set_header("Access-Control-Expose-Headers", "*");
         response->set_status_code(200);
 
         std::string input_str = request->body().to_string();
@@ -370,7 +371,7 @@ namespace sirius::restful {
 
         sirius::proto::ZoneInfo zone;
         turbo::Status rs;
-        if(app_name.empty()) {
+        if (app_name.empty()) {
             rs = Client::instance().discovery().get_zone(app_name, zone_name, zone);
         }
         nlohmann::json j;
@@ -394,10 +395,10 @@ namespace sirius::restful {
     void ZoneRemoveProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
         response->set_content_type("application/json");
         response->set_header("Access-Control-Allow-Origin", "*");
-        response->set_header("Access-Control-Allow-Method","*");
-        response->set_header("Access-Control-Allow-Headers","*");
-        response->set_header("Access-Control-Allow-Credentials","true");
-        response->set_header("Access-Control-Expose-Headers","*");
+        response->set_header("Access-Control-Allow-Method", "*");
+        response->set_header("Access-Control-Allow-Headers", "*");
+        response->set_header("Access-Control-Allow-Credentials", "true");
+        response->set_header("Access-Control-Expose-Headers", "*");
         response->set_status_code(200);
 
         std::string input_str = request->body().to_string();
@@ -438,15 +439,25 @@ namespace sirius::restful {
         }
 
         turbo::Status rs;
-        if(app_name.empty()) {
-            rs = Client::instance().discovery().remove_zone(app_name, zone_name);
+        if (app_name.empty()) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "app_name is required, but is empty";
+            response->set_body(j.dump());
+            return;
         }
+        if (zone_name.empty()) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "zone_name is required, but is empty";
+            response->set_body(j.dump());
+            return;
+        }
+        rs = Client::instance().discovery().remove_zone(app_name, zone_name);
         nlohmann::json j;
         if (!rs.ok()) {
             j["code"] = rs.code();
             j["message"] = rs.message();
-            response->set_body(j.dump());
-            return;
         } else {
             j["code"] = 0;
             j["message"] = "ok";

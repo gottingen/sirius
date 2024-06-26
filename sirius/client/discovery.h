@@ -187,6 +187,15 @@ namespace sirius::client {
          */
         turbo::Status list_config_version(const std::string &config_name, std::vector<collie::ModuleVersion> &versions,
                                           int *retry_time = nullptr);
+        /**
+         * @brief list_config_version is used to list all config versions of a config from the meta server, it is a synchronous call.
+         * @param config_name [input] is the name of the config to list the versions for.
+         * @param versions [output] is the config versions received from the meta server.
+         * @param retry_time [input] is the retry times of the list config version.
+         * @return Status::OK if the config versions were received successfully. Otherwise, an error status is returned.
+         */
+        turbo::Status list_config_version(const std::string &config_name, std::vector<sirius::proto::ConfigInfo> &versions,
+                                          int *retry_time = nullptr);
 
         /**
          * @brief get_config is used to get a config from the meta server, it is a synchronous call.
