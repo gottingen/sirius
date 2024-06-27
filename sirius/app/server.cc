@@ -30,6 +30,7 @@
 #include <sirius/flags/sirius.h>
 #include <sirius/restful/registry.h>
 #include <sirius/restful/client.h>
+#include <melon/rpc/webui.h>
 
 int main(int argc, char **argv) {
     google::SetCommandLineOption("flagfile", "conf/sirius_conf.gflags");
@@ -76,6 +77,15 @@ int main(int argc, char **argv) {
     rs = sirius::restful::registry_server(&server);
     if (!rs.ok()) {
         LOG(ERROR) << "Fail to registry restful service " << rs.message();
+        return -1;
+    }
+    melon::WebuiConfig webui_config = melon::WebuiConfig::default_config();
+    webui_config.root_path = "www";
+    webui_config.mapping_path = "/ea/ui";
+    auto *instance = melon::WebuiService::instance();
+    rs = instance->register_server(webui_config, &server);
+    if(!rs.ok()) {
+        LOG(ERROR) << "register webui failed: " << rs;
         return -1;
     }
     rs = router_server->init(sirius::FLAGS_sirius_server_peers);

@@ -53,8 +53,6 @@ namespace sirius::restful {
             item["type"] = sirius::client::config_type_to_string(c.type());
             item["createtime"] = c.time();
             item["id"] = c.id();
-            LOG(INFO)<< "version major: " << c.version().major() << " minor: " << c.version().minor();
-            LOG(INFO) << "config name: " << c.name() << " version: " << sirius::client::version_to_string(c.version());
             j["configs"].push_back(item);
         }
         response->set_body(j.dump());
