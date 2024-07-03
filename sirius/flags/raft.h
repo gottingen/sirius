@@ -18,10 +18,7 @@
 
 #pragma once
 
-#include <gflags/gflags_declare.h>
+#include <turbo/flags/declare.h>
 
-namespace sirius {
-    /// for raft
-    DECLARE_int64(snapshot_timeout_min);
+TURBO_DECLARE_FLAG(int64_t, snapshot_timeout_min);
 
-}  // namespace sirius

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <sirius/base/log.h>
+#include <turbo/log/logging.h>
 #include <melon/fiber/fiber.h>
 
 namespace sirius {

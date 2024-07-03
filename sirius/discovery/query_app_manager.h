@@ -31,8 +31,6 @@ namespace sirius::discovery {
             return &instance;
         }
 
-        void naming(const sirius::proto::ServletNamingRequest *request,
-                    sirius::proto::ServletNamingResponse *response);
         ///
         /// \param request
         /// \param response

@@ -48,7 +48,7 @@ namespace sirius::discovery {
                 LOG(ERROR) << "parse from protobuf fail when on_apply";
                 if (done) {
                     if (((DiscoveryServerClosure *) done)->response) {
-                        ((DiscoveryServerClosure *) done)->response->set_errcode(sirius::proto::PARSE_FROM_PB_FAIL);
+                        ((DiscoveryServerClosure *) done)->response->set_errcode(eapi::PARSE_FROM_PB_FAIL);
                         ((DiscoveryServerClosure *) done)->response->set_errmsg("parse from protobuf fail");
                     }
                     melon::raft::run_closure_in_fiber(done_guard.release());
@@ -58,7 +58,7 @@ namespace sirius::discovery {
             if (done && ((DiscoveryServerClosure *) done)->response) {
                 ((DiscoveryServerClosure *) done)->response->set_op_type(request.op_type());
             }
-            LOG(INFO) << "on apply, term:" << iter.term() << ", index:" << iter.index()
+            VLOG(turbo::V_IMPORTANT) << "on apply, term:" << iter.term() << ", index:" << iter.index()
                          << ", request op_type:" << sirius::proto::OpType_Name(request.op_type());
             switch (request.op_type()) {
                 case sirius::proto::OP_CREATE_USER: {
@@ -77,15 +77,15 @@ namespace sirius::discovery {
                     PrivilegeManager::get_instance()->drop_privilege(request, done);
                     break;
                 }
-                case sirius::proto::OP_CREATE_NAMESPACE: {
+                case sirius::proto::OP_CREATE_APP: {
                     AppManager::get_instance()->create_app(request, done);
                     break;
                 }
-                case sirius::proto::OP_DROP_NAMESPACE: {
+                case sirius::proto::OP_REMOVE_APP: {
                     AppManager::get_instance()->drop_app(request, done);
                     break;
                 }
-                case sirius::proto::OP_MODIFY_NAMESPACE: {
+                case sirius::proto::OP_MODIFY_APP: {
                     AppManager::get_instance()->modify_app(request, done);
                     break;
                 }
@@ -109,8 +109,16 @@ namespace sirius::discovery {
                     ServletManager::get_instance()->drop_servlet(request, done);
                     break;
                 }
+                case sirius::proto::OP_TOMBSTONE_SERVLET: {
+                    ServletManager::get_instance()->tombstone_servlet(request, done);
+                    break;
+                }
                 case sirius::proto::OP_MODIFY_SERVLET: {
                     ServletManager::get_instance()->modify_servlet(request, done);
+                    break;
+                }
+                case sirius::proto::OP_MGR_SERVLET: {
+                    ServletManager::get_instance()->mgr_servlet(request, done);
                     break;
                 }
                 case sirius::proto::OP_CREATE_CONFIG: {
@@ -123,7 +131,7 @@ namespace sirius::discovery {
                 }
                 default: {
                     LOG(ERROR) << "unknown request type, type:" << request.op_type();
-                    IF_DONE_SET_RESPONSE(done, sirius::proto::UNKNOWN_REQ_TYPE, "unknown request type");
+                    IF_DONE_SET_RESPONSE(done, eapi::UNKNOWN_REQ_TYPE, "unknown request type");
                 }
             }
             _applied_index = iter.index();
@@ -163,7 +171,7 @@ namespace sirius::discovery {
         mizar::Options option = RocksStorage::get_instance()->get_options(
                 RocksStorage::get_instance()->get_meta_info_handle());
         SstFileWriter sst_writer(option);
-        LOG(INFO)<< "snapshot path:" << snapshot_path;
+        VLOG(turbo::V_IMPORTANT)<< "snapshot path:" << snapshot_path;
         //Open the file for writing
         auto s = sst_writer.open(sst_file_path);
         if (!s.ok()) {
@@ -219,11 +227,11 @@ namespace sirius::discovery {
         std::vector<std::string> files;
         reader->list_files(&files);
         for (auto &file: files) {
-            LOG(INFO) << "snapshot load file:" << file;
+            VLOG(turbo::V_IMPORTANT) << "snapshot load file:" << file;
             if (file == "/discovery_info.sst") {
                 std::string snapshot_path = reader->get_path();
                 _applied_index = parse_snapshot_index_from_path(snapshot_path, false);
-                LOG(INFO) << "_applied_index:" << _applied_index << " path:" << snapshot_path;
+                VLOG(turbo::V_IMPORTANT) << "_applied_index:" << _applied_index << " path:" << snapshot_path;
                 snapshot_path.append("/discovery_info.sst");
 
                 //恢复文件

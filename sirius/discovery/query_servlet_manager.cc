@@ -18,7 +18,7 @@
 
 
 #include <sirius/discovery/query_servlet_manager.h>
-#include <sirius/base/log.h>
+#include <turbo/log/logging.h>
 
 namespace sirius::discovery {
     void QueryServletManager::get_servlet_info(const sirius::proto::DiscoveryQueryRequest *request,
@@ -38,7 +38,7 @@ namespace sirius::discovery {
                 *(response->add_servlet_infos()) = manager->_servlet_info_map[id];
             } else {
                 response->set_errmsg("servlet not exist");
-                response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
+                response->set_errcode(eapi::INPUT_PARAM_ERROR);
                 LOG(ERROR)<< "namespace: " << app_name << " zone: " << zone << " servlet: " << servlet << " not exist";
             }
         }

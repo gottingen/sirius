@@ -29,6 +29,7 @@
 #include <sirius/discovery/query_app_manager.h>
 #include <sirius/discovery/query_zone_manager.h>
 #include <sirius/discovery/query_servlet_manager.h>
+#include <sirius/discovery/query_sns_manager.h>
 #include <sirius/discovery/sirius_db.h>
 
 namespace sirius::discovery {
@@ -42,7 +43,7 @@ namespace sirius::discovery {
             return -1;
         }
         mutil::EndPoint addr;
-        mutil::str2endpoint(FLAGS_sirius_listen.c_str(), &addr);
+        mutil::str2endpoint(turbo::get_flag(FLAGS_sirius_listen).c_str(), &addr);
         //addr.ip = mutil::my_ip();
         //addr.port = FLAGS_discovery_port;
         melon::raft::PeerId peer_id(addr, 0);
@@ -81,7 +82,7 @@ namespace sirius::discovery {
             LOG(ERROR) << " _tso_state_machine init fail";
             return -1;
         }
-        LOG(INFO) << " tso state machine init success";
+        VLOG(turbo::V_IMPORTANT) << " tso state machine init success";
 
         SchemaManager::get_instance()->set_discovery_state_machine(_discovery_state_machine);
         ConfigManager::get_instance()->set_discovery_state_machine(_discovery_state_machine);
@@ -112,9 +113,9 @@ namespace sirius::discovery {
 
 
     void DiscoveryServer::discovery_manager(google::protobuf::RpcController *controller,
-                                  const sirius::proto::DiscoveryManagerRequest *request,
-                                  sirius::proto::DiscoveryManagerResponse *response,
-                                  google::protobuf::Closure *done) {
+                                            const sirius::proto::DiscoveryManagerRequest *request,
+                                            sirius::proto::DiscoveryManagerResponse *response,
+                                            google::protobuf::Closure *done) {
         melon::ClosureGuard done_guard(done);
         melon::Controller *cntl =
                 static_cast<melon::Controller *>(controller);
@@ -133,15 +134,17 @@ namespace sirius::discovery {
                                                                      done_guard.release());
             return;
         }
-        if (request->op_type() == sirius::proto::OP_CREATE_NAMESPACE
-            || request->op_type() == sirius::proto::OP_DROP_NAMESPACE
-            || request->op_type() == sirius::proto::OP_MODIFY_NAMESPACE
+        if (request->op_type() == sirius::proto::OP_CREATE_APP
+            || request->op_type() == sirius::proto::OP_REMOVE_APP
+            || request->op_type() == sirius::proto::OP_MODIFY_APP
             || request->op_type() == sirius::proto::OP_CREATE_ZONE
             || request->op_type() == sirius::proto::OP_DROP_ZONE
             || request->op_type() == sirius::proto::OP_MODIFY_ZONE
             || request->op_type() == sirius::proto::OP_CREATE_SERVLET
             || request->op_type() == sirius::proto::OP_DROP_SERVLET
             || request->op_type() == sirius::proto::OP_MODIFY_SERVLET
+            || request->op_type() == sirius::proto::OP_MGR_SERVLET
+            || request->op_type() == sirius::proto::OP_TOMBSTONE_SERVLET
             || request->op_type() == sirius::proto::OP_MODIFY_RESOURCE_TAG
             || request->op_type() == sirius::proto::OP_UPDATE_MAIN_LOGICAL_ROOM) {
             SchemaManager::get_instance()->process_schema_info(controller,
@@ -150,8 +153,8 @@ namespace sirius::discovery {
                                                                done_guard.release());
             return;
         }
-        if(request->op_type() == sirius::proto::OP_CREATE_CONFIG
-            ||request->op_type() == sirius::proto::OP_REMOVE_CONFIG) {
+        if (request->op_type() == sirius::proto::OP_CREATE_CONFIG
+            || request->op_type() == sirius::proto::OP_REMOVE_CONFIG) {
             ConfigManager::get_instance()->process_schema_info(controller,
                                                                request,
                                                                response,
@@ -171,15 +174,15 @@ namespace sirius::discovery {
 
 
         LOG(ERROR) << "request has wrong op_type:" << request->op_type() << ", log_id:" << log_id;
-        response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
+        response->set_errcode(eapi::INPUT_PARAM_ERROR);
         response->set_errmsg("invalid op_type");
         response->set_op_type(request->op_type());
     }
 
     void DiscoveryServer::discovery_query(google::protobuf::RpcController *controller,
-                           const sirius::proto::DiscoveryQueryRequest *request,
-                           sirius::proto::DiscoveryQueryResponse *response,
-                           google::protobuf::Closure *done) {
+                                          const sirius::proto::DiscoveryQueryRequest *request,
+                                          sirius::proto::DiscoveryQueryResponse *response,
+                                          google::protobuf::Closure *done) {
         melon::ClosureGuard done_guard(done);
         melon::Controller *cntl =
                 static_cast<melon::Controller *>(controller);
@@ -191,7 +194,7 @@ namespace sirius::discovery {
         }
         RETURN_IF_NOT_INIT(_init_success, response, log_id);
         TimeCost time_cost;
-        response->set_errcode(sirius::proto::SUCCESS);
+        response->set_errcode(eapi::kOk);
         response->set_errmsg("success");
         switch (request->op_type()) {
             case sirius::proto::QUERY_USER_PRIVILEGE: {
@@ -200,6 +203,10 @@ namespace sirius::discovery {
             }
             case sirius::proto::QUERY_APP: {
                 QueryAppManager::get_instance()->get_app_info(request, response);
+                break;
+            }
+            case sirius::proto::QUERY_NAMING_SERVLET: {
+                QuerySnsManager::get_instance()->naming(request, response);
                 break;
             }
             case sirius::proto::QUERY_ZONE: {
@@ -230,19 +237,20 @@ namespace sirius::discovery {
 
             default: {
                 LOG(WARNING) << "invalid op_type, request: " << request->ShortDebugString() << ", log_id: " << log_id;
-                response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
+                response->set_errcode(eapi::INPUT_PARAM_ERROR);
                 response->set_errmsg("invalid op_type");
             }
         }
-        LOG(INFO) << "query op_type_name:" << sirius::proto::QueryOpType_Name(request->op_type())
-                     << ", time_cost:" << time_cost.get_time() << ", log_id:" << log_id
-                     << ", ip:" << remote_side << ", request: " << request->ShortDebugString();
+        VLOG(turbo::V_IMPORTANT) << "query op_type_name:" << sirius::proto::QueryOpType_Name(request->op_type())
+                  << ", time_cost:" << time_cost.get_time() << ", log_id:" << log_id
+                  << ", ip:" << remote_side << ", request: " << request->ShortDebugString();
     }
 
     void DiscoveryServer::naming(google::protobuf::RpcController *controller,
-                const sirius::proto::ServletNamingRequest *request,
-                sirius::proto::ServletNamingResponse *response,
-                google::protobuf::Closure *done) {
+                                 const eapi::sirius::ServletNamingRequest *request,
+                                 eapi::sirius::ServletNamingResponse *response,
+                                 google::protobuf::Closure *done) {
+        /*
         melon::ClosureGuard done_guard(done);
         melon::Controller *cntl =
                 static_cast<melon::Controller *>(controller);
@@ -255,12 +263,13 @@ namespace sirius::discovery {
         RETURN_IF_NOT_INIT(_init_success, response, log_id);
         auto * query_app_manager = QueryAppManager::get_instance();
         query_app_manager->naming(request, response);
+         */
     }
 
     void DiscoveryServer::raft_control(google::protobuf::RpcController *controller,
-                                  const sirius::proto::RaftControlRequest *request,
-                                  sirius::proto::RaftControlResponse *response,
-                                  google::protobuf::Closure *done) {
+                                       const sirius::proto::RaftControlRequest *request,
+                                       sirius::proto::RaftControlResponse *response,
+                                       google::protobuf::Closure *done) {
         melon::ClosureGuard done_guard(done);
         if (request->region_id() == 0) {
             _discovery_state_machine->raft_control(controller, request, response, done_guard.release());
@@ -275,16 +284,16 @@ namespace sirius::discovery {
             return;
         }
         response->set_region_id(request->region_id());
-        response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
+        response->set_errcode(eapi::INPUT_PARAM_ERROR);
         response->set_errmsg("unmatch region id");
         LOG(ERROR) << "unmatch region_id in discovery server, request: " << request->ShortDebugString();
     }
 
 
     void DiscoveryServer::tso_service(google::protobuf::RpcController *controller,
-                                 const sirius::proto::TsoRequest *request,
-                                 sirius::proto::TsoResponse *response,
-                                 google::protobuf::Closure *done) {
+                                      const sirius::proto::TsoRequest *request,
+                                      sirius::proto::TsoResponse *response,
+                                      google::protobuf::Closure *done) {
         melon::ClosureGuard done_guard(done);
         melon::Controller *cntl =
                 static_cast<melon::Controller *>(controller);
@@ -319,7 +328,7 @@ namespace sirius::discovery {
 
     void DiscoveryServer::close() {
         _flush_bth.join();
-        LOG(INFO) << "DiscoveryServer flush joined";
+        VLOG(turbo::V_IMPORTANT) << "DiscoveryServer flush joined";
     }
 
 }  // namespace sirius::discovery

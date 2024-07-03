@@ -7,11 +7,11 @@ gottingen/carbin-recipes@ea
 # testing tools googlegtest benchmark
 testing
 #########################
-gottingen/turbo@v0.5.8 -DCARBIN_BUILD_TEST=OFF -DCARBIN_BUILD_BENCHMARK=OFF -DCARBIN_BUILD_EXAMPLES=OFF
 ea/gflags
 ea/leveldb
 ea/protobuf
-gottingen/melon@r0.6.2 -DCARBIN_BUILD_TEST=OFF -DCARBIN_BUILD_BENCHMARK=OFF -DCARBIN_BUILD_EXAMPLES=OFF
+gottingen/melon@release-0.6.1 -DCARBIN_BUILD_TEST=OFF -DCARBIN_BUILD_BENCHMARK=OFF -DCARBIN_BUILD_EXAMPLES=OFF
 gottingen/collie@v0.2.38 -DCARBIN_BUILD_TEST=OFF -DCARBIN_BUILD_BENCHMARK=OFF -DCARBIN_BUILD_EXAMPLES=OFF
 gottingen/alkaid@v0.1.7 -DCARBIN_BUILD_TEST=OFF -DCARBIN_BUILD_BENCHMARK=OFF -DCARBIN_BUILD_EXAMPLES=OFF
 gottingen/mizar@v6.29.3
+gottingen/eapi@release-0.2.0

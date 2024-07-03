@@ -25,7 +25,7 @@ namespace sirius::discovery {
     void DiscoveryServerClosure::Run() {
         if (!status().ok()) {
             if (response) {
-                response->set_errcode(sirius::proto::NOT_LEADER);
+                response->set_errcode(eapi::NOT_LEADER);
                 response->set_leader(mutil::endpoint2str(common_state_machine->get_leader()).c_str());
             }
             LOG(ERROR) << "discovery server closure fail, error_code:" << status().error_code() << ", error_mas:"
@@ -38,7 +38,7 @@ namespace sirius::discovery {
         }
 
         if (response != nullptr && response->op_type() != sirius::proto::OP_GEN_ID_FOR_AUTO_INCREMENT) {
-            LOG(INFO)
+            VLOG(turbo::V_IMPORTANT)
             << "request:" << request << ", response:" << response->ShortDebugString() << ", raft_time_cost:["
             << raft_time_cost << "], total_time_cost:[" << total_time_cost << "], remote_side:[" << remote_side << "]";
         }
@@ -51,7 +51,7 @@ namespace sirius::discovery {
     void TsoClosure::Run() {
         if (!status().ok()) {
             if (response) {
-                response->set_errcode(sirius::proto::NOT_LEADER);
+                response->set_errcode(eapi::NOT_LEADER);
                 response->set_leader(mutil::endpoint2str(common_state_machine->get_leader()).c_str());
             }
             LOG(ERROR) << "discovery server closure fail, error_code:" << status().error_code() << ", error_mas:"
@@ -68,19 +68,19 @@ namespace sirius::discovery {
 
     int BaseStateMachine::init(const std::vector<melon::raft::PeerId> &peers) {
         melon::raft::NodeOptions options;
-        options.election_timeout_ms = FLAGS_sirius_election_timeout_ms;
+        options.election_timeout_ms = turbo::get_flag(FLAGS_sirius_election_timeout_ms);
         options.fsm = this;
         options.initial_conf = melon::raft::Configuration(peers);
-        options.snapshot_interval_s = FLAGS_sirius_snapshot_interval_s;
-        options.log_uri = FLAGS_sirius_log_uri + std::to_string(_dummy_region_id);
-        options.raft_meta_uri = FLAGS_sirius_stable_uri + _file_path;
-        options.snapshot_uri = FLAGS_sirius_snapshot_uri + _file_path;
+        options.snapshot_interval_s = turbo::get_flag(FLAGS_sirius_snapshot_interval_s);
+        options.log_uri = turbo::get_flag(FLAGS_sirius_log_uri) + std::to_string(_dummy_region_id);
+        options.raft_meta_uri = turbo::get_flag(FLAGS_sirius_stable_uri) + _file_path;
+        options.snapshot_uri = turbo::get_flag(FLAGS_sirius_snapshot_uri) + _file_path;
         int ret = _node.init(options);
         if (ret < 0) {
             LOG(ERROR) << "raft node init fail";
             return ret;
         }
-        LOG(INFO) << "raft init success, meat state machine init success";
+        VLOG(turbo::V_IMPORTANT) << "raft init success, meat state machine init success";
         return 0;
     }
 
@@ -91,7 +91,7 @@ namespace sirius::discovery {
         melon::ClosureGuard done_guard(done);
         if (!_is_leader) {
             if (response) {
-                response->set_errcode(sirius::proto::NOT_LEADER);
+                response->set_errcode(eapi::NOT_LEADER);
                 response->set_errmsg("not leader");
                 response->set_leader(mutil::endpoint2str(_node.leader_id().addr).c_str());
             }
@@ -123,17 +123,17 @@ namespace sirius::discovery {
     }
 
     void BaseStateMachine::on_leader_start(int64_t term) {
-        LOG(INFO) << "leader start at term: " << term;
+        VLOG(turbo::V_IMPORTANT) << "leader start at term: " << term;
         on_leader_start();
     }
 
     void BaseStateMachine::on_leader_stop() {
         _is_leader.store(false);
-        LOG(INFO) << "leader stop";
+        VLOG(turbo::V_IMPORTANT) << "leader stop";
     }
 
     void BaseStateMachine::on_leader_stop(const mutil::Status &status) {
-        LOG(INFO) << "leader stop, error_code:" << status.error_code() << ", error_des:" << status.error_cstr();
+        VLOG(turbo::V_IMPORTANT) << "leader stop, error_code:" << status.error_code() << ", error_des:" << status.error_cstr();
         on_leader_stop();
     }
 
@@ -147,7 +147,7 @@ namespace sirius::discovery {
         for (auto iter = conf.begin(); iter != conf.end(); ++iter) {
             new_peer += iter->to_string() + ",";
         }
-        LOG(INFO) << "new conf committed, new peer: " << new_peer;
+        VLOG(turbo::V_IMPORTANT) << "new conf committed, new peer: " << new_peer;
     }
 
 }  // namespace sirius::discovery

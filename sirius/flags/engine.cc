@@ -18,13 +18,11 @@
 
 #include <sirius/flags/engine.h>
 #include <gflags/gflags.h>
-#include <melon/rpc/reloadable_flags.h>
 #include <mizar/perf_context.h>
 
 namespace sirius {
     /// for store engine
     DEFINE_int64(flush_memtable_interval_us, 10 * 60 * 1000 * 1000LL, "flush memtable interval, default(10 min)");
-    DEFINE_bool(cstore_scan_fill_cache, true, "cstore_scan_fill_cache");
     DEFINE_int32(rocks_transaction_lock_timeout_ms, 20000,
                  "rocksdb transaction_lock_timeout, real lock_time is 'time + rand_less(time)' (ms)");
     DEFINE_int32(rocks_default_lock_timeout_ms, 30000, "rocksdb default_lock_timeout(ms)");

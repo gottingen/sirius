@@ -37,8 +37,8 @@ namespace fmt {
     };
 
     template<>
-    struct formatter<sirius::proto::OpType> : public formatter<int> {
-        auto format(const sirius::proto::OpType& a, format_context& ctx) const {
+    struct formatter<eapi::sirius::OpType> : public formatter<int> {
+        auto format(const eapi::sirius::OpType& a, format_context& ctx) const {
             return formatter<int>::format(static_cast<int>(a), ctx);
         }
     };
@@ -58,8 +58,8 @@ namespace fmt {
     };
 
     template<>
-    struct formatter<::sirius::proto::RaftControlOp> : public formatter<int> {
-        auto format(const ::sirius::proto::RaftControlOp& a, format_context& ctx) const {
+    struct formatter<::eapi::sirius::RaftControlOp> : public formatter<int> {
+        auto format(const ::eapi::sirius::RaftControlOp& a, format_context& ctx) const {
             return formatter<int>::format(static_cast<int>(a), ctx);
         }
     };

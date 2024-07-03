@@ -20,7 +20,7 @@ syntax="proto2";
 package sirius.proto;
 option cc_generic_services = true;
 
-import "sirius/proto/error_code.proto";
+import "eapi/error_code.proto";
 
 enum RaftControlOp {
   SetPeer = 1;
@@ -47,7 +47,7 @@ message RaftControlRequest {
 
 message RaftControlResponse {
   required int64 region_id = 1;
-  required ErrCode errcode = 2;
+  required eapi.ErrCode errcode = 2;
   optional string leader = 3;
   optional string errmsg = 4;
   repeated string peers  = 5;

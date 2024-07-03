@@ -24,11 +24,11 @@
 namespace sirius::discovery {
 
     void AppManager::create_app(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
-        auto &app_info = const_cast<sirius::proto::AppInfo &>(request.app_info());
+        auto &app_info = const_cast<eapi::sirius::AppInfo &>(request.app_info());
         std::string app_name = app_info.app_name();
         if (_app_id_map.find(app_name) != _app_id_map.end()) {
             LOG(WARNING) << "request app:" << app_name << " has been existed";
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app already existed");
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "app already existed");
             return;
         }
         std::vector<std::string> rocksdb_keys;
@@ -42,7 +42,7 @@ namespace sirius::discovery {
         std::string app_value;
         if (!app_info.SerializeToString(&app_value)) {
             LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
+            IF_DONE_SET_RESPONSE(done, eapi::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
         rocksdb_keys.push_back(construct_app_key(tmp_app_id));
@@ -56,14 +56,14 @@ namespace sirius::discovery {
 
         int ret = DiscoveryRocksdb::get_instance()->put_discovery_info(rocksdb_keys, rocksdb_values);
         if (ret < 0) {
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "write db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "write db fail");
             return;
         }
         // update values in memory
         set_app_info(app_info);
         set_max_app_id(tmp_app_id);
-        IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        LOG(INFO) << "create app success, request:" << request.ShortDebugString();
+        IF_DONE_SET_RESPONSE(done, eapi::kOk, "success");
+        VLOG(turbo::V_IMPORTANT) << "create app success, request:" << request.ShortDebugString();
     }
 
     void AppManager::drop_app(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
@@ -71,14 +71,14 @@ namespace sirius::discovery {
         const std::string& app_name = app_info.app_name();
         if (_app_id_map.find(app_name) == _app_id_map.end()) {
             LOG(WARNING) << "request app:" << app_name << " not exist";
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "app not exist");
             return;
         }
 
         int64_t app_id = _app_id_map[app_name];
         if (!_zone_ids[app_id].empty()) {
             LOG(WARNING) << "request app:" << app_name << " has zone";
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app has servlet");
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "app has servlet");
             return;
         }
 
@@ -86,13 +86,13 @@ namespace sirius::discovery {
 
         int ret = DiscoveryRocksdb::get_instance()->remove_discovery_info(std::vector<std::string>{app_key});
         if (ret < 0) {
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "write db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "write db fail");
             return;
         }
 
         erase_app_info(app_name);
-        IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        LOG(INFO) << "drop app success, request:" << request.ShortDebugString();
+        IF_DONE_SET_RESPONSE(done, eapi::kOk, "success");
+        VLOG(turbo::V_IMPORTANT) << "drop app success, request:" << request.ShortDebugString();
     }
 
     void AppManager::modify_app(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
@@ -100,12 +100,12 @@ namespace sirius::discovery {
         auto &app_name = app_info.app_name();
         if (_app_id_map.find(app_name) == _app_id_map.end()) {
             LOG(WARNING) << "request app:" << app_name << " not exist";
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "app not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "app not exist");
             return;
         }
 
         int64_t app_id = _app_id_map[app_name];
-        sirius::proto::AppInfo tmp_info = _app_info_map[app_id];
+        eapi::sirius::AppInfo tmp_info = _app_info_map[app_id];
         if (app_info.has_quota()) {
             tmp_info.set_quota(app_info.quota());
         }
@@ -114,28 +114,28 @@ namespace sirius::discovery {
         std::string app_value;
         if (!tmp_info.SerializeToString(&app_value)) {
             LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
+            IF_DONE_SET_RESPONSE(done, eapi::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
 
         int ret = DiscoveryRocksdb::get_instance()->put_discovery_info(construct_app_key(app_id), app_value);
         if (ret < 0) {
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "write db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "write db fail");
             return;
         }
 
         set_app_info(tmp_info);
-        IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
-        LOG(INFO) << "modify app success, request:" << request.ShortDebugString();
+        IF_DONE_SET_RESPONSE(done, eapi::kOk, "success");
+        VLOG(turbo::V_IMPORTANT) << "modify app success, request:" << request.ShortDebugString();
     }
 
     int AppManager::load_app_snapshot(const std::string &value) {
-        sirius::proto::AppInfo app_pb;
+        eapi::sirius::AppInfo app_pb;
         if (!app_pb.ParseFromString(value)) {
             LOG(ERROR) << "parse from pb fail when load app snapshot, value: " << value;
             return -1;
         }
-        LOG(INFO) << "load app snapshot success, app_pb:" << app_pb.ShortDebugString();
+        VLOG(turbo::V_IMPORTANT) << "load app snapshot success, app_pb:" << app_pb.ShortDebugString();
         set_app_info(app_pb);
         return 0;
     }

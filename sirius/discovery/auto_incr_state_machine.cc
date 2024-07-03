@@ -44,7 +44,7 @@ namespace sirius::discovery {
                 LOG(ERROR) << "parse from protobuf fail when on_apply";
                 if (done) {
                     if (((DiscoveryServerClosure *) done)->response) {
-                        ((DiscoveryServerClosure *) done)->response->set_errcode(sirius::proto::PARSE_FROM_PB_FAIL);
+                        ((DiscoveryServerClosure *) done)->response->set_errcode(eapi::PARSE_FROM_PB_FAIL);
                         ((DiscoveryServerClosure *) done)->response->set_errmsg("parse from protobuf fail");
                     }
                     melon::raft::run_closure_in_fiber(done_guard.release());
@@ -75,7 +75,7 @@ namespace sirius::discovery {
                 }
                 default: {
                     LOG(ERROR) << "unsupport request type, type:" << request.op_type();
-                    IF_DONE_SET_RESPONSE(done, sirius::proto::UNKNOWN_REQ_TYPE, "unsupport request type");
+                    IF_DONE_SET_RESPONSE(done, eapi::UNKNOWN_REQ_TYPE, "unsupport request type");
                 }
             }
             if (done) {
@@ -90,18 +90,18 @@ namespace sirius::discovery {
         int64_t servlet_id = increment_info.servlet_id();
         uint64_t start_id = increment_info.start_id();
         if (_auto_increment_map.find(servlet_id) != _auto_increment_map.end()) {
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "servlet id has exist");
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "servlet id has exist");
             LOG(ERROR) << "servlet_id: " << servlet_id << " has exist when add servlet id for auto increment";
             return;
         }
         _auto_increment_map[servlet_id] = start_id;
         if (done && ((DiscoveryServerClosure *) done)->response) {
-            ((DiscoveryServerClosure *) done)->response->set_errcode(sirius::proto::SUCCESS);
+            ((DiscoveryServerClosure *) done)->response->set_errcode(eapi::kOk);
             ((DiscoveryServerClosure *) done)->response->set_op_type(request.op_type());
             ((DiscoveryServerClosure *) done)->response->set_start_id(start_id);
             ((DiscoveryServerClosure *) done)->response->set_errmsg("SUCCESS");
         }
-        LOG(INFO) << "add servlet id for auto_increment success, request:" << request.ShortDebugString();
+        VLOG(turbo::V_IMPORTANT)<< "add servlet id for auto_increment success, request:" << request.ShortDebugString();
     }
 
     void AutoIncrStateMachine::drop_servlet_id(const sirius::proto::DiscoveryManagerRequest &request,
@@ -109,17 +109,17 @@ namespace sirius::discovery {
         auto &increment_info = request.auto_increment();
         int64_t servlet_id = increment_info.servlet_id();
         if (_auto_increment_map.find(servlet_id) == _auto_increment_map.end()) {
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "servlet id not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "servlet id not exist");
             LOG(WARNING) << "servlet id: " << servlet_id << " not exist when drop servlet id for auto increment";
             return;
         }
         _auto_increment_map.erase(servlet_id);
         if (done && ((DiscoveryServerClosure *) done)->response) {
-            ((DiscoveryServerClosure *) done)->response->set_errcode(sirius::proto::SUCCESS);
+            ((DiscoveryServerClosure *) done)->response->set_errcode(eapi::kOk);
             ((DiscoveryServerClosure *) done)->response->set_op_type(request.op_type());
             ((DiscoveryServerClosure *) done)->response->set_errmsg("SUCCESS");
         }
-        LOG(INFO) << "drop servlet id for auto_increment success, request:" << request.ShortDebugString();
+        VLOG(turbo::V_IMPORTANT) << "drop servlet id for auto_increment success, request:" << request.ShortDebugString();
     }
 
     void AutoIncrStateMachine::gen_id(const sirius::proto::DiscoveryManagerRequest &request,
@@ -128,7 +128,7 @@ namespace sirius::discovery {
         int64_t servlet_id = increment_info.servlet_id();
         if (_auto_increment_map.find(servlet_id) == _auto_increment_map.end()) {
             LOG(WARNING) << "servlet id: " << servlet_id << " has no auto_increment field";
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "servlet has no auto increment");
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "servlet has no auto increment");
             return;
         }
         uint64_t old_start_id = _auto_increment_map[servlet_id];
@@ -137,13 +137,13 @@ namespace sirius::discovery {
         }
         _auto_increment_map[servlet_id] = old_start_id + increment_info.count();
         if (done && ((DiscoveryServerClosure *) done)->response) {
-            ((DiscoveryServerClosure *) done)->response->set_errcode(sirius::proto::SUCCESS);
+            ((DiscoveryServerClosure *) done)->response->set_errcode(eapi::kOk);
             ((DiscoveryServerClosure *) done)->response->set_op_type(request.op_type());
             ((DiscoveryServerClosure *) done)->response->set_start_id(old_start_id);
             ((DiscoveryServerClosure *) done)->response->set_end_id(_auto_increment_map[servlet_id]);
             ((DiscoveryServerClosure *) done)->response->set_errmsg("SUCCESS");
         }
-        LOG(INFO)<< "gen_id for auto_increment success, request:" << request.ShortDebugString();
+        VLOG(turbo::V_IMPORTANT)<< "gen_id for auto_increment success, request:" << request.ShortDebugString();
     }
 
     void AutoIncrStateMachine::update(const sirius::proto::DiscoveryManagerRequest &request,
@@ -152,18 +152,18 @@ namespace sirius::discovery {
         int64_t servlet_id = increment_info.servlet_id();
         if (_auto_increment_map.find(servlet_id) == _auto_increment_map.end()) {
             LOG(WARNING) << "servlet id: " << servlet_id << " has no auto_increment field";
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "servlet has no auto increment");
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "servlet has no auto increment");
             return;
         }
         if (!increment_info.has_start_id() && !increment_info.has_increment_id()) {
             LOG(WARNING) << "star_id or increment_id all not exist, servlet_id:" << servlet_id;
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR,
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR,
                                  "star_id or increment_id all not exist");
             return;
         }
         if (increment_info.has_start_id() && increment_info.has_increment_id()) {
             LOG(WARNING) << "star_id and increment_id all exist, servlet_id:" << servlet_id;
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR,
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR,
                                  "star_id and increment_id all exist");
             return;
         }
@@ -173,7 +173,7 @@ namespace sirius::discovery {
             && old_start_id > increment_info.start_id() + 1
             && (!increment_info.has_force() || increment_info.force() == false)) {
             LOG(WARNING) << "request not illegal, max_id not support back, servlet_id:" << servlet_id;
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "not support rollback");
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "not support rollback");
             return;
         }
         if (increment_info.has_start_id()) {
@@ -182,16 +182,16 @@ namespace sirius::discovery {
             _auto_increment_map[servlet_id] += increment_info.increment_id();
         }
         if (done && ((DiscoveryServerClosure *) done)->response) {
-            ((DiscoveryServerClosure *) done)->response->set_errcode(sirius::proto::SUCCESS);
+            ((DiscoveryServerClosure *) done)->response->set_errcode(eapi::kOk);
             ((DiscoveryServerClosure *) done)->response->set_op_type(request.op_type());
             ((DiscoveryServerClosure *) done)->response->set_start_id(_auto_increment_map[servlet_id]);
             ((DiscoveryServerClosure *) done)->response->set_errmsg("SUCCESS");
         }
-        LOG(INFO) << "update start_id for auto_increment success, request:" << request.ShortDebugString();
+        VLOG(turbo::V_IMPORTANT) << "update start_id for auto_increment success, request:" << request.ShortDebugString();
     }
 
     void AutoIncrStateMachine::on_snapshot_save(melon::raft::SnapshotWriter *writer, melon::raft::Closure *done) {
-        LOG(INFO) << "start on snapshot save";
+        VLOG(turbo::V_IMPORTANT) << "start on snapshot save";
         std::string max_id_string;
         save_auto_increment(max_id_string);
         Fiber bth(&FIBER_ATTR_SMALL);
@@ -202,11 +202,11 @@ namespace sirius::discovery {
     }
 
     int AutoIncrStateMachine::on_snapshot_load(melon::raft::SnapshotReader *reader) {
-        LOG(INFO) << "start on snapshot load";
+        VLOG(turbo::V_IMPORTANT)<< "start on snapshot load";
         std::vector<std::string> files;
         reader->list_files(&files);
         for (auto &file: files) {
-            LOG(INFO) << "snapshot load file:" << file;
+            VLOG(turbo::V_IMPORTANT) << "snapshot load file:" << file;
             if (file == "/max_id.json") {
                 std::string max_id_file = reader->get_path() + "/max_id.json";
                 if (load_auto_increment(max_id_file) != 0) {
@@ -237,7 +237,7 @@ namespace sirius::discovery {
         rapidjson::Writer<rapidjson::StringBuffer> json_writer(buffer);
         root.Accept(json_writer);
         max_id_string = buffer.GetString();
-        LOG(INFO) << "save auto increment success, max_id_string:" << max_id_string;
+        VLOG(turbo::V_IMPORTANT) << "save auto increment success, max_id_string:" << max_id_string;
     }
 
     void AutoIncrStateMachine::save_snapshot(melon::raft::Closure *done,
@@ -286,7 +286,7 @@ namespace sirius::discovery {
                 continue;
             }
             uint64_t max_id = json_iter->value.GetUint64();
-            LOG(INFO) << "load auto increment, servlet_id:" << servlet_id << ", max_id:" << max_id;
+            VLOG(turbo::V_IMPORTANT) << "load auto increment, servlet_id:" << servlet_id << ", max_id:" << max_id;
             _auto_increment_map[servlet_id] = max_id;
         }
         return 0;

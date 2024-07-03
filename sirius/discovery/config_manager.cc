@@ -33,7 +33,7 @@ namespace sirius::discovery {
         melon::ClosureGuard done_guard(done);
         if (!_discovery_state_machine->is_leader()) {
             if (response) {
-                response->set_errcode(sirius::proto::NOT_LEADER);
+                response->set_errcode(eapi::NOT_LEADER);
                 response->set_errmsg("not leader");
                 response->set_leader(mutil::endpoint2str(_discovery_state_machine->get_leader()).c_str());
             }
@@ -49,7 +49,7 @@ namespace sirius::discovery {
             }
         }
         ON_SCOPE_EXIT(([cntl, log_id, response]() {
-            if (response != nullptr && response->errcode() != sirius::proto::SUCCESS) {
+            if (response != nullptr && response->errcode() != eapi::kOk) {
                 const auto &remote_side_tmp = mutil::endpoint2str(cntl->remote_side());
                 const char *remote_side = remote_side_tmp.c_str();
                 LOG(WARNING) << "response error, remote_side:" << remote_side << ", log_id:" << log_id;
@@ -60,14 +60,14 @@ namespace sirius::discovery {
             case sirius::proto::OP_CREATE_CONFIG:
             case sirius::proto::OP_REMOVE_CONFIG:
                 if(!request->has_config_info()) {
-                    ERROR_SET_RESPONSE(response, sirius::proto::INPUT_PARAM_ERROR,
+                    ERROR_SET_RESPONSE(response, eapi::INPUT_PARAM_ERROR,
                                        "no config_info", request->op_type(), log_id);
                     return;
                 }
                 _discovery_state_machine->process(controller, request, response, done_guard.release());
                 return;
             default:
-                ERROR_SET_RESPONSE(response, sirius::proto::INPUT_PARAM_ERROR,
+                ERROR_SET_RESPONSE(response, eapi::INPUT_PARAM_ERROR,
                                    "invalid op_type", request->op_type(), log_id);
                 return;
         }
@@ -86,20 +86,20 @@ namespace sirius::discovery {
 
         MELON_SCOPED_LOCK(_config_mutex);
         if (_configs.find(name) == _configs.end()) {
-            _configs[name] = std::map<collie::ModuleVersion, sirius::proto::ConfigInfo>();
+            _configs[name] = std::map<collie::ModuleVersion, eapi::sirius::ConfigInfo>();
         }
         auto it = _configs.find(name);
         // do not rewrite.
         if (it->second.find(version) != it->second.end()) {
             /// already exists
-            LOG(INFO) << "config : " << name << " version: " << version.to_string() << " exist";
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "config already exist");
+            VLOG(turbo::V_IMPORTANT) << "config : " << name << " version: " << version.to_string() << " exist";
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "config already exist");
             return;
         }
         if(!it->second.empty() && it->second.rbegin()->first >= version) {
             /// Version numbers must increase monotonically
-            LOG(INFO) << "config : " << name << " version: " << version.to_string() << " must be larger than current: " << it->second.rbegin()->first.to_string();
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "Version numbers must increase monotonically");
+            VLOG(turbo::V_IMPORTANT) << "config : " << name << " version: " << version.to_string() << " must be larger than current: " << it->second.rbegin()->first.to_string();
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "Version numbers must increase monotonically");
             return;
         }
         std::string rocks_key = make_config_key(name, version);
@@ -112,19 +112,19 @@ namespace sirius::discovery {
         max_config_id_value.append((char *) &tmp_id, sizeof(int64_t));
         auto max_config_id_key = construct_max_config_id_key();
         if (!tmp_request.SerializeToString(&rocks_value)) {
-            IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "serializeToArray fail");
+            IF_DONE_SET_RESPONSE(done, eapi::PARSE_TO_PB_FAIL, "serializeToArray fail");
             return;
         }
 
         int ret = DiscoveryRocksdb::get_instance()->put_discovery_info({rocks_key,max_config_id_key}, {rocks_value, max_config_id_value});
         if (ret < 0) {
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "write db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "write db fail");
             return;
         }
         it->second[version] = tmp_request;
         _max_config_id = tmp_id;
-        LOG(INFO) << "config : " << name << " version: " << version.to_string() << " create";
-        IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
+        VLOG(turbo::V_IMPORTANT) << "config : " << name << " version: " << version.to_string() << " create";
+        IF_DONE_SET_RESPONSE(done, eapi::kOk, "success");
     }
 
 
@@ -139,7 +139,7 @@ namespace sirius::discovery {
         }
         auto it = _configs.find(name);
         if (it == _configs.end()) {
-            IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "config not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::PARSE_TO_PB_FAIL, "config not exist");
             return;
         }
         collie::ModuleVersion version(remove_request.version().major(), remove_request.version().minor(),
@@ -147,21 +147,21 @@ namespace sirius::discovery {
 
         if (it->second.find(version) == it->second.end()) {
             /// not exists
-            LOG(INFO) << "config : " << name << " version: " << version.to_string() << " not exist";
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INPUT_PARAM_ERROR, "config not exist");
+            VLOG(turbo::V_IMPORTANT) << "config : " << name << " version: " << version.to_string() << " not exist";
+            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "config not exist");
         }
 
         std::string rocks_key = make_config_key(name, version);
         int ret = DiscoveryRocksdb::get_instance()->remove_discovery_info(std::vector{rocks_key});
         if (ret < 0) {
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "delete from db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "delete from db fail");
             return;
         }
         it->second.erase(version);
         if(it->second.empty()) {
             _configs.erase(name);
         }
-        IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
+        IF_DONE_SET_RESPONSE(done, eapi::kOk, "success");
     }
 
     void ConfigManager::remove_config_all(const ::sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done) {
@@ -169,7 +169,7 @@ namespace sirius::discovery {
         auto &name = remove_request.name();
         auto it = _configs.find(name);
         if (it == _configs.end()) {
-            IF_DONE_SET_RESPONSE(done, sirius::proto::PARSE_TO_PB_FAIL, "config not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::PARSE_TO_PB_FAIL, "config not exist");
             return;
         }
         std::vector<std::string> del_keys;
@@ -181,16 +181,16 @@ namespace sirius::discovery {
 
         int ret = DiscoveryRocksdb::get_instance()->remove_discovery_info(del_keys);
         if (ret < 0) {
-            IF_DONE_SET_RESPONSE(done, sirius::proto::INTERNAL_ERROR, "delete from db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "delete from db fail");
             return;
         }
         _configs.erase(name);
-        IF_DONE_SET_RESPONSE(done, sirius::proto::SUCCESS, "success");
+        IF_DONE_SET_RESPONSE(done, eapi::kOk, "success");
     }
 
     int ConfigManager::load_snapshot() {
         MELON_SCOPED_LOCK( ConfigManager::get_instance()->_config_mutex);
-        LOG(INFO) << "start to load config snapshot";
+        VLOG(turbo::V_IMPORTANT) << "start to load config snapshot";
         _configs.clear();
         std::string config_prefix = DiscoveryConstants::CONFIG_IDENTIFY;
         mizar::ReadOptions read_options;
@@ -221,19 +221,19 @@ namespace sirius::discovery {
 
             }
         }
-        LOG(INFO) << "load config snapshot done";
+        VLOG(turbo::V_IMPORTANT) << "load config snapshot done";
         return 0;
     }
 
     int ConfigManager::load_config_snapshot(const std::string &value) {
-        sirius::proto::ConfigInfo config_pb;
+        eapi::sirius::ConfigInfo config_pb;
         if (!config_pb.ParseFromString(value)) {
             LOG(ERROR) << "parse from pb fail when load config snapshot, key:" << value;
             return -1;
         }
         ///TLOG_INFO("load config:{}", config_pb.name());
         if(_configs.find(config_pb.name()) == _configs.end()) {
-            _configs[config_pb.name()] = std::map<collie::ModuleVersion, sirius::proto::ConfigInfo>();
+            _configs[config_pb.name()] = std::map<collie::ModuleVersion, eapi::sirius::ConfigInfo>();
         }
         auto it = _configs.find(config_pb.name());
         collie::ModuleVersion version(config_pb.version().major(), config_pb.version().minor(),

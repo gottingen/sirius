@@ -93,8 +93,8 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
                                   google::protobuf::Closure *done) {
             melon::ClosureGuard done_guard(done);
             if (!is_leader() && !request->force()) {
-                LOG(INFO) << "node is not leader when raft control, region_id: " << request->region_id();
-                response->set_errcode(sirius::proto::NOT_LEADER);
+                VLOG(turbo::V_IMPORTANT) << "node is not leader when raft control, region_id: " << request->region_id();
+                response->set_errcode(eapi::NOT_LEADER);
                 response->set_region_id(request->region_id());
                 response->set_leader(mutil::endpoint2str(_node.leader_id().addr).c_str());
                 response->set_errmsg("not leader");
@@ -112,7 +112,7 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
         virtual void on_apply(melon::raft::Iterator &iter) = 0;
 
         virtual void on_shutdown() {
-            LOG(INFO) << "raft is shut down";
+            VLOG(turbo::V_IMPORTANT) << "raft is shut down";
         };
 
         virtual void on_snapshot_save(melon::raft::SnapshotWriter *writer, melon::raft::Closure *done) = 0;
@@ -137,9 +137,9 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
 
         virtual void shutdown_raft() {
             _node.shutdown(nullptr);
-            LOG(INFO) << "raft node was shutdown";
+            VLOG(turbo::V_IMPORTANT) << "raft node was shutdown";
             _node.join();
-            LOG(INFO) << "raft node join completely";
+            VLOG(turbo::V_IMPORTANT) << "raft node join completely";
         }
 
         virtual bool is_leader() const{
@@ -203,7 +203,7 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
     do {\
         if (!init) {\
             LOG(WARNING)<<"have not init, log_id: "<<  log_id;\
-            response->set_errcode(sirius::proto::HAVE_NOT_INIT);\
+            response->set_errcode(eapi::HAVE_NOT_INIT);\
             response->set_errmsg("have not init");\
             return;\
         }\

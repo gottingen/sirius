@@ -20,34 +20,32 @@
 #include <string>
 #include <fstream>
 #include <melon/rpc/server.h>
-#include <gflags/gflags.h>
 #include <sirius/discovery/sirius_server.h>
-#include <sirius/discovery/router_service.h>
 #include <sirius/storage/rocks_storage.h>
 #include <sirius/base/memory_profile.h>
 #include <collie/filesystem/fs.h>
-#include <collie/strings/str_split.h>
 #include <sirius/flags/sirius.h>
-#include <sirius/restful/registry.h>
-#include <sirius/restful/client.h>
+#include <sirius/service/registry.h>
 #include <melon/rpc/webui.h>
+#include <turbo/flags/servlet.h>
+#include <sirius/service/sirius_service.h>
 
 int main(int argc, char **argv) {
-    google::SetCommandLineOption("flagfile", "conf/sirius_conf.gflags");
-    google::ParseCommandLineFlags(&argc, &argv, true);
+    VLOG(201)<< "111111111111111111111111111111111111111111111111111111";
+    LOG(INFO)<< "ea discovery server start";
+    turbo::Servlet &servlet = turbo::Servlet::instance();
+    auto  [exit, code] = servlet.run(argc, argv);
+    if (exit) {
+        return code;
+    }
+
     ghc::filesystem::path remove_path("init.success");
     ghc::filesystem::remove_all(remove_path);
-    // Initail log
-    if (!sirius::initialize_log()) {
-        fprintf(stderr, "log init failed.");
-        return -1;
-    }
-    LOG(INFO) << "log file load success";
 
     //add service
     melon::Server server;
 
-    if (0 != melon::raft::add_service(&server, sirius::FLAGS_sirius_listen.c_str())) {
+    if (0 != melon::raft::add_service(&server, turbo::get_flag(FLAGS_sirius_listen).c_str())) {
         LOG(ERROR) << "Fail to init raft";
         return -1;
     }
@@ -59,19 +57,23 @@ int main(int argc, char **argv) {
     std::vector<std::string> instances;
     bool completely_deploy = false;
 
-    std::vector<std::string> list_raft_peers = collie::str_split(sirius::FLAGS_sirius_server_peers, ',');
-    for (auto &raft_peer: list_raft_peers) {
+    for (auto &raft_peer: turbo::get_flag(FLAGS_sirius_server_peers)) {
         LOG(INFO)<< "raft_peer:" << raft_peer.c_str();
         melon::raft::PeerId peer(raft_peer);
         peers.push_back(peer);
     }
 
     auto *discovery_server = sirius::discovery::DiscoveryServer::get_instance();
-    auto *router_server = sirius::discovery::RouterServiceImpl::get_instance();
-    auto *sns_server = melon::SnsServiceImpl::get_instance();
-    auto rs = sirius::restful::Client::instance().init(sirius::FLAGS_sirius_listen);
-    if (!rs.ok()) {
-        LOG(ERROR) << "Fail to init restful client " << rs.message();
+    auto *sirius_service = sirius::SiriusServiceImpl::instance();
+    auto *sns_service = sirius::SnsServiceImpl::instance();
+    LOG(INFO)<< "start webui";
+    melon::WebuiConfig webui_config = melon::WebuiConfig::default_config();
+    webui_config.root_path = "www";
+    webui_config.mapping_path = "/ea/ui";
+    auto *instance = melon::WebuiService::instance();
+    auto rs = instance->register_server(webui_config, &server);
+    if(!rs.ok()) {
+        LOG(ERROR) << "register webui failed: " << rs;
         return -1;
     }
     rs = sirius::restful::registry_server(&server);
@@ -79,23 +81,18 @@ int main(int argc, char **argv) {
         LOG(ERROR) << "Fail to registry restful service " << rs.message();
         return -1;
     }
-    melon::WebuiConfig webui_config = melon::WebuiConfig::default_config();
-    webui_config.root_path = "www";
-    webui_config.mapping_path = "/ea/ui";
-    auto *instance = melon::WebuiService::instance();
-    rs = instance->register_server(webui_config, &server);
-    if(!rs.ok()) {
-        LOG(ERROR) << "register webui failed: " << rs;
+    rs = sirius_service->initialize(turbo::get_flag(FLAGS_sirius_server_peers));
+    if (!rs.ok()) {
+        LOG(ERROR) << "Fail init sirius service " << rs.message();
         return -1;
     }
-    rs = router_server->init(sirius::FLAGS_sirius_server_peers);
-    if (!rs.ok()) {
-        LOG(ERROR) << "Fail init router server " << rs.message();
+
+    if (0 != server.AddService(sirius_service, melon::SERVER_DOESNT_OWN_SERVICE)) {
+        LOG(ERROR) << "Fail to Add sirius Service";
         return -1;
     }
-    rs = sns_server->init(sirius::FLAGS_sirius_server_peers);
-    if (!rs.ok()) {
-        LOG(ERROR) << "Fail init sns server " << rs.message();
+    if (0 != server.AddService(sns_service, melon::SERVER_DOESNT_OWN_SERVICE)) {
+        LOG(ERROR) << "Fail to Add sns Service";
         return -1;
     }
     // registry discovery service
@@ -103,18 +100,9 @@ int main(int argc, char **argv) {
         LOG(ERROR) << "Fail to Add discovery Service";
         return -1;
     }
-    // registry router service
-    if (0 != server.AddService(router_server, melon::SERVER_DOESNT_OWN_SERVICE)) {
-        LOG(ERROR) << "Fail to Add router Service";
-        return -1;
-    }
 
-    if (0 != server.AddService(sns_server, melon::SERVER_DOESNT_OWN_SERVICE)) {
-        LOG(ERROR) << "Fail to Add sns Service";
-        return -1;
-    }
     // enable ports
-    if (server.Start(sirius::FLAGS_sirius_listen.c_str(), nullptr) != 0) {
+    if (server.Start(turbo::get_flag(FLAGS_sirius_listen).c_str(), nullptr) != 0) {
         LOG(ERROR) << "Fail to start server";
         return -1;
     }

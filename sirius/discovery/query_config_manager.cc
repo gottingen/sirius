@@ -25,7 +25,7 @@ namespace sirius::discovery {
                                         ::sirius::proto::DiscoveryQueryResponse *response) {
         if (!request->has_config_name()) {
             response->set_errmsg("config name not set");
-            response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
+            response->set_errcode(eapi::INPUT_PARAM_ERROR);
             return;
         }
         MELON_SCOPED_LOCK( ConfigManager::get_instance()->_config_mutex);
@@ -34,7 +34,7 @@ namespace sirius::discovery {
         auto it = configs.find(name);
         if (it == configs.end() || it->second.empty()) {
             response->set_errmsg("config not exist");
-            response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
+            response->set_errcode(eapi::INPUT_PARAM_ERROR);
             return;
         }
         collie::ModuleVersion version;
@@ -45,7 +45,7 @@ namespace sirius::discovery {
             auto cit = it->second.rbegin();
             *(response->add_config_infos()) = cit->second;
             response->set_errmsg("success");
-            response->set_errcode(sirius::proto::SUCCESS);
+            response->set_errcode(eapi::kOk);
             return;
         }
         auto &request_version = request->config_version();
@@ -55,13 +55,13 @@ namespace sirius::discovery {
         if (cit == it->second.end()) {
             /// not exists
             response->set_errmsg("config not exist");
-            response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
+            response->set_errcode(eapi::INPUT_PARAM_ERROR);
             return;
         }
 
         *(response->add_config_infos()) = cit->second;
         response->set_errmsg("success");
-        response->set_errcode(sirius::proto::SUCCESS);
+        response->set_errcode(eapi::kOk);
     }
 
     void QueryConfigManager::list_config(const ::sirius::proto::DiscoveryQueryRequest *request,
@@ -75,14 +75,14 @@ namespace sirius::discovery {
             }
         }
         response->set_errmsg("success");
-        response->set_errcode(sirius::proto::SUCCESS);
+        response->set_errcode(eapi::kOk);
     }
 
     void QueryConfigManager::list_config_version(const ::sirius::proto::DiscoveryQueryRequest *request,
                                                  ::sirius::proto::DiscoveryQueryResponse *response) {
         if (!request->has_config_name()) {
             response->set_errmsg("config name not set");
-            response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
+            response->set_errcode(eapi::INPUT_PARAM_ERROR);
             return;
         }
         auto &name = request->config_name();
@@ -91,7 +91,7 @@ namespace sirius::discovery {
         auto it = configs.find(name);
         if (it == configs.end()) {
             response->set_errmsg("config not exist");
-            response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
+            response->set_errcode(eapi::INPUT_PARAM_ERROR);
             return;
         }
         response->mutable_config_infos()->Reserve(it->second.size());
@@ -99,7 +99,7 @@ namespace sirius::discovery {
             *(response->add_config_infos()) = vit->second;
         }
         response->set_errmsg("success");
-        response->set_errcode(sirius::proto::SUCCESS);
+        response->set_errcode(eapi::kOk);
     }
 
 }  // namespace sirius::discovery

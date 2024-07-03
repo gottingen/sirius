@@ -21,7 +21,7 @@
 
 #include <mizar/listener.h>
 #include <sirius/storage/rocks_storage.h>
-#include <sirius/base/log.h>
+#include <turbo/log/logging.h>
 
 namespace sirius {
 class SimpleListener : public mizar::EventListener {

@@ -102,7 +102,7 @@ namespace sirius::discovery {
         DiscoveryStateMachine *_discovery_state_machine;
         fiber_mutex_t _config_mutex;
         int64_t _max_config_id{0};
-        turbo::flat_hash_map<std::string, std::map<collie::ModuleVersion, sirius::proto::ConfigInfo>> _configs;
+        turbo::flat_hash_map<std::string, std::map<collie::ModuleVersion, eapi::sirius::ConfigInfo>> _configs;
 
     };
 

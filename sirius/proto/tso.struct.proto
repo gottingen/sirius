@@ -20,7 +20,7 @@ syntax="proto2";
 package sirius.proto;
 option cc_generic_services = true;
 import "sirius/proto/optype.proto";
-import "sirius/proto/error_code.proto";
+import "eapi/error_code.proto";
 
 message TsoTimestamp {
   optional int64    physical = 1;
@@ -37,7 +37,7 @@ message TsoRequest {
 
 message TsoResponse {
   required OpType          op_type           = 1;
-  optional ErrCode         errcode           = 2;
+  optional eapi.ErrCode         errcode           = 2;
   optional TsoTimestamp    start_timestamp   = 3;
   optional int64           count             = 4;
   optional string          errmsg            = 5;

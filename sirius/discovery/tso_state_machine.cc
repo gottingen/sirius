@@ -52,20 +52,20 @@ namespace sirius::discovery {
         _tso_obj.last_save_physical = 0;
         //int ret = BaseStateMachine::init(peers);
         melon::raft::NodeOptions options;
-        options.election_timeout_ms = FLAGS_sirius_election_timeout_ms;
+        options.election_timeout_ms = turbo::get_flag(FLAGS_sirius_election_timeout_ms);
         options.fsm = this;
         options.initial_conf = melon::raft::Configuration(peers);
-        options.snapshot_interval_s = FLAGS_sirius_tso_snapshot_interval_s;
-        options.log_uri = FLAGS_sirius_log_uri + std::to_string(_dummy_region_id);
+        options.snapshot_interval_s = turbo::get_flag(FLAGS_sirius_tso_snapshot_interval_s);
+        options.log_uri = turbo::get_flag(FLAGS_sirius_log_uri) + std::to_string(_dummy_region_id);
         //options.stable_uri = FLAGS_stable_uri + "/discovery";
-        options.raft_meta_uri = FLAGS_sirius_stable_uri + _file_path;
-        options.snapshot_uri = FLAGS_sirius_snapshot_uri + _file_path;
+        options.raft_meta_uri = turbo::get_flag(FLAGS_sirius_stable_uri) + _file_path;
+        options.snapshot_uri = turbo::get_flag(FLAGS_sirius_snapshot_uri) + _file_path;
         int ret = _node.init(options);
         if (ret < 0) {
             LOG(ERROR) << "raft node init fail";
             return ret;
         }
-        LOG(INFO) << "raft init success, meat state machine init success";
+        VLOG(turbo::V_IMPORTANT) << "raft init success, meat state machine init success";
         return 0;
     }
 
@@ -73,13 +73,13 @@ namespace sirius::discovery {
         int64_t count = request->count();
         response->set_op_type(request->op_type());
         if (count == 0) {
-            response->set_errcode(sirius::proto::INPUT_PARAM_ERROR);
+            response->set_errcode(eapi::INPUT_PARAM_ERROR);
             response->set_errmsg("tso count should be positive");
             return;
         }
         if (!_is_healty) {
             LOG(ERROR) << "TSO has wrong status, retry later";
-            response->set_errcode(sirius::proto::RETRY_LATER);
+            response->set_errcode(eapi::RETRY_LATER);
             response->set_errmsg("timestamp not ok, retry later");
             return;
         }
@@ -111,7 +111,7 @@ namespace sirius::discovery {
             }
         }
         if (need_retry) {
-            response->set_errcode(sirius::proto::EXEC_FAIL);
+            response->set_errcode(eapi::EXEC_FAIL);
             response->set_errmsg("gen tso failed");
             LOG(ERROR) << "gen tso failed";
             return;
@@ -120,7 +120,7 @@ namespace sirius::discovery {
         auto timestamp = response->mutable_start_timestamp();
         timestamp->CopyFrom(current);
         response->set_count(count);
-        response->set_errcode(sirius::proto::SUCCESS);
+        response->set_errcode(eapi::kOk);
     }
 
     void TSOStateMachine::process(google::protobuf::RpcController *controller,
@@ -129,7 +129,7 @@ namespace sirius::discovery {
                                   google::protobuf::Closure *done) {
         melon::ClosureGuard done_guard(done);
         if (request->op_type() == sirius::proto::OP_QUERY_TSO_INFO) {
-            response->set_errcode(sirius::proto::SUCCESS);
+            response->set_errcode(eapi::kOk);
             response->set_errmsg("success");
             response->set_op_type(request->op_type());
             response->set_leader(mutil::endpoint2str(_node.leader_id().addr).c_str());
@@ -147,7 +147,7 @@ namespace sirius::discovery {
         const auto &remote_side_tmp = mutil::endpoint2str(cntl->remote_side());
         const char *remote_side = remote_side_tmp.c_str();
         if (!_is_leader) {
-            response->set_errcode(sirius::proto::NOT_LEADER);
+            response->set_errcode(eapi::NOT_LEADER);
             response->set_errmsg("not leader");
             response->set_op_type(request->op_type());
             response->set_leader(mutil::endpoint2str(_node.leader_id().addr).c_str());
@@ -190,7 +190,7 @@ namespace sirius::discovery {
                 LOG(ERROR) << "parse from protobuf fail when on_apply";
                 if (done) {
                     if (((TsoClosure *) done)->response) {
-                        ((TsoClosure *) done)->response->set_errcode(sirius::proto::PARSE_FROM_PB_FAIL);
+                        ((TsoClosure *) done)->response->set_errcode(eapi::PARSE_FROM_PB_FAIL);
                         ((TsoClosure *) done)->response->set_errmsg("parse from protobuf fail");
                     }
                     melon::raft::run_closure_in_fiber(done_guard.release());
@@ -211,7 +211,7 @@ namespace sirius::discovery {
                 }
                 default: {
                     LOG(ERROR) << "unsupport request type, type:" << request.op_type();
-                    IF_DONE_SET_RESPONSE(done, sirius::proto::UNKNOWN_REQ_TYPE, "unsupport request type");
+                    IF_DONE_SET_RESPONSE(done, eapi::UNKNOWN_REQ_TYPE, "unsupport request type");
                 }
             }
             if (done) {
@@ -233,7 +233,7 @@ namespace sirius::discovery {
                                  << ", " << current.logical() << ", " << _tso_obj.current_timestamp.logical();
                     if (done && ((TsoClosure *) done)->response) {
                         sirius::proto::TsoResponse *response = ((TsoClosure *) done)->response;
-                        response->set_errcode(sirius::proto::INTERNAL_ERROR);
+                        response->set_errcode(eapi::INTERNAL_ERROR);
                         response->set_errmsg("time can't fallback");
                         auto timestamp = response->mutable_start_timestamp();
                         timestamp->CopyFrom(_tso_obj.current_timestamp);
@@ -255,7 +255,7 @@ namespace sirius::discovery {
                 response->set_save_physical(physical);
                 auto timestamp = response->mutable_start_timestamp();
                 timestamp->CopyFrom(current);
-                response->set_errcode(sirius::proto::SUCCESS);
+                response->set_errcode(eapi::kOk);
                 response->set_errmsg("SUCCESS");
             }
         }
@@ -272,7 +272,7 @@ namespace sirius::discovery {
                          << ", " << current.logical() << ", " << _tso_obj.current_timestamp.logical() << ")";
             if (done && ((TsoClosure *) done)->response) {
                 sirius::proto::TsoResponse *response = ((TsoClosure *) done)->response;
-                response->set_errcode(sirius::proto::INTERNAL_ERROR);
+                response->set_errcode(eapi::INTERNAL_ERROR);
                 response->set_errmsg("time can't fallback");
             }
             return;
@@ -285,7 +285,7 @@ namespace sirius::discovery {
 
         if (done && ((TsoClosure *) done)->response) {
             sirius::proto::TsoResponse *response = ((TsoClosure *) done)->response;
-            response->set_errcode(sirius::proto::SUCCESS);
+            response->set_errcode(eapi::kOk);
             response->set_errmsg("SUCCESS");
         }
     }
@@ -315,7 +315,7 @@ namespace sirius::discovery {
         task.done = c;
         _node.apply(task);
         sync_cond.wait();
-        if (response.errcode() != sirius::proto::SUCCESS) {
+        if (response.errcode() != eapi::kOk) {
             LOG(ERROR) << "sync timestamp failed, request:" << request.ShortDebugString()
                           << " response:" << response.ShortDebugString();
             return -1;

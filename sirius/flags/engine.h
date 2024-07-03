@@ -24,7 +24,6 @@ namespace sirius {
 
     /// for store engine
     DECLARE_int64(flush_memtable_interval_us);
-    DECLARE_bool(cstore_scan_fill_cache);
     DECLARE_int32(rocks_transaction_lock_timeout_ms);
     DECLARE_int32(rocks_default_lock_timeout_ms);
     DECLARE_bool(rocks_use_partitioned_index_filters);

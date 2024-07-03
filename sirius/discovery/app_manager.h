@@ -32,7 +32,7 @@ namespace sirius::discovery {
     class AppManager {
     public:
         friend class QueryAppManager;
-
+        friend class QuerySnsManager;
         ~AppManager() {
             fiber_mutex_destroy(&_app_mutex);
         }
@@ -102,7 +102,7 @@ namespace sirius::discovery {
         /// \param app_id
         /// \param namespace_info
         /// \return
-        int get_app_info(const int64_t &app_id, sirius::proto::AppInfo &namespace_info);
+        int get_app_info(const int64_t &app_id, eapi::sirius::AppInfo &namespace_info);
 
         ///
         /// \brief clear memory values.
@@ -114,7 +114,7 @@ namespace sirius::discovery {
         ///
         /// \brief set app info for space.
         /// \param namespace_info
-        void set_app_info(const sirius::proto::AppInfo &namespace_info);
+        void set_app_info(const eapi::sirius::AppInfo &namespace_info);
 
         ///
         /// \brief erase info for app
@@ -137,7 +137,7 @@ namespace sirius::discovery {
         // app name -> id
         std::unordered_map<std::string, int64_t> _app_id_map;
         // app id -> info
-        std::unordered_map<int64_t, sirius::proto::AppInfo> _app_info_map;
+        std::unordered_map<int64_t, eapi::sirius::AppInfo> _app_info_map;
         // app id -> zone ids
         std::unordered_map<int64_t, std::set<int64_t>> _zone_ids; //only in memory, not in rocksdb
     };
@@ -156,7 +156,7 @@ namespace sirius::discovery {
         return _max_app_id;
     }
 
-    inline void AppManager::set_app_info(const sirius::proto::AppInfo &app_info) {
+    inline void AppManager::set_app_info(const eapi::sirius::AppInfo &app_info) {
         MELON_SCOPED_LOCK(_app_mutex);
         _app_id_map[app_info.app_name()] = app_info.app_id();
         _app_info_map[app_info.app_id()] = app_info;
@@ -191,7 +191,7 @@ namespace sirius::discovery {
         return _app_id_map[app_name];
     }
 
-    inline int AppManager::get_app_info(const int64_t &app_id, sirius::proto::AppInfo &namespace_info) {
+    inline int AppManager::get_app_info(const int64_t &app_id, eapi::sirius::AppInfo &namespace_info) {
         MELON_SCOPED_LOCK(_app_mutex);
         if (_app_info_map.find(app_id) == _app_info_map.end()) {
             return -1;

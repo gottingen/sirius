@@ -15,24 +15,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
+//
 
 #pragma once
 
 #include <turbo/flags/declare.h>
-#include <string>
-#include <vector>
 
-TURBO_DECLARE_FLAG(std::vector<std::string>, sirius_server_peers);
-TURBO_DECLARE_FLAG(int32_t, sirius_snapshot_interval_s);
-TURBO_DECLARE_FLAG(int32_t, sirius_election_timeout_ms);
-TURBO_DECLARE_FLAG(std::string, sirius_raft_group);
-TURBO_DECLARE_FLAG(std::string, sirius_log_uri);
-TURBO_DECLARE_FLAG(std::string, sirius_stable_uri);
-TURBO_DECLARE_FLAG(std::string, sirius_snapshot_uri);
-TURBO_DECLARE_FLAG(int32_t, sirius_tso_snapshot_interval_s);
-TURBO_DECLARE_FLAG(std::string, sirius_db_path);
-TURBO_DECLARE_FLAG(std::string, sirius_listen);
-TURBO_DECLARE_FLAG(int32_t, sirius_request_timeout);
-TURBO_DECLARE_FLAG(int32_t, sirius_connect_timeout);
-TURBO_DECLARE_FLAG(int64_t, time_between_sirius_connect_error_ms);
-
+TURBO_DECLARE_FLAG(int32_t, sns_max_update_interval);

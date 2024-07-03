@@ -43,18 +43,18 @@ namespace sirius {
 
     void MemTrackerPool::tracker_gc_thread() {
         while (!_shutdown) {
-            fiber_usleep_fast_shutdown(FLAGS_memory_gc_interval_s * 1000 * 1000LL, _shutdown);
+            fiber_usleep_fast_shutdown(turbo::get_flag(FLAGS_memory_gc_interval_s) * 1000 * 1000LL, _shutdown);
             std::map<uint64_t, SmartMemTracker> need_erase;
             _mem_tracker_pool.traverse_with_key_value(
                     [&need_erase](const uint64_t &log_id, SmartMemTracker &mem_tracker) {
                         if (mutil::gettimeofday_us() - mem_tracker->last_active_time() >
-                            FLAGS_mem_tracker_gc_interval_s * 1000 * 1000LL) {
+                                turbo::get_flag(FLAGS_mem_tracker_gc_interval_s) * 1000 * 1000LL) {
                             need_erase[log_id] = mem_tracker;
                         }
                     });
             for (auto &iter: need_erase) {
                 if (mutil::gettimeofday_us() - iter.second->last_active_time() >
-                    FLAGS_mem_tracker_gc_interval_s * 1000 * 1000LL) {
+                        turbo::get_flag(FLAGS_mem_tracker_gc_interval_s) * 1000 * 1000LL) {
                     _mem_tracker_pool.erase(iter.first);
                 }
             }
@@ -63,11 +63,11 @@ namespace sirius {
 
     int MemTrackerPool::init() {
         _query_bytes_limit = -1;
-        if (FLAGS_process_memory_limit_bytes > 0) {
-            _query_bytes_limit = FLAGS_process_memory_limit_bytes * FLAGS_query_memory_limit_ratio / 100;
+        if (turbo::get_flag(FLAGS_process_memory_limit_bytes) > 0) {
+            _query_bytes_limit = turbo::get_flag(FLAGS_process_memory_limit_bytes) * turbo::get_flag(FLAGS_query_memory_limit_ratio) / 100;
         }
-        _root_tracker = std::make_shared<MemTracker>(0, FLAGS_process_memory_limit_bytes, nullptr);
-        LOG(INFO)<< "root_limit_size: " << FLAGS_process_memory_limit_bytes << " _query_bytes_limit: " << _query_bytes_limit;
+        _root_tracker = std::make_shared<MemTracker>(0, turbo::get_flag(FLAGS_process_memory_limit_bytes), nullptr);
+        LOG(INFO)<< "root_limit_size: " << turbo::get_flag(FLAGS_process_memory_limit_bytes) << " _query_bytes_limit: " << _query_bytes_limit;
         _tracker_gc_bth.run([this]() { tracker_gc_thread(); });
         return 0;
     }

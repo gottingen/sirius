@@ -31,7 +31,7 @@ namespace sirius::discovery {
     class ZoneManager {
     public:
         friend class QueryZoneManager;
-
+        friend class QuerySnsManager;
         ~ZoneManager() {
             fiber_mutex_destroy(&_zone_mutex);
         }
@@ -122,7 +122,7 @@ namespace sirius::discovery {
         /// \param zone_id
         /// \param zone_info
         /// \return -1 db not exists
-        int get_zone_info(const int64_t &zone_id, sirius::proto::ZoneInfo &zone_info);
+        int get_zone_info(const int64_t &zone_id, eapi::sirius::ZoneInfo &zone_info);
 
         ///
         /// \brief get servlets in zone.
@@ -142,7 +142,7 @@ namespace sirius::discovery {
 
         void erase_zone_info(const std::string &zone_name);
 
-        void set_zone_info(const sirius::proto::ZoneInfo &zone_info);
+        void set_zone_info(const eapi::sirius::ZoneInfo &zone_info);
 
         std::string construct_zone_key(int64_t zone_id);
 
@@ -154,7 +154,7 @@ namespace sirius::discovery {
         int64_t _max_zone_id{0};
         //! zone name --> zone id，name: namespace\001zone
         std::unordered_map<std::string, int64_t> _zone_id_map;
-        std::unordered_map<int64_t, sirius::proto::ZoneInfo> _zone_info_map;
+        std::unordered_map<int64_t, eapi::sirius::ZoneInfo> _zone_info_map;
         std::unordered_map<int64_t, std::set<int64_t>> _servlet_ids;
     };
 
@@ -172,7 +172,7 @@ namespace sirius::discovery {
         return _max_zone_id;
     }
 
-    inline void ZoneManager::set_zone_info(const sirius::proto::ZoneInfo &zone_info) {
+    inline void ZoneManager::set_zone_info(const eapi::sirius::ZoneInfo &zone_info) {
         MELON_SCOPED_LOCK(_zone_mutex);
         std::string zone_name = make_zone_key(zone_info.app_name(),zone_info.zone());
         _zone_id_map[zone_name] = zone_info.zone_id();
@@ -236,7 +236,7 @@ namespace sirius::discovery {
         }
     }
 
-    inline int ZoneManager::get_zone_info(const int64_t &zone_id, sirius::proto::ZoneInfo &zone_info) {
+    inline int ZoneManager::get_zone_info(const int64_t &zone_id, eapi::sirius::ZoneInfo &zone_info) {
         MELON_SCOPED_LOCK(_zone_mutex);
         if (_zone_info_map.find(zone_id) == _zone_info_map.end()) {
             return -1;

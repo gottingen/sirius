@@ -15,15 +15,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
+//
 
-
-#include <sirius/flags/base.h>
+#include <sirius/flags/sns.h>
 #include <turbo/flags/flag.h>
 
-TURBO_FLAG(int64_t, memory_gc_interval_s, 10, "mempry GC interval , default: 10s");
-TURBO_FLAG(int64_t, memory_stats_interval_s, 60, "mempry GC interval , default: 60s");
-TURBO_FLAG(int64_t, min_memory_use_size, 8589934592, "minimum memory use size , default: 8G");
-TURBO_FLAG(int64_t, min_memory_free_size_to_release, 2147483648, "minimum memory free size to release, default: 2G");
-TURBO_FLAG(int64_t, mem_tracker_gc_interval_s, 60, "do memory limit when row number more than #, default: 60");
-TURBO_FLAG(int64_t, process_memory_limit_bytes, -1, "all memory use size, default: -1");
-TURBO_FLAG(int64_t, query_memory_limit_ratio, 90, "query memory use ratio , default: 90%");
+// min 5 seconds may ok, no need update that much frequently
+TURBO_FLAG(int32_t, sns_max_update_interval, 60, "sns_max_update_interval : 10s")
+.on_validate(turbo::GtValidator<int32_t, 5>::validate);

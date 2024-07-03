@@ -35,7 +35,7 @@ namespace sirius::discovery {
         melon::ClosureGuard done_guard(done);
         if (!_discovery_state_machine->is_leader()) {
             if (response) {
-                response->set_errcode(sirius::proto::NOT_LEADER);
+                response->set_errcode(eapi::NOT_LEADER);
                 response->set_errmsg("not leader");
                 response->set_leader(mutil::endpoint2str(_discovery_state_machine->get_leader()).c_str());
             }
@@ -51,18 +51,18 @@ namespace sirius::discovery {
             }
         }
         ON_SCOPE_EXIT(([cntl, log_id, response]() {
-            if (response != nullptr && response->errcode() != sirius::proto::SUCCESS) {
+            if (response != nullptr && response->errcode() != eapi::kOk) {
                 const auto &remote_side_tmp = mutil::endpoint2str(cntl->remote_side());
                 const char *remote_side = remote_side_tmp.c_str();
                 LOG(WARNING) << "response error, remote_side:" << remote_side << ", log_id:" << log_id;
             }
         }));
         switch (request->op_type()) {
-            case sirius::proto::OP_CREATE_NAMESPACE:
-            case sirius::proto::OP_MODIFY_NAMESPACE:
-            case sirius::proto::OP_DROP_NAMESPACE: {
+            case sirius::proto::OP_CREATE_APP:
+            case sirius::proto::OP_MODIFY_APP:
+            case sirius::proto::OP_REMOVE_APP: {
                 if (!request->has_app_info()) {
-                    ERROR_SET_RESPONSE(response, sirius::proto::INPUT_PARAM_ERROR,
+                    ERROR_SET_RESPONSE(response, eapi::INPUT_PARAM_ERROR,
                                        "no namespace_info", request->op_type(), log_id);
                     return;
 
@@ -73,7 +73,7 @@ namespace sirius::discovery {
                 case sirius::proto::OP_MODIFY_ZONE:
                 case sirius::proto::OP_DROP_ZONE: {
                     if (!request->has_zone_info()) {
-                        ERROR_SET_RESPONSE(response, sirius::proto::INPUT_PARAM_ERROR,
+                        ERROR_SET_RESPONSE(response, eapi::INPUT_PARAM_ERROR,
                                            "no zone_info", request->op_type(), log_id);
                         return;
                     }
@@ -82,9 +82,11 @@ namespace sirius::discovery {
                 }
                 case sirius::proto::OP_CREATE_SERVLET:
                 case sirius::proto::OP_MODIFY_SERVLET:
-                case sirius::proto::OP_DROP_SERVLET: {
+                case sirius::proto::OP_MGR_SERVLET:
+                case sirius::proto::OP_DROP_SERVLET:
+                case sirius::proto::OP_TOMBSTONE_SERVLET:{
                     if (!request->has_servlet_info()) {
-                        ERROR_SET_RESPONSE(response, sirius::proto::INPUT_PARAM_ERROR,
+                        ERROR_SET_RESPONSE(response, eapi::INPUT_PARAM_ERROR,
                                            "no servlet info", request->op_type(), log_id);
                         return;
                     }
@@ -94,7 +96,7 @@ namespace sirius::discovery {
             }
 
             default:
-                ERROR_SET_RESPONSE(response, sirius::proto::INPUT_PARAM_ERROR,
+                ERROR_SET_RESPONSE(response, eapi::INPUT_PARAM_ERROR,
                                    "invalid op_type", request->op_type(), log_id);
                 return;
         }
@@ -145,7 +147,7 @@ namespace sirius::discovery {
     }
 
     int SchemaManager::load_snapshot() {
-        LOG(INFO) << "SchemaManager start load_snapshot";
+        VLOG(turbo::V_IMPORTANT) << "SchemaManager start load_snapshot";
         AppManager::get_instance()->clear();
         ZoneManager::get_instance()->clear();
         ServletManager::get_instance()->clear();
@@ -190,7 +192,7 @@ namespace sirius::discovery {
                 return -1;
             }
         }
-        LOG(INFO) << "SchemaManager load_snapshot done...";
+        VLOG(turbo::V_IMPORTANT) << "SchemaManager load_snapshot done...";
         return 0;
     }
 

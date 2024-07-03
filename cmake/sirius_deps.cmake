@@ -46,6 +46,7 @@ find_package(melon REQUIRED)
 find_package(turbo REQUIRED)
 find_package(collie REQUIRED)
 find_package(alkaid REQUIRED)
+find_package(eapi REQUIRED)
 get_target_property(MIZAR_LIB mizar::mizar LOCATION)
 message(STATUS "mizar found at ${MIZAR_LIB}")
 include_directories(${collie_INCLUDE_DIR})
@@ -80,9 +81,10 @@ set(CARBIN_DEPS_LINK
         melon::melon_static
         turbo::turbo_static
         alkaid::alkaid_static
+        eapi::proto_static
         ${MIZAR_LIB}
         ${THIRDPARTY_LIBS}
-        ${MELON_DEPS_LIBS}
+        ${MELON_STATIC_LIBRARIES}
         ${CARBIN_SYSTEM_DYLINK}
         )
 list(REMOVE_DUPLICATES CARBIN_DEPS_LINK)

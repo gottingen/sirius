@@ -18,25 +18,14 @@
 
 #pragma once
 
-#include <gflags/gflags_declare.h>
+#include <turbo/flags/declare.h>
 
-namespace sirius {
-
-    /// for common
-    DECLARE_int64(memory_gc_interval_s);
-    DECLARE_int64(memory_stats_interval_s);
-    DECLARE_int64(min_memory_use_size);
-    DECLARE_int64(min_memory_free_size_to_release);
-    DECLARE_int64(mem_tracker_gc_interval_s);
-    DECLARE_int64(process_memory_limit_bytes);
-    DECLARE_int64(query_memory_limit_ratio);
-
-}  // namespace sirius
-
-namespace fiber {
-    DECLARE_int32(fiber_concurrency); //bthread.cpp
-}
-namespace melon::raft {
-    DECLARE_int32(raft_election_heartbeat_factor);
-    DECLARE_bool(raft_enable_leader_lease);
-}  // namespace melon::raft
+TURBO_DECLARE_FLAG(int64_t, memory_gc_interval_s);
+TURBO_DECLARE_FLAG(int64_t, memory_stats_interval_s);
+TURBO_DECLARE_FLAG(int64_t, min_memory_use_size);
+TURBO_DECLARE_FLAG(int64_t, min_memory_free_size_to_release);
+TURBO_DECLARE_FLAG(int64_t, mem_tracker_gc_interval_s);
+TURBO_DECLARE_FLAG(int64_t, process_memory_limit_bytes);
+TURBO_DECLARE_FLAG(int64_t, query_memory_limit_ratio);
+TURBO_DECLARE_FLAG(int32_t, raft_election_heartbeat_factor);
+TURBO_DECLARE_FLAG(bool, raft_enable_leader_lease);

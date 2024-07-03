@@ -19,7 +19,8 @@
 
 #pragma once
 
-#include <unordered_map>
+#include <turbo/container/flat_hash_map.h>
+#include <turbo/container/flat_hash_set.h>
 #include <set>
 #include <mutex>
 #include <sirius/discovery/sirius_constants.h>
@@ -58,6 +59,10 @@ namespace sirius::discovery {
         /// \param request
         /// \param done
         void drop_servlet(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done);
+
+        void tombstone_servlet(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done);
+
+        void mgr_servlet(const sirius::proto::DiscoveryManagerRequest &request, melon::raft::Closure *done);
 
         ///
         /// \brief modify servlet call by schema manager,
@@ -102,7 +107,7 @@ namespace sirius::discovery {
         /// \param servlet_id
         /// \param servlet_info
         /// \return -1 db not exists
-        int get_servlet_info(const int64_t &servlet_id, sirius::proto::ServletInfo &servlet_info);
+        int get_servlet_info(const int64_t &servlet_id, eapi::sirius::ServletInfo &servlet_info);
 
         ///
         /// \param app_name
@@ -125,7 +130,7 @@ namespace sirius::discovery {
 
         ///
         /// \param servlet_info
-        void set_servlet_info(const sirius::proto::ServletInfo &servlet_info);
+        void set_servlet_info(const eapi::sirius::ServletInfo &servlet_info);
 
         ///
         /// \param servlet_id
@@ -141,8 +146,9 @@ namespace sirius::discovery {
         fiber_mutex_t _servlet_mutex;
         int64_t _max_servlet_id{0};
         //! servlet name --> servlet id，name: app\001zone\001servlet
-        std::unordered_map<std::string, int64_t> _servlet_id_map;
-        std::unordered_map<int64_t, sirius::proto::ServletInfo> _servlet_info_map;
+        turbo::flat_hash_map<std::string, int64_t> _servlet_id_map;
+        turbo::flat_hash_map<int64_t, eapi::sirius::ServletInfo> _servlet_info_map;
+        turbo::flat_hash_set<int64_t> _servlet_tombstone;
     };
 
     ///
@@ -159,16 +165,23 @@ namespace sirius::discovery {
         return _max_servlet_id;
     }
 
-    inline void ServletManager::set_servlet_info(const sirius::proto::ServletInfo &servlet_info) {
+    inline void ServletManager::set_servlet_info(const eapi::sirius::ServletInfo &servlet_info) {
         MELON_SCOPED_LOCK(_servlet_mutex);
         std::string servlet_name = make_servlet_key(servlet_info.app_name(), servlet_info.zone(), servlet_info.servlet_name());
         _servlet_id_map[servlet_name] = servlet_info.servlet_id();
         _servlet_info_map[servlet_info.servlet_id()] = servlet_info;
+        if(servlet_info.has_manager_status()&&servlet_info.manager_status() == eapi::sirius::TOMBSTONE){
+            _servlet_tombstone.insert(servlet_info.servlet_id());
+        }
     }
 
     inline void ServletManager::erase_servlet_info(const std::string &servlet_name) {
         MELON_SCOPED_LOCK(_servlet_mutex);
         int64_t servlet_id = _servlet_id_map[servlet_name];
+        auto it = _servlet_tombstone.find(servlet_id);
+        if (it != _servlet_tombstone.end()) {
+            _servlet_tombstone.erase(it);
+        }
         _servlet_id_map.erase(servlet_name);
         _servlet_info_map.erase(servlet_id);
     }
@@ -180,7 +193,7 @@ namespace sirius::discovery {
         }
         return 0;
     }
-    inline int ServletManager::get_servlet_info(const int64_t &servlet_id, sirius::proto::ServletInfo &servlet_info) {
+    inline int ServletManager::get_servlet_info(const int64_t &servlet_id, eapi::sirius::ServletInfo &servlet_info) {
         MELON_SCOPED_LOCK(_servlet_mutex);
         if (_servlet_info_map.find(servlet_id) == _servlet_info_map.end()) {
             return -1;

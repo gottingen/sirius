@@ -23,14 +23,13 @@ file(GLOB_RECURSE FLAGS_SRC "flags/*.cc")
 file(GLOB_RECURSE STORAGE_SRC "storage/*.cc")
 file(GLOB_RECURSE REST_SRC "restful/*.cc")
 file(GLOB_RECURSE CLIENT_SRC "client/*.cc")
+file(GLOB_RECURSE SERVICE_SRC "service/*.cc")
 
 carbin_cc_object(
         NAMESPACE sirius
         NAME base_object
         SOURCES
         ${BASE_SRC}
-        DEPS
-        proto_object
         CXXOPTS
         ${CARBIN_CXX_OPTIONS}
 )
@@ -39,8 +38,6 @@ carbin_cc_object(
         NAME flags_object
         SOURCES
         ${FLAGS_SRC}
-        DEPS
-        proto_object
         CXXOPTS
         ${CARBIN_CXX_OPTIONS}
 )
@@ -49,8 +46,6 @@ carbin_cc_object(
         NAME storage_object
         SOURCES
         ${STORAGE_SRC}
-        DEPS
-        proto_object
         CXXOPTS
         ${CARBIN_CXX_OPTIONS}
 )
@@ -60,43 +55,39 @@ carbin_cc_object(
         NAME discovery_object
         SOURCES
         ${DISCOVERY_SRC}
-        DEPS
-        proto_object
         CXXOPTS
         ${CARBIN_CXX_OPTIONS}
 )
 
-
+#[[
 carbin_cc_object(
         NAMESPACE sirius
         NAME client_object
         SOURCES
         ${CLIENT_SRC}
-        DEPS
-        proto_object
+        CXXOPTS
+        ${CARBIN_CXX_OPTIONS}
+)
+]]
+carbin_cc_object(
+        NAMESPACE sirius
+        NAME service
+        SOURCES
+        ${SERVICE_SRC}
         CXXOPTS
         ${CARBIN_CXX_OPTIONS}
 )
 
-carbin_cc_object(
-        NAMESPACE sirius
-        NAME restful
-        SOURCES
-        ${REST_SRC}
-        DEPS
-        proto_object
-        CXXOPTS
-        ${CARBIN_CXX_OPTIONS}
-)
+
 
 carbin_cc_library(
         NAMESPACE sirius
         NAME sirius
-        OBJECTS proto_object base_object flags_object storage_object discovery_object client_object restful
+        OBJECTS proto_object base_object flags_object storage_object discovery_object service
         CXXOPTS
         ${CARBIN_CXX_OPTIONS}
         DEPS
-        proto_object base_object flags_object storage_object discovery_object client_object restful
+        proto_object base_object flags_object storage_object discovery_object service
         PLINKS
         ${CARBIN_DEPS_LINK}
         PUBLIC
@@ -112,6 +103,7 @@ carbin_cc_binary(
         ${CARBIN_DEPS_LINK} sirius::sirius_static
         PUBLIC
 )
+#[[
 file(GLOB_RECURSE CLI_SRC "cli/*.cc")
 
 carbin_cc_binary(
@@ -124,3 +116,4 @@ carbin_cc_binary(
         ${CARBIN_DEPS_LINK} sirius::sirius_static
         PUBLIC
 )
+]]

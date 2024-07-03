@@ -17,9 +17,6 @@
 //
 
 #include <sirius/flags/raft.h>
-#include <gflags/gflags.h>
+#include <turbo/flags/flag.h>
 
-namespace sirius {
-    /// for raft
-    DEFINE_int64(snapshot_timeout_min, 10, "snapshot_timeout_min : 10min");
-}  // namespace sirius
+TURBO_FLAG(int64_t, snapshot_timeout_min, 10, "snapshot_timeout_min : 10min");

@@ -23,6 +23,7 @@
 #include <sirius/discovery/base_state_machine.h>
 #include <sirius/proto/discovery.interface.pb.h>
 #include <sirius/flags/sirius.h>
+#include <turbo/flags/flag.h>
 #include <sirius/discovery/sirius_constants.h>
 
 namespace sirius::discovery {
@@ -31,7 +32,7 @@ namespace sirius::discovery {
     class DiscoveryStateMachine : public BaseStateMachine {
     public:
         DiscoveryStateMachine(const melon::raft::PeerId &peerId) :
-                BaseStateMachine(DiscoveryConstants::DiscoveryMachineRegion, FLAGS_sirius_raft_group, "/discovery_server", peerId) {
+                BaseStateMachine(DiscoveryConstants::DiscoveryMachineRegion, turbo::get_flag(FLAGS_sirius_raft_group), "/discovery_server", peerId) {
         }
 
         ~DiscoveryStateMachine() override = default;

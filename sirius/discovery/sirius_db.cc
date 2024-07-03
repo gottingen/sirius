@@ -18,9 +18,8 @@
 
 
 #include <sirius/discovery/sirius_db.h>
-#include <gflags/gflags.h>
 #include <sirius/flags/sirius.h>
-#include <sirius/base/log.h>
+#include <turbo/log/logging.h>
 
 namespace sirius::discovery {
 
@@ -30,13 +29,13 @@ namespace sirius::discovery {
             LOG(ERROR) << "create rocksdb handler failed";
             return -1;
         }
-        int ret = _rocksdb->init(FLAGS_sirius_db_path);
+        int ret = _rocksdb->init(turbo::get_flag(FLAGS_sirius_db_path));
         if (ret != 0) {
             LOG(ERROR) << "rocksdb init failed: code: " << ret;
             return -1;
         }
         _handle = _rocksdb->get_meta_info_handle();
-        LOG(WARNING) << "rocksdb init success, db_path: " << FLAGS_sirius_db_path;
+        LOG(WARNING) << "rocksdb init success, db_path: " << turbo::get_flag(FLAGS_sirius_db_path);
         return 0;
     }
 

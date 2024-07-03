@@ -20,6 +20,7 @@ syntax = "proto2";
 import "sirius/proto/raft.proto";
 import "sirius/proto/discovery.struct.proto";
 import "sirius/proto/tso.struct.proto";
+import "eapi/sirius/sns.struct.proto";
 
 package sirius.proto;
 option cc_generic_services = true;
@@ -29,9 +30,10 @@ service DiscoveryService {
   rpc raft_control(RaftControlRequest) returns (RaftControlResponse);
   rpc discovery_manager(DiscoveryManagerRequest) returns (DiscoveryManagerResponse);
   rpc discovery_query(DiscoveryQueryRequest) returns (DiscoveryQueryResponse);
-  rpc naming(ServletNamingRequest) returns (ServletNamingResponse);
+  rpc naming(eapi.sirius.ServletNamingRequest) returns (eapi.sirius.ServletNamingResponse);
   rpc tso_service(TsoRequest) returns (TsoResponse);
 };
+
 
 service DiscoveryRouterService {
   rpc raft_control(RaftControlRequest) returns (RaftControlResponse);
@@ -39,8 +41,4 @@ service DiscoveryRouterService {
   rpc discovery_query(DiscoveryQueryRequest) returns (DiscoveryQueryResponse);
   rpc tso_service(TsoRequest) returns (TsoResponse);
 
-  //rpc registry(ServletInfo) returns (DiscoveryRegisterResponse);
-  //rpc update(ServletInfo) returns (DiscoveryRegisterResponse);
-  //rpc cancel(ServletInfo) returns (DiscoveryRegisterResponse);
-  //rpc naming(ServletNamingRequest) returns (ServletNamingResponse);
 };
