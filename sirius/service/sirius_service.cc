@@ -40,7 +40,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -59,7 +59,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -77,7 +77,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -102,7 +102,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -120,7 +120,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -138,7 +138,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -156,7 +156,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -175,7 +175,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -193,7 +193,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -211,7 +211,6 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
         };
 
         sirius::Fiber bth;
@@ -229,7 +228,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -247,7 +246,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -265,7 +264,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -283,7 +282,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -301,7 +300,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -318,7 +317,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -335,7 +334,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -353,7 +352,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -370,7 +369,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -388,7 +387,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
@@ -405,7 +404,7 @@ namespace sirius {
             if (!status.ok()) {
                 controller->SetFailed(status.to_string());
             }
-            done->Run();
+            
         };
 
         sirius::Fiber bth;
