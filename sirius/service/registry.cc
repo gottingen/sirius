@@ -22,6 +22,7 @@
 #include <sirius/service/registry.h>
 #include <sirius/service/restful_config.h>
 #include <sirius/service/restful_sns.h>
+#include <sirius/service/restful_servlet.h>
 #include <sirius/service/common.h>
 #include <melon/rpc/restful_service.h>
 
@@ -42,6 +43,11 @@ namespace sirius::restful {
         service->set_processor("/discovery/zone/create", std::make_shared<ZoneCreateProcessor>());
         service->set_processor("/discovery/zone/query", std::make_shared<ZoneQueryProcessor>());
         service->set_processor("/discovery/zone/remove", std::make_shared<ZoneRemoveProcessor>());
+        service->set_processor("/discovery/servlet/list", std::make_shared<ListServletProcessor>());
+        service->set_processor("/discovery/servlet/get", std::make_shared<GetServletProcessor>());
+        service->set_processor("/discovery/servlet/online", std::make_shared<OnlineServletProcessor>());
+        service->set_processor("/discovery/servlet/offline", std::make_shared<OfflineServletProcessor>());
+        service->set_processor("/discovery/servlet/naming", std::make_shared<NamingServletProcessor>());
         service->set_not_found_processor(std::make_shared<NotFoundProcessor>());
         service->set_root_processor(std::make_shared<RootProcessor>());
         service->set_mapping_path("ea");

@@ -27,4 +27,20 @@ namespace sirius::restful {
         void process(const melon::RestfulRequest *request, melon::RestfulResponse *response) override;
     };
 
+    struct GetServletProcessor : public melon::RestfulProcessor {
+        void process(const melon::RestfulRequest *request, melon::RestfulResponse *response) override;
+    };
+
+    struct OnlineServletProcessor : public melon::RestfulProcessor {
+        void process(const melon::RestfulRequest *request, melon::RestfulResponse *response) override;
+    };
+
+    struct OfflineServletProcessor : public melon::RestfulProcessor {
+        void process(const melon::RestfulRequest *request, melon::RestfulResponse *response) override;
+    };
+
+    struct NamingServletProcessor : public melon::RestfulProcessor {
+        void process(const melon::RestfulRequest *request, melon::RestfulResponse *response) override;
+    };
+
 }  // namespace sirius::restful
