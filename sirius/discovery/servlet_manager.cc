@@ -174,7 +174,7 @@ namespace sirius::discovery {
         }
         if(it->second.manager_status() == eapi::sirius::SnsStatus::TOMBSTONE) {
             LOG(WARNING) << "request servlet: " << servlet_name << " already tombstone";
-            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "servlet already tombstone");
+            IF_DONE_SET_RESPONSE(done, eapi::kPermissionDenied, "servlet already tombstone");
             return;
         }
 
@@ -231,7 +231,7 @@ namespace sirius::discovery {
         // tmbstone
         if(tmp_servlet_info.manager_status() == eapi::sirius::SnsStatus::TOMBSTONE) {
             LOG(WARNING) << "request servlet_name: " << servlet_name << " already tombstone";
-            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "servlet already tombstone");
+            IF_DONE_SET_RESPONSE(done, eapi::kPermissionDenied, "servlet already tombstone");
             return;
         }
         // update servlet info
@@ -286,7 +286,7 @@ namespace sirius::discovery {
         // tmbstone
         if(tmp_servlet_info.manager_status() == eapi::sirius::SnsStatus::TOMBSTONE) {
             LOG(WARNING) << "request servlet_name: " << servlet_name << " already tombstone";
-            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "servlet already tombstone");
+            IF_DONE_SET_RESPONSE(done, eapi::kPermissionDenied, "servlet already tombstone");
             return;
         }
         // update servlet info

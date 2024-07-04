@@ -267,7 +267,7 @@ namespace sirius::restful {
         req.set_app_name(app_name);
         req.set_zone_name(zone_name);
         req.set_servlet_name(servlet_name);
-        auto rs = ApiProxy::instance()->online_servlet(&req, &resp);
+        auto rs = ApiProxy::instance()->offline_servlet(&req, &resp);
         nlohmann::json j;
         if (!rs.ok()) {
             j["code"] = rs.code();
