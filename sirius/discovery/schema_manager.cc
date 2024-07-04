@@ -35,7 +35,7 @@ namespace sirius::discovery {
         melon::ClosureGuard done_guard(done);
         if (!_discovery_state_machine->is_leader()) {
             if (response) {
-                response->set_errcode(eapi::NOT_LEADER);
+                response->set_errcode(eapi::kFailedPrecondition);
                 response->set_errmsg("not leader");
                 response->set_leader(mutil::endpoint2str(_discovery_state_machine->get_leader()).c_str());
             }
@@ -62,7 +62,7 @@ namespace sirius::discovery {
             case sirius::proto::OP_MODIFY_APP:
             case sirius::proto::OP_REMOVE_APP: {
                 if (!request->has_app_info()) {
-                    ERROR_SET_RESPONSE(response, eapi::INPUT_PARAM_ERROR,
+                    ERROR_SET_RESPONSE(response, eapi::kInvalidArgument,
                                        "no namespace_info", request->op_type(), log_id);
                     return;
 
@@ -73,7 +73,7 @@ namespace sirius::discovery {
                 case sirius::proto::OP_MODIFY_ZONE:
                 case sirius::proto::OP_DROP_ZONE: {
                     if (!request->has_zone_info()) {
-                        ERROR_SET_RESPONSE(response, eapi::INPUT_PARAM_ERROR,
+                        ERROR_SET_RESPONSE(response, eapi::kInvalidArgument,
                                            "no zone_info", request->op_type(), log_id);
                         return;
                     }
@@ -86,7 +86,7 @@ namespace sirius::discovery {
                 case sirius::proto::OP_DROP_SERVLET:
                 case sirius::proto::OP_TOMBSTONE_SERVLET:{
                     if (!request->has_servlet_info()) {
-                        ERROR_SET_RESPONSE(response, eapi::INPUT_PARAM_ERROR,
+                        ERROR_SET_RESPONSE(response, eapi::kInvalidArgument,
                                            "no servlet info", request->op_type(), log_id);
                         return;
                     }
@@ -96,7 +96,7 @@ namespace sirius::discovery {
             }
 
             default:
-                ERROR_SET_RESPONSE(response, eapi::INPUT_PARAM_ERROR,
+                ERROR_SET_RESPONSE(response, eapi::kInvalidArgument,
                                    "invalid op_type", request->op_type(), log_id);
                 return;
         }

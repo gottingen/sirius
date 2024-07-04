@@ -48,7 +48,7 @@ namespace sirius::discovery {
                 LOG(ERROR) << "parse from protobuf fail when on_apply";
                 if (done) {
                     if (((DiscoveryServerClosure *) done)->response) {
-                        ((DiscoveryServerClosure *) done)->response->set_errcode(eapi::PARSE_FROM_PB_FAIL);
+                        ((DiscoveryServerClosure *) done)->response->set_errcode(eapi::kDataLoss);
                         ((DiscoveryServerClosure *) done)->response->set_errmsg("parse from protobuf fail");
                     }
                     melon::raft::run_closure_in_fiber(done_guard.release());
@@ -131,7 +131,7 @@ namespace sirius::discovery {
                 }
                 default: {
                     LOG(ERROR) << "unknown request type, type:" << request.op_type();
-                    IF_DONE_SET_RESPONSE(done, eapi::UNKNOWN_REQ_TYPE, "unknown request type");
+                    IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "unknown request type");
                 }
             }
             _applied_index = iter.index();

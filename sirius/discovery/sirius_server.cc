@@ -174,7 +174,7 @@ namespace sirius::discovery {
 
 
         LOG(ERROR) << "request has wrong op_type:" << request->op_type() << ", log_id:" << log_id;
-        response->set_errcode(eapi::INPUT_PARAM_ERROR);
+        response->set_errcode(eapi::kInvalidArgument);
         response->set_errmsg("invalid op_type");
         response->set_op_type(request->op_type());
     }
@@ -237,7 +237,7 @@ namespace sirius::discovery {
 
             default: {
                 LOG(WARNING) << "invalid op_type, request: " << request->ShortDebugString() << ", log_id: " << log_id;
-                response->set_errcode(eapi::INPUT_PARAM_ERROR);
+                response->set_errcode(eapi::kInvalidArgument);
                 response->set_errmsg("invalid op_type");
             }
         }
@@ -284,7 +284,7 @@ namespace sirius::discovery {
             return;
         }
         response->set_region_id(request->region_id());
-        response->set_errcode(eapi::INPUT_PARAM_ERROR);
+        response->set_errcode(eapi::kInvalidArgument);
         response->set_errmsg("unmatch region id");
         LOG(ERROR) << "unmatch region_id in discovery server, request: " << request->ShortDebugString();
     }

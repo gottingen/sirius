@@ -41,7 +41,7 @@ namespace sirius::discovery {
             MELON_SCOPED_LOCK(manager->_app_mutex);
             auto it = manager->_app_id_map.find(request->app_name());
             if (it == manager->_app_id_map.end()) {
-                response->set_code(eapi::INPUT_PARAM_ERROR);
+                response->set_code(eapi::kInvalidArgument);
                 response->set_message("app not exist");
                 return;
             }
@@ -49,7 +49,7 @@ namespace sirius::discovery {
             zone_ids = manager->_zone_ids[app_id];
         }
         if(zone_ids.empty()) {
-            response->set_code(eapi::INPUT_PARAM_ERROR);
+            response->set_code(eapi::kInvalidArgument);
             response->set_message("app has no zone");
             return;
         }
@@ -68,7 +68,7 @@ namespace sirius::discovery {
             }
         }
         if (query_zone_ids.empty()) {
-            response->set_code(eapi::INPUT_PARAM_ERROR);
+            response->set_code(eapi::kInvalidArgument);
             response->set_message("zone not exist");
             return;
         }
@@ -80,7 +80,7 @@ namespace sirius::discovery {
             server_ids.insert(tmp_server_ids.begin(), tmp_server_ids.end());
         }
         if (server_ids.empty()) {
-            response->set_code(eapi::INPUT_PARAM_ERROR);
+            response->set_code(eapi::kInvalidArgument);
             response->set_message("zone has no server");
             return;
         }

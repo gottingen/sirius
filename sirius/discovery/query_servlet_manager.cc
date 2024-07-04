@@ -38,7 +38,7 @@ namespace sirius::discovery {
                 *(response->add_servlet_infos()) = manager->_servlet_info_map[id];
             } else {
                 response->set_errmsg("servlet not exist");
-                response->set_errcode(eapi::INPUT_PARAM_ERROR);
+                response->set_errcode(eapi::kInvalidArgument);
                 LOG(ERROR)<< "namespace: " << app_name << " zone: " << zone << " servlet: " << servlet << " not exist";
             }
         }

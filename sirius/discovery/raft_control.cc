@@ -58,7 +58,7 @@ namespace sirius {
                              << " raft control fail, status:" << status().error_code()
                              << " " << status().error_cstr()
                              << " log_id:" << log_id;
-                _response->set_errcode(eapi::INTERNAL_ERROR);
+                _response->set_errcode(eapi::kInternal);
                 _response->set_errmsg(status().error_cstr());
                 _response->set_leader(mutil::endpoint2str(_node->leader_id().addr).c_str());
             }
@@ -134,7 +134,7 @@ namespace sirius {
                     LOG(ERROR) << "node:" << node->node_id().group_id
                                  << " " << node->node_id().peer_id.to_string()
                                  << " get leader fail, log_id:" << log_id;
-                    response->set_errcode(eapi::INTERNAL_ERROR);
+                    response->set_errcode(eapi::kInternal);
                     response->set_errmsg("get leader fail");
                 }
                 return;
@@ -149,7 +149,7 @@ namespace sirius {
                         LOG(ERROR) << "node:" << node->node_id().group_id
                                      << " " << node->node_id().peer_id.to_string()
                                      << " list peers fail, log_id:" << log_id;
-                        response->set_errcode(eapi::INTERNAL_ERROR);
+                        response->set_errcode(eapi::kInternal);
                         response->set_errmsg("list peers fail");
                         return;
                     }
@@ -162,7 +162,7 @@ namespace sirius {
                     LOG(ERROR) << "node:" << node->node_id().group_id
                                  << " " << node->node_id().peer_id.to_string()
                                  << " get leader fail, log_id:" << log_id;
-                    response->set_errcode(eapi::INTERNAL_ERROR);
+                    response->set_errcode(eapi::kInternal);
                     response->set_errmsg("get leader fail");
                 }
                 return;
@@ -199,7 +199,7 @@ namespace sirius {
         for (int i = 0; i < request->old_peers_size(); i++) {
             melon::raft::PeerId peer;
             if (peer.parse(request->old_peers(i)) != 0) {
-                response->set_errcode(eapi::INPUT_PARAM_ERROR);
+                response->set_errcode(eapi::kInvalidArgument);
                 response->set_errmsg("old peer parse fail");
                 return;
             }
@@ -208,7 +208,7 @@ namespace sirius {
         for (int i = 0; i < request->new_peers_size(); i++) {
             melon::raft::PeerId peer;
             if (peer.parse(request->new_peers(i)) != 0) {
-                response->set_errcode(eapi::INPUT_PARAM_ERROR);
+                response->set_errcode(eapi::kInvalidArgument);
                 response->set_errmsg("new peer parse fail");
                 return;
             }
@@ -223,7 +223,7 @@ namespace sirius {
                              << " set peer fail, status:" << status.error_code()
                                 << " " << status.error_cstr()
                                 << " log_id:" << log_id;
-                response->set_errcode(eapi::INTERNAL_ERROR);
+                response->set_errcode(eapi::kInternal);
                 response->set_errmsg("force set peer fail");
             } else {
                 response->set_errcode(eapi::kOk);
@@ -234,7 +234,7 @@ namespace sirius {
         std::vector<melon::raft::PeerId> inner_peers;
         auto status = node->list_peers(&inner_peers);
         if (!status.ok() && status.error_code() == 1) {
-            response->set_errcode(eapi::NOT_LEADER);
+            response->set_errcode(eapi::kFailedPrecondition);
             response->set_leader(mutil::endpoint2str(node->leader_id().addr).c_str());
             LOG(WARNING) << "node:" << node->node_id().group_id
                          << " " << node->node_id().peer_id.to_string()
@@ -244,7 +244,7 @@ namespace sirius {
             return;
         }
         if (!status.ok()) {
-            response->set_errcode(eapi::PEER_NOT_EQUAL);
+            response->set_errcode(eapi::kNotFound);
             response->set_errmsg("node list peer fail");
             LOG(WARNING) << "node:" << node->node_id().group_id
                          << " " << node->node_id().peer_id.to_string()
@@ -260,7 +260,7 @@ namespace sirius {
                          << " old_peer.size: " << old_peers.size()
                          << " remote_side: " << mutil::endpoint2str(cntl->remote_side())
                          << " log_id:" << log_id;
-            response->set_errcode(eapi::PEER_NOT_EQUAL);
+            response->set_errcode(eapi::kNotFound);
             response->set_errmsg("peer size not equal");
             return;
         }
@@ -271,7 +271,7 @@ namespace sirius {
                              << " " << node->node_id().peer_id.to_string()
                              << " inner_peer: " << mutil::endpoint2str(inner_peer.addr)
                              << " log_id:" << log_id;
-                response->set_errcode(eapi::PEER_NOT_EQUAL);
+                response->set_errcode(eapi::kNotFound);
                 response->set_errmsg("peer not equal");
                 return;
             }
@@ -284,7 +284,7 @@ namespace sirius {
                         new RaftControlDone(cntl, request, response, done_guard.release(), node);
                 node->add_peer(peer, set_peer_done);
             } else {
-                response->set_errcode(eapi::INPUT_PARAM_ERROR);
+                response->set_errcode(eapi::kInvalidArgument);
                 response->set_errmsg("diff peer fail when add peer");
                 LOG(ERROR) << "node:" << node->node_id().group_id
                              << " " << node->node_id().peer_id.to_string()
@@ -318,7 +318,7 @@ namespace sirius {
                             new RaftControlDone(cntl, request, response, done_guard.release(), node);
                     node->remove_peer(peer, set_peer_done);
                 } else {
-                    response->set_errcode(eapi::INPUT_PARAM_ERROR);
+                    response->set_errcode(eapi::kInvalidArgument);
                     response->set_errmsg("other peer is faulty");
                     LOG(ERROR) << "node:" << node->node_id().group_id
                                  << " " << node->node_id().peer_id.to_string()
@@ -326,7 +326,7 @@ namespace sirius {
                     return;
                 }
             } else {
-                response->set_errcode(eapi::INPUT_PARAM_ERROR);
+                response->set_errcode(eapi::kInvalidArgument);
                 response->set_errmsg("diff peer fail when remove peer");
                 LOG(WARNING) << "node:" << node->node_id().group_id
                              << " " << node->node_id().peer_id.to_string()
@@ -334,7 +334,7 @@ namespace sirius {
                 return;
             }
         } else {
-            response->set_errcode(eapi::INPUT_PARAM_ERROR);
+            response->set_errcode(eapi::kInvalidArgument);
             response->set_errmsg("set peer fail");
             LOG(WARNING) << "node:" << node->node_id().group_id
                          << " " << node->node_id().peer_id.to_string()
@@ -356,14 +356,14 @@ namespace sirius {
         }
         melon::raft::PeerId peer;
         if (peer.parse(request->new_leader()) != 0) {
-            response->set_errcode(eapi::INPUT_PARAM_ERROR);
+            response->set_errcode(eapi::kInvalidArgument);
             response->set_errmsg("new leader parse fail");
             return;
         }
         // return 0 or -1
         int ret = node->transfer_leadership_to(peer);
         if (ret != 0) {
-            response->set_errcode(eapi::NOT_LEADER);
+            response->set_errcode(eapi::kFailedPrecondition);
             response->set_leader(mutil::endpoint2str(node->leader_id().addr).c_str());
             LOG(WARNING) << "node:" << node->node_id().group_id
                          << " " << node->node_id().peer_id.to_string()
@@ -376,7 +376,7 @@ namespace sirius {
             LOG(ERROR) << "node:" << node->node_id().group_id
                           << " " << node->node_id().peer_id.to_string()
                           << " list peers fail, log_id:" << log_id;
-            response->set_errcode(eapi::INTERNAL_ERROR);
+            response->set_errcode(eapi::kInternal);
             response->set_errmsg("list peers fail");
             return;
         }

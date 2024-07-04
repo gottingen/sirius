@@ -44,7 +44,7 @@ namespace sirius::discovery {
                 LOG(ERROR) << "parse from protobuf fail when on_apply";
                 if (done) {
                     if (((DiscoveryServerClosure *) done)->response) {
-                        ((DiscoveryServerClosure *) done)->response->set_errcode(eapi::PARSE_FROM_PB_FAIL);
+                        ((DiscoveryServerClosure *) done)->response->set_errcode(eapi::kDataLoss);
                         ((DiscoveryServerClosure *) done)->response->set_errmsg("parse from protobuf fail");
                     }
                     melon::raft::run_closure_in_fiber(done_guard.release());
@@ -75,7 +75,7 @@ namespace sirius::discovery {
                 }
                 default: {
                     LOG(ERROR) << "unsupport request type, type:" << request.op_type();
-                    IF_DONE_SET_RESPONSE(done, eapi::UNKNOWN_REQ_TYPE, "unsupport request type");
+                    IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "unsupport request type");
                 }
             }
             if (done) {
@@ -90,7 +90,7 @@ namespace sirius::discovery {
         int64_t servlet_id = increment_info.servlet_id();
         uint64_t start_id = increment_info.start_id();
         if (_auto_increment_map.find(servlet_id) != _auto_increment_map.end()) {
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "servlet id has exist");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "servlet id has exist");
             LOG(ERROR) << "servlet_id: " << servlet_id << " has exist when add servlet id for auto increment";
             return;
         }
@@ -109,7 +109,7 @@ namespace sirius::discovery {
         auto &increment_info = request.auto_increment();
         int64_t servlet_id = increment_info.servlet_id();
         if (_auto_increment_map.find(servlet_id) == _auto_increment_map.end()) {
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "servlet id not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "servlet id not exist");
             LOG(WARNING) << "servlet id: " << servlet_id << " not exist when drop servlet id for auto increment";
             return;
         }
@@ -128,7 +128,7 @@ namespace sirius::discovery {
         int64_t servlet_id = increment_info.servlet_id();
         if (_auto_increment_map.find(servlet_id) == _auto_increment_map.end()) {
             LOG(WARNING) << "servlet id: " << servlet_id << " has no auto_increment field";
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "servlet has no auto increment");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "servlet has no auto increment");
             return;
         }
         uint64_t old_start_id = _auto_increment_map[servlet_id];
@@ -152,18 +152,18 @@ namespace sirius::discovery {
         int64_t servlet_id = increment_info.servlet_id();
         if (_auto_increment_map.find(servlet_id) == _auto_increment_map.end()) {
             LOG(WARNING) << "servlet id: " << servlet_id << " has no auto_increment field";
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "servlet has no auto increment");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "servlet has no auto increment");
             return;
         }
         if (!increment_info.has_start_id() && !increment_info.has_increment_id()) {
             LOG(WARNING) << "star_id or increment_id all not exist, servlet_id:" << servlet_id;
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR,
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument,
                                  "star_id or increment_id all not exist");
             return;
         }
         if (increment_info.has_start_id() && increment_info.has_increment_id()) {
             LOG(WARNING) << "star_id and increment_id all exist, servlet_id:" << servlet_id;
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR,
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument,
                                  "star_id and increment_id all exist");
             return;
         }
@@ -173,7 +173,7 @@ namespace sirius::discovery {
             && old_start_id > increment_info.start_id() + 1
             && (!increment_info.has_force() || increment_info.force() == false)) {
             LOG(WARNING) << "request not illegal, max_id not support back, servlet_id:" << servlet_id;
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "not support rollback");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "not support rollback");
             return;
         }
         if (increment_info.has_start_id()) {

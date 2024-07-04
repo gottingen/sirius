@@ -25,7 +25,7 @@ namespace sirius::discovery {
     void DiscoveryServerClosure::Run() {
         if (!status().ok()) {
             if (response) {
-                response->set_errcode(eapi::NOT_LEADER);
+                response->set_errcode(eapi::kFailedPrecondition);
                 response->set_leader(mutil::endpoint2str(common_state_machine->get_leader()).c_str());
             }
             LOG(ERROR) << "discovery server closure fail, error_code:" << status().error_code() << ", error_mas:"
@@ -51,7 +51,7 @@ namespace sirius::discovery {
     void TsoClosure::Run() {
         if (!status().ok()) {
             if (response) {
-                response->set_errcode(eapi::NOT_LEADER);
+                response->set_errcode(eapi::kFailedPrecondition);
                 response->set_leader(mutil::endpoint2str(common_state_machine->get_leader()).c_str());
             }
             LOG(ERROR) << "discovery server closure fail, error_code:" << status().error_code() << ", error_mas:"
@@ -91,7 +91,7 @@ namespace sirius::discovery {
         melon::ClosureGuard done_guard(done);
         if (!_is_leader) {
             if (response) {
-                response->set_errcode(eapi::NOT_LEADER);
+                response->set_errcode(eapi::kFailedPrecondition);
                 response->set_errmsg("not leader");
                 response->set_leader(mutil::endpoint2str(_node.leader_id().addr).c_str());
             }

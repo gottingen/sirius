@@ -94,7 +94,7 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
             melon::ClosureGuard done_guard(done);
             if (!is_leader() && !request->force()) {
                 VLOG(turbo::V_IMPORTANT) << "node is not leader when raft control, region_id: " << request->region_id();
-                response->set_errcode(eapi::NOT_LEADER);
+                response->set_errcode(eapi::kFailedPrecondition);
                 response->set_region_id(request->region_id());
                 response->set_leader(mutil::endpoint2str(_node.leader_id().addr).c_str());
                 response->set_errmsg("not leader");
@@ -203,7 +203,7 @@ struct DiscoveryServerClosure : public melon::raft::Closure {
     do {\
         if (!init) {\
             LOG(WARNING)<<"have not init, log_id: "<<  log_id;\
-            response->set_errcode(eapi::HAVE_NOT_INIT);\
+            response->set_errcode(eapi::kUnavailable);\
             response->set_errmsg("have not init");\
             return;\
         }\

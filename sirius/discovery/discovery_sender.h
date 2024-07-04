@@ -246,7 +246,7 @@ namespace sirius {
             is_select_leader = leader_address.ip == mutil::IP_ANY;
             //store has leader address
             if (is_select_leader) {
-                LOG_IF(INFO, _verbose) << "master address null, select leader first";
+                VLOG(turbo::V_DEBUG) << "master address null, select leader first";
                 auto seed = mutil::fast_rand() % _servlet_nodes.size();
                 leader_address = _servlet_nodes[seed];
             }
@@ -268,13 +268,13 @@ namespace sirius {
                 ++retry_time;
                 continue;
             }
-            if (response.errcode() == eapi::HAVE_NOT_INIT) {
-                LOG_IF(WARNING, _verbose) << "connect with server fail. HAVE_NOT_INIT  log_id:" << cntl.log_id();
+            if (response.errcode() == eapi::kUnavailable) {
+                LOG_IF(WARNING, _verbose) << "connect with server fail. kUnavailable  log_id:" << cntl.log_id();
                 set_leader_address(mutil::EndPoint());
                 ++retry_time;
                 continue;
             }
-            if (response.errcode() == eapi::NOT_LEADER) {
+            if (response.errcode() == eapi::kFailedPrecondition) {
                 LOG_IF(WARNING, _verbose) << "connect with server fail. not leader, redirect to :"
                                           << response.leader() << ", log_id:" << cntl.log_id();
                 mutil::EndPoint leader_addr;

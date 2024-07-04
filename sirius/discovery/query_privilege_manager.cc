@@ -37,7 +37,7 @@ namespace sirius::discovery {
                 auto privilege = response->add_user_privilege();
                 *privilege = manager->_user_privilege[user_name];
             } else {
-                response->set_errcode(eapi::INPUT_PARAM_ERROR);
+                response->set_errcode(eapi::kInvalidArgument);
                 response->set_errmsg("username not exist");
             }
         }

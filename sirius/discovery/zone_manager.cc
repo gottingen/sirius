@@ -32,12 +32,12 @@ namespace sirius::discovery {
         int64_t app_id = AppManager::get_instance()->get_app_id(app_name);
         if (app_id == 0) {
             LOG(WARNING) << "request app not exist, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "app not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "app not exist");
             return;
         }
         if (_zone_id_map.find(zone_name) != _zone_id_map.end()) {
             LOG(WARNING) << "request zone already exist, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "zone already exist");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "zone already exist");
             return;
         }
 
@@ -53,7 +53,7 @@ namespace sirius::discovery {
         std::string zone_value;
         if (!zone_info.SerializeToString(&zone_value)) {
             LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::PARSE_TO_PB_FAIL, "serializeToArray fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kDataLoss, "serializeToArray fail");
             return;
         }
         rocksdb_keys.push_back(construct_zone_key(tmp_zone_id));
@@ -67,7 +67,7 @@ namespace sirius::discovery {
 
         int ret = DiscoveryRocksdb::get_instance()->put_discovery_info(rocksdb_keys, rocksdb_values);
         if (ret < 0) {
-            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "write db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kInternal, "write db fail");
             return;
         }
         // update memory info
@@ -86,18 +86,18 @@ namespace sirius::discovery {
         int64_t app_id = AppManager::get_instance()->get_app_id(app_name);
         if (app_id == 0) {
             LOG(WARNING) << "request app not exist, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "app not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "app not exist");
             return;
         }
         if (_zone_id_map.find(zone_name) == _zone_id_map.end()) {
             LOG(WARNING) << "request zone not exist, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "zone not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "zone not exist");
             return;
         }
         int64_t zone_id = _zone_id_map[zone_name];
         if (!_servlet_ids[zone_id].empty()) {
             LOG(WARNING) << "request zone has servlet, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "zone has servlet");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "zone has servlet");
             return;
         }
         // persist to rocksdb
@@ -105,7 +105,7 @@ namespace sirius::discovery {
                 std::vector<std::string>{construct_zone_key(zone_id)});
         if (ret < 0) {
             LOG(WARNING) << "drop zone: " << zone_name << " to rocksdb fail";
-            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "write db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kInternal, "write db fail");
             return;
         }
         // update zone memory info
@@ -123,12 +123,12 @@ namespace sirius::discovery {
         int64_t app_id = AppManager::get_instance()->get_app_id(app_name);
         if (app_id == 0) {
             LOG(WARNING) << "request app not exist, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "app not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "app not exist");
             return;
         }
         if (_zone_id_map.find(zone_name) == _zone_id_map.end()) {
             LOG(WARNING) << "request zone not exist, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "zone not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "zone not exist");
             return;
         }
         int64_t zone_id = _zone_id_map[zone_name];
@@ -141,12 +141,12 @@ namespace sirius::discovery {
         std::string zone_value;
         if (!tmp_zone_info.SerializeToString(&zone_value)) {
             LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::PARSE_TO_PB_FAIL, "serializeToArray fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kDataLoss, "serializeToArray fail");
             return;
         }
         int ret = DiscoveryRocksdb::get_instance()->put_discovery_info(construct_zone_key(zone_id), zone_value);
         if (ret < 0) {
-            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "write db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kInternal, "write db fail");
             return;
         }
         // update zone values in memory

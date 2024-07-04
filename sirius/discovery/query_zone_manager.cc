@@ -37,7 +37,7 @@ namespace sirius::discovery {
                 *(response->add_zone_infos()) = manager->_zone_info_map[id];
             } else {
                 response->set_errmsg("zone not exist");
-                response->set_errcode(eapi::INPUT_PARAM_ERROR);
+                response->set_errcode(eapi::kInvalidArgument);
                 LOG(ERROR) << "namespace: " << app_name << " zone: " << zone << " not exist";
             }
         }

@@ -38,7 +38,7 @@ namespace sirius::discovery {
                 int64_t id = manager->_app_id_map[namespace_name];
                 *(response->add_app_infos()) = manager->_app_info_map[id];
             } else {
-                response->set_errcode(eapi::INPUT_PARAM_ERROR);
+                response->set_errcode(eapi::kInvalidArgument);
                 response->set_errmsg("app not exist");
                 LOG(ERROR)<< "namespace: " << namespace_name << " not exist";
             }

@@ -51,6 +51,7 @@ namespace sirius {
         *req.mutable_config_info() = *request;
         auto rs = sender_.discovery_manager(req, res, retry);
         if (!rs.ok()) {
+            LOG(ERROR)<<rs.message();
             return rs;
         }
         response->set_code(res.errcode());

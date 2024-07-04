@@ -73,13 +73,13 @@ namespace sirius::discovery {
         int64_t count = request->count();
         response->set_op_type(request->op_type());
         if (count == 0) {
-            response->set_errcode(eapi::INPUT_PARAM_ERROR);
+            response->set_errcode(eapi::kInvalidArgument);
             response->set_errmsg("tso count should be positive");
             return;
         }
         if (!_is_healty) {
             LOG(ERROR) << "TSO has wrong status, retry later";
-            response->set_errcode(eapi::RETRY_LATER);
+            response->set_errcode(eapi::kUnavailable);
             response->set_errmsg("timestamp not ok, retry later");
             return;
         }
@@ -111,7 +111,7 @@ namespace sirius::discovery {
             }
         }
         if (need_retry) {
-            response->set_errcode(eapi::EXEC_FAIL);
+            response->set_errcode(eapi::kUnavailable);
             response->set_errmsg("gen tso failed");
             LOG(ERROR) << "gen tso failed";
             return;
@@ -147,7 +147,7 @@ namespace sirius::discovery {
         const auto &remote_side_tmp = mutil::endpoint2str(cntl->remote_side());
         const char *remote_side = remote_side_tmp.c_str();
         if (!_is_leader) {
-            response->set_errcode(eapi::NOT_LEADER);
+            response->set_errcode(eapi::kFailedPrecondition);
             response->set_errmsg("not leader");
             response->set_op_type(request->op_type());
             response->set_leader(mutil::endpoint2str(_node.leader_id().addr).c_str());
@@ -190,7 +190,7 @@ namespace sirius::discovery {
                 LOG(ERROR) << "parse from protobuf fail when on_apply";
                 if (done) {
                     if (((TsoClosure *) done)->response) {
-                        ((TsoClosure *) done)->response->set_errcode(eapi::PARSE_FROM_PB_FAIL);
+                        ((TsoClosure *) done)->response->set_errcode(eapi::kDataLoss);
                         ((TsoClosure *) done)->response->set_errmsg("parse from protobuf fail");
                     }
                     melon::raft::run_closure_in_fiber(done_guard.release());
@@ -211,7 +211,7 @@ namespace sirius::discovery {
                 }
                 default: {
                     LOG(ERROR) << "unsupport request type, type:" << request.op_type();
-                    IF_DONE_SET_RESPONSE(done, eapi::UNKNOWN_REQ_TYPE, "unsupport request type");
+                    IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "unsupport request type");
                 }
             }
             if (done) {
@@ -233,7 +233,7 @@ namespace sirius::discovery {
                                  << ", " << current.logical() << ", " << _tso_obj.current_timestamp.logical();
                     if (done && ((TsoClosure *) done)->response) {
                         sirius::proto::TsoResponse *response = ((TsoClosure *) done)->response;
-                        response->set_errcode(eapi::INTERNAL_ERROR);
+                        response->set_errcode(eapi::kInternal);
                         response->set_errmsg("time can't fallback");
                         auto timestamp = response->mutable_start_timestamp();
                         timestamp->CopyFrom(_tso_obj.current_timestamp);
@@ -272,7 +272,7 @@ namespace sirius::discovery {
                          << ", " << current.logical() << ", " << _tso_obj.current_timestamp.logical() << ")";
             if (done && ((TsoClosure *) done)->response) {
                 sirius::proto::TsoResponse *response = ((TsoClosure *) done)->response;
-                response->set_errcode(eapi::INTERNAL_ERROR);
+                response->set_errcode(eapi::kInternal);
                 response->set_errmsg("time can't fallback");
             }
             return;

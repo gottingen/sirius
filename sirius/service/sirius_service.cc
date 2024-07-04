@@ -451,6 +451,7 @@ namespace sirius {
             auto rs = ApiProxy::instance()->create_servlet(&info, &response);
             if(!rs.ok()) {
                 controller->SetFailed(rs.to_string());
+                return ;
             }
             res->set_errcode(static_cast<melon::Errno>(response.code()));
             res->set_errmsg(response.message());
@@ -492,6 +493,7 @@ namespace sirius {
             eapi::CommonResponse response;
             auto rs = ApiProxy::instance()->delete_servlet(&info, &response);
             if(!rs.ok()) {
+                LOG(ERROR)<< "rpc to discovery server:cancel error:" << rs.to_string();
                 controller->SetFailed(rs.to_string());
                 return ;
             }

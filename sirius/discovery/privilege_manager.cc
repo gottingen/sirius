@@ -38,7 +38,7 @@ namespace sirius::discovery {
         }
         if (!request->has_user_privilege()) {
             ERROR_SET_RESPONSE(response,
-                               eapi::INPUT_PARAM_ERROR,
+                               eapi::kInvalidArgument,
                                "no user_privilege",
                                request->op_type(),
                                log_id);
@@ -48,7 +48,7 @@ namespace sirius::discovery {
             case sirius::proto::OP_CREATE_USER: {
                 if (!request->user_privilege().has_password()) {
                     ERROR_SET_RESPONSE(response,
-                                       eapi::INPUT_PARAM_ERROR,
+                                       eapi::kInvalidArgument,
                                        "no password",
                                        request->op_type(),
                                        log_id);
@@ -65,7 +65,7 @@ namespace sirius::discovery {
             }
             default: {
                 ERROR_SET_RESPONSE(response,
-                                   eapi::INPUT_PARAM_ERROR,
+                                   eapi::kInvalidArgument,
                                    "invalid op_type",
                                    request->op_type(),
                                    log_id);
@@ -79,13 +79,13 @@ namespace sirius::discovery {
         std::string username = user_privilege.username();
         if (_user_privilege.find(username) != _user_privilege.end()) {
             VLOG(turbo::V_IMPORTANT) << "request username has been created, username:" << user_privilege.username();
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "username has been repeated");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "username has been repeated");
             return;
         }
         int ret = SchemaManager::get_instance()->check_and_get_for_privilege(user_privilege);
         if (ret < 0) {
             LOG(WARNING) << "request not illegal, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "request invalid");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "request invalid");
             return;
         }
         user_privilege.set_version(1);
@@ -93,14 +93,14 @@ namespace sirius::discovery {
         std::string value;
         if (!user_privilege.SerializeToString(&value)) {
             LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::PARSE_TO_PB_FAIL, "serializeToArray fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kDataLoss, "serializeToArray fail");
             return;
         }
         // write date to rocksdb
         ret = DiscoveryRocksdb::get_instance()->put_discovery_info(construct_privilege_key(username), value);
         if (ret < 0) {
             LOG(WARNING) << "add username:" << username << " privilege to rocksdb fail";
-            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "write db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kInternal, "write db fail");
             return;
         }
         // update memory values
@@ -114,7 +114,7 @@ namespace sirius::discovery {
         std::string username = request.user_privilege().username();
         if (_user_privilege.find(username) == _user_privilege.end()) {
             LOG(WARNING) << "request username not exist, username:" << username;
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "username not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "username not exist");
             return;
         }
 
@@ -123,7 +123,7 @@ namespace sirius::discovery {
                 std::vector<std::string>{construct_privilege_key(username)});
         if (ret < 0) {
             LOG(WARNING) << "drop username:" << username << " privilege to rocksdb fail";
-            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "delete from db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kInternal, "delete from db fail");
             return;
         }
         // update memory
@@ -138,13 +138,13 @@ namespace sirius::discovery {
         std::string username = user_privilege.username();
         if (_user_privilege.find(username) == _user_privilege.end()) {
             LOG(WARNING) << "request username not exist, username:" << username;
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "username not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "username not exist");
             return;
         }
         int ret = SchemaManager::get_instance()->check_and_get_for_privilege(user_privilege);
         if (ret < 0) {
             LOG(WARNING) << "request not illegal, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "request invalid");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "request invalid");
             return;
         }
         sirius::proto::UserPrivilege tmp_mem_privilege = _user_privilege[username];
@@ -168,14 +168,14 @@ namespace sirius::discovery {
         std::string value;
         if (!tmp_mem_privilege.SerializeToString(&value)) {
             LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::PARSE_TO_PB_FAIL, "serializeToArray fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kDataLoss, "serializeToArray fail");
             return;
         }
         // write date to rocksdb
         ret = DiscoveryRocksdb::get_instance()->put_discovery_info(construct_privilege_key(username), value);
         if (ret != 0) {
             LOG(WARNING)<< "add username:" << username << " privilege to rocksdb fail";
-            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "write db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kInternal, "write db fail");
             return;
         }
         MELON_SCOPED_LOCK(_user_mutex);
@@ -189,13 +189,13 @@ namespace sirius::discovery {
         std::string username = user_privilege.username();
         if (_user_privilege.find(username) == _user_privilege.end()) {
             LOG(WARNING) << "request username not exist, username:" << username;
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "username not exist");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "username not exist");
             return;
         }
         int ret = SchemaManager::get_instance()->check_and_get_for_privilege(user_privilege);
         if (ret < 0) {
             LOG(WARNING) << "request not illegal, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::INPUT_PARAM_ERROR, "request invalid");
+            IF_DONE_SET_RESPONSE(done, eapi::kInvalidArgument, "request invalid");
             return;
         }
         sirius::proto::UserPrivilege tmp_mem_privilege = _user_privilege[username];
@@ -222,14 +222,14 @@ namespace sirius::discovery {
         std::string value;
         if (!tmp_mem_privilege.SerializeToString(&value)) {
             LOG(WARNING) << "request serializeToArray fail, request:" << request.ShortDebugString();
-            IF_DONE_SET_RESPONSE(done, eapi::PARSE_TO_PB_FAIL, "serializeToArray fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kDataLoss, "serializeToArray fail");
             return;
         }
         // write date to rocksdb
         ret = DiscoveryRocksdb::get_instance()->put_discovery_info(construct_privilege_key(username), value);
         if (ret < 0) {
             LOG(WARNING) << "add username:" << username << " privilege to rocksdb fail";
-            IF_DONE_SET_RESPONSE(done, eapi::INTERNAL_ERROR, "write db fail");
+            IF_DONE_SET_RESPONSE(done, eapi::kInternal, "write db fail");
             return;
         }
         MELON_SCOPED_LOCK(_user_mutex);
