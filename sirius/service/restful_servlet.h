@@ -39,6 +39,10 @@ namespace sirius::restful {
         void process(const melon::RestfulRequest *request, melon::RestfulResponse *response) override;
     };
 
+    struct TombstoneServletProcessor : public melon::RestfulProcessor {
+        void process(const melon::RestfulRequest *request, melon::RestfulResponse *response) override;
+    };
+
     struct NamingServletProcessor : public melon::RestfulProcessor {
         void process(const melon::RestfulRequest *request, melon::RestfulResponse *response) override;
     };

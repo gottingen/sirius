@@ -43,10 +43,13 @@ namespace sirius::restful {
         service->set_processor("/discovery/zone/create", std::make_shared<ZoneCreateProcessor>());
         service->set_processor("/discovery/zone/query", std::make_shared<ZoneQueryProcessor>());
         service->set_processor("/discovery/zone/remove", std::make_shared<ZoneRemoveProcessor>());
+        service->set_processor("/discovery/zone/online", std::make_shared<ZoneOnlineProcessor>());
+        service->set_processor("/discovery/zone/offline", std::make_shared<ZoneOfflineProcessor>());
         service->set_processor("/discovery/servlet/list", std::make_shared<ListServletProcessor>());
         service->set_processor("/discovery/servlet/get", std::make_shared<GetServletProcessor>());
         service->set_processor("/discovery/servlet/online", std::make_shared<OnlineServletProcessor>());
         service->set_processor("/discovery/servlet/offline", std::make_shared<OfflineServletProcessor>());
+        service->set_processor("/discovery/servlet/tombstone", std::make_shared<TombstoneServletProcessor>());
         service->set_processor("/discovery/servlet/naming", std::make_shared<NamingServletProcessor>());
         service->set_not_found_processor(std::make_shared<NotFoundProcessor>());
         service->set_root_processor(std::make_shared<RootProcessor>());

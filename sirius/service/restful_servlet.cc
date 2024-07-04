@@ -55,8 +55,9 @@ namespace sirius::restful {
             j["code"] = rs.code();
             j["message"] = rs.message();
         } else {
-            j["code"] = 0;
-            j["message"] = "ok";
+
+            j["code"] = resp.code();
+            j["message"] = resp.message();
         }
 
         for (int i = 0; i < resp.servlets_size(); i++) {
@@ -65,6 +66,7 @@ namespace sirius::restful {
             servlet_to_json(servlet, item);
             j["servlets"].push_back(item);
         }
+        response->set_body(j.dump());
     }
 
     void GetServletProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
@@ -127,23 +129,20 @@ namespace sirius::restful {
             j["code"] = rs.code();
             j["message"] = rs.message();
         } else {
-            j["code"] = 0;
-            j["message"] = "ok";
-        }
-        if (resp.code() != 0) {
             j["code"] = resp.code();
             j["message"] = resp.message();
-            return;
         }
 
         if (resp.servlets_size() != 1) {
             j["code"] = static_cast<int>(turbo::StatusCode::kNotFound);
             j["message"] = "servlet not found";
-            return;
+        } else {
+            nlohmann::json item;
+            servlet_to_json(resp.servlets(0), item);
+            j["servlets"].push_back(item);
         }
-        nlohmann::json item;
-        servlet_to_json(resp.servlets(0), item);
-        j["servlets"].push_back(item);
+
+        response->set_body(j.dump());
     }
 
     void OnlineServletProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
@@ -205,11 +204,13 @@ namespace sirius::restful {
         if (!rs.ok()) {
             j["code"] = rs.code();
             j["message"] = rs.message();
+        } else {
+            j["code"] = resp.code();
+            j["message"] = resp.message();
         }
 
-        j["code"] = resp.code();
-        j["message"] = resp.message();
 
+        response->set_body(j.dump());
     }
 
     void OfflineServletProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
@@ -271,11 +272,79 @@ namespace sirius::restful {
         if (!rs.ok()) {
             j["code"] = rs.code();
             j["message"] = rs.message();
+        } else {
+            j["code"] = resp.code();
+            j["message"] = resp.message();
         }
 
-        j["code"] = resp.code();
-        j["message"] = resp.message();
+        response->set_body(j.dump());
+    }
 
+    void TombstoneServletProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
+        response->set_content_json();
+        response->set_access_control_all_allow();
+        response->set_status_code(200);
+        std::string input_str = request->body().to_string();
+        nlohmann::json input;
+        try {
+            input = nlohmann::json::parse(input_str);
+        } catch (const std::exception &e) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "invalid json";
+            response->set_body(j.dump());
+            return;
+        }
+
+        std::string app_name;
+        auto it = input.find("app_name");
+        if (it == input.end()) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "app_name is required";
+            response->set_body(j.dump());
+            return;
+        }
+        app_name = it->get<std::string>();
+
+        std::string zone_name;
+        it = input.find("zone_name");
+        if (it == input.end()) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "zone_name is required";
+            response->set_body(j.dump());
+            return;
+        }
+
+        zone_name = it->get<std::string>();
+
+        std::string servlet_name;
+        it = input.find("servlet_name");
+        if (it == input.end()) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "servlet_name is required";
+            response->set_body(j.dump());
+            return;
+        }
+        servlet_name = it->get<std::string>();
+        eapi::sirius::SnsManageRequest req;
+        eapi::CommonResponse resp;
+        req.set_app_name(app_name);
+        req.set_zone_name(zone_name);
+        req.set_servlet_name(servlet_name);
+        auto rs = ApiProxy::instance()->tombstone_servlet(&req, &resp);
+        nlohmann::json j;
+        if (!rs.ok()) {
+            j["code"] = rs.code();
+            j["message"] = rs.message();
+        } else {
+            j["code"] = resp.code();
+            j["message"] = resp.message();
+        }
+
+        response->set_body(j.dump());
     }
 
     void NamingServletProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
@@ -349,15 +418,16 @@ namespace sirius::restful {
         if (!rs.ok()) {
             j["code"] = rs.code();
             j["message"] = rs.message();
+        } else {
+            j["code"] = resp.code();
+            j["message"] = resp.message();
         }
-
-        j["code"] = resp.code();
-        j["message"] = resp.message();
 
         for(int i = 0; i < resp.servlets_size(); i++) {
             nlohmann::json item;
             servlet_to_json(resp.servlets(i), item);
             j["servlets"].push_back(item);
         }
+        response->set_body(j.dump());
     }
 }  // namespace sirius::restful

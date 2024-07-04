@@ -55,4 +55,12 @@ namespace sirius::restful {
     struct ZoneRemoveProcessor : public melon::RestfulProcessor {
         void process(const melon::RestfulRequest *request, melon::RestfulResponse *response) override;
     };
+
+    struct ZoneOnlineProcessor : public melon::RestfulProcessor {
+        void process(const melon::RestfulRequest *request, melon::RestfulResponse *response) override;
+    };
+
+    struct ZoneOfflineProcessor : public melon::RestfulProcessor {
+        void process(const melon::RestfulRequest *request, melon::RestfulResponse *response) override;
+    };
 }  // namespace sirius::restful

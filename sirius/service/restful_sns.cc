@@ -384,12 +384,8 @@ namespace sirius::restful {
     }
 
     void ZoneRemoveProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
-        response->set_content_type("application/json");
-        response->set_header("Access-Control-Allow-Origin", "*");
-        response->set_header("Access-Control-Allow-Method", "*");
-        response->set_header("Access-Control-Allow-Headers", "*");
-        response->set_header("Access-Control-Allow-Credentials", "true");
-        response->set_header("Access-Control-Expose-Headers", "*");
+        response->set_content_json();
+        response->set_access_control_all_allow();
         response->set_status_code(200);
 
         std::string input_str = request->body().to_string();
@@ -449,6 +445,152 @@ namespace sirius::restful {
         zone.set_zone(zone_name);
         eapi::CommonResponse res;
         rs = ApiProxy::instance()->delete_zone(&zone, &res);
+        nlohmann::json j;
+        if (!rs.ok()) {
+            j["code"] = rs.code();
+            j["message"] = rs.message();
+        } else {
+            j["code"] = res.code();
+            j["message"] = res.message();
+        }
+        response->set_body(j.dump());
+    }
+
+    void ZoneOnlineProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
+        response->set_content_json();
+        response->set_access_control_all_allow();
+        response->set_status_code(200);
+
+        std::string input_str = request->body().to_string();
+
+        nlohmann::json input;
+        try {
+            input = nlohmann::json::parse(input_str);
+        } catch (const std::exception &e) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "invalid json";
+            response->set_body(j.dump());
+            return;
+        }
+
+        std::string app_name;
+        auto it = input.find("app_name");
+        if (it != input.end()) {
+            app_name = it->get<std::string>();
+        } else {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "app_name is required";
+            response->set_body(j.dump());
+            return;
+        }
+
+        std::string zone_name;
+        it = input.find("zone_name");
+        if (it != input.end()) {
+            zone_name = it->get<std::string>();
+        } else {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "zone_name is required";
+            response->set_body(j.dump());
+            return;
+        }
+
+        turbo::Status rs;
+        if (app_name.empty()) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "app_name is required, but is empty";
+            response->set_body(j.dump());
+            return;
+        }
+        if (zone_name.empty()) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "zone_name is required, but is empty";
+            response->set_body(j.dump());
+            return;
+        }
+        eapi::sirius::SnsManageRequest zone;
+        zone.set_app_name(app_name);
+        zone.set_zone_name(zone_name);
+        eapi::CommonResponse res;
+        rs = ApiProxy::instance()->online_zone(&zone, &res);
+        nlohmann::json j;
+        if (!rs.ok()) {
+            j["code"] = rs.code();
+            j["message"] = rs.message();
+        } else {
+            j["code"] = res.code();
+            j["message"] = res.message();
+        }
+        response->set_body(j.dump());
+    }
+
+    void ZoneOfflineProcessor::process(const melon::RestfulRequest *request, melon::RestfulResponse *response) {
+        response->set_content_json();
+        response->set_access_control_all_allow();
+        response->set_status_code(200);
+
+        std::string input_str = request->body().to_string();
+
+        nlohmann::json input;
+        try {
+            input = nlohmann::json::parse(input_str);
+        } catch (const std::exception &e) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "invalid json";
+            response->set_body(j.dump());
+            return;
+        }
+
+        std::string app_name;
+        auto it = input.find("app_name");
+        if (it != input.end()) {
+            app_name = it->get<std::string>();
+        } else {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "app_name is required";
+            response->set_body(j.dump());
+            return;
+        }
+
+        std::string zone_name;
+        it = input.find("zone_name");
+        if (it != input.end()) {
+            zone_name = it->get<std::string>();
+        } else {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "zone_name is required";
+            response->set_body(j.dump());
+            return;
+        }
+
+        turbo::Status rs;
+        if (app_name.empty()) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "app_name is required, but is empty";
+            response->set_body(j.dump());
+            return;
+        }
+        if (zone_name.empty()) {
+            nlohmann::json j;
+            j["code"] = static_cast<int>(turbo::StatusCode::kInvalidArgument);
+            j["message"] = "zone_name is required, but is empty";
+            response->set_body(j.dump());
+            return;
+        }
+        eapi::sirius::SnsManageRequest zone;
+        zone.set_app_name(app_name);
+        zone.set_zone_name(zone_name);
+        eapi::CommonResponse res;
+        rs = ApiProxy::instance()->offline_zone(&zone, &res);
         nlohmann::json j;
         if (!rs.ok()) {
             j["code"] = rs.code();
